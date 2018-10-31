@@ -14,6 +14,7 @@ public class DataModel {
                 T_DetailDao.Properties.Activity.eq(activity)).build().list().size()>0;
     }
 
+    //统一回单数据请求
     public static void upload(Context context,String url,String json){
         Asynchttp.post(context, url, json, new Asynchttp.Response() {
             @Override
