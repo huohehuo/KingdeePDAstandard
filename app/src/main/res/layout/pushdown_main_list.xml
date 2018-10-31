@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+        <CheckBox
+            android:id="@+id/cb_ischeck"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/tv_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:text="11111111111111111111111111"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/cb_ischeck"/>
+
+        <TextView
+            android:id="@+id/tv_supplier"
+            android:layout_below="@id/tv_code"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="11111111111111111111111111"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/cb_ischeck"/>
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_below="@id/tv_supplier"
+            android:textSize="15sp"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="11111111111111111111111111"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/cb_ischeck"/>
+    </RelativeLayout>
+</RelativeLayout>

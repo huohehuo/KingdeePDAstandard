@@ -1,0 +1,128 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragment.pushdown.DownLoadPushFragment">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl1"
+        android:layout_alignParentBottom="true"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="往来单位:"/>
+            <Spinner
+                android:id="@+id/sp_wlunit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="单据编号:"/>
+            <EditText
+                android:id="@+id/ed_code"
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:background="@android:drawable/edit_text"
+                android:layout_height="40dp"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:weightSum="6"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="起始日期:"/>
+            <TextView
+                android:id="@+id/start_date"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:singleLine="true"
+                android:gravity="center"
+                android:background="@android:drawable/edit_text"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:text="结束日期:"/>
+            <TextView
+                android:id="@+id/end_date"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:singleLine="true"
+                android:background="@android:drawable/edit_text"
+                android:layout_height="40dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_download"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="下载"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btn_search"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="查找"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/v1"
+        android:layout_above="@id/rl1"
+        android:background="@color/sienna"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_above="@id/v1"
+        android:id="@+id/refresh"
+        android:layout_height="match_parent">
+        <ListView
+            android:background="@color/cpb_grey"
+            android:id="@+id/lv_pushdown_download"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</RelativeLayout>

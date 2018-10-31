@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
+     >
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/cb_ischeck"/>
+       <RelativeLayout
+           android:layout_toRightOf="@id/cb_ischeck"
+           android:layout_width="match_parent"
+           android:layout_centerInParent="true"
+           android:layout_height="180dp">
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:orientation="horizontal"
+               android:id="@+id/lll"
+               android:gravity="center_vertical"
+               android:layout_height="wrap_content">
+
+
+               <TextView
+                   android:layout_toRightOf="@id/cb_ischeck"
+                   android:id="@+id/productname"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:textColor="@color/black"
+                   android:textSize="18sp"/>
+
+           </LinearLayout>
+
+
+           <TextView
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:id="@+id/productId"
+               android:textColor="@color/black"
+               android:textSize="18sp"
+               android:layout_below="@id/lll"/>
+           <FrameLayout
+               android:layout_width="match_parent"
+               android:id="@+id/ll1"
+               android:layout_below="@id/productId"
+               android:layout_height="wrap_content">
+               <LinearLayout
+
+
+                   android:layout_width="match_parent"
+                   android:orientation="horizontal"
+                   android:layout_height="wrap_content">
+                   <TextView
+                       android:id="@+id/productxh"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:layout_height="wrap_content"
+                       android:textSize="18sp"
+                       android:textColor="@color/black"/>
+                   <TextView
+                       android:layout_width="0dp"
+                       android:textSize="18sp"
+                       android:id="@+id/storage"
+                       android:textColor="@color/black"
+                       android:layout_weight="1"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+
+
+           </FrameLayout>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_below="@id/ll1"
+               android:orientation="vertical"
+               android:layout_height="wrap_content">
+               <LinearLayout
+                   android:visibility="gone"
+                   android:layout_width="match_parent"
+                   android:orientation="horizontal"
+                   android:id="@+id/ll_wavehosue"
+                   android:layout_height="wrap_content">
+
+                   <TextView
+                       android:id="@+id/wavehousein"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:textColor="@color/black"
+                       android:textSize="18sp"
+                       android:layout_height="wrap_content" />
+                   <TextView
+                       android:id="@+id/wavehouseout"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:textColor="@color/black"
+                       android:textSize="18sp"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:orientation="horizontal"
+
+                   android:layout_height="wrap_content">
+
+                   <TextView
+                       android:id="@+id/price"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:textColor="@color/black"
+                       android:textSize="18sp"
+                       android:layout_height="wrap_content" />
+                   <TextView
+                       android:id="@+id/num"
+                       android:layout_width="0dp"
+                       android:layout_weight="1"
+                       android:textColor="@color/black"
+                       android:textSize="18sp"
+                       android:layout_height="wrap_content" />
+               </LinearLayout>
+
+           </LinearLayout>
+
+
+
+           <TextView
+               android:id="@+id/date"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:textSize="11sp"
+               android:textColor="@color/black"
+               android:layout_alignParentBottom="true"/>
+
+           <LinearLayout
+               android:layout_alignParentBottom="true"
+               android:layout_marginBottom="5dp"
+               android:layout_marginRight="5dp"
+               android:layout_alignParentRight="true"
+               android:layout_width="150dp"
+               android:orientation="horizontal"
+               android:layout_height="wrap_content">
+               <Button
+                   android:text="删除"
+                   android:id="@+id/delete"
+                   android:textColor="@color/white"
+                   android:background="@drawable/btn_red"
+                   android:layout_width="0dp"
+                   android:layout_weight="1"
+                   android:visibility="gone"
+                   android:layout_marginRight="5dp"
+                   android:layout_height="30dp"
+                   />
+
+                <Button
+                    android:visibility="gone"
+                    android:text="修改"
+                    android:textColor="@color/white"
+                    android:id="@+id/fix"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/btn_login"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="30dp" />
+
+           </LinearLayout>
+
+
+
+
+       </RelativeLayout>
+
+</RelativeLayout>

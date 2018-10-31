@@ -1,0 +1,61 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--&lt;!&ndash; 表示状态栏透明，并且会使得状态栏悬浮在activity之上(activity布局会扩展到状态栏底部) &ndash;&gt;-->
+        <!--<item name="android:windowTranslucentStatus">false</item>-->
+        <!--&lt;!&ndash; 表示导航栏半透明，并且会使得状态栏和导航栏都悬浮在activity之上 &ndash;&gt;-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <!--&lt;!&ndash;Android 5.x开始需要把颜色设置透明，否则导航栏会呈现系统默认的颜色&ndash;&gt;-->
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#ff00ddff</item>
+        <item name="colorPrimaryDark">#ff00ddff</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!-- my loading dialog -->
+    <style name="LoadingDialogStyle">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <!-- popup window 显示消失动画-->
+    <style name="PopWindowAnimStyle">
+        <item name="android:windowShowAnimation">@anim/dialog_enter</item>
+        <!-- 指定显示的动画xml  -->
+        <item name="android:windowHideAnimation">@anim/dialog_exit</item>
+        <!-- 指定消失的动画xml  -->
+    </style>
+    <!--format:string , integer , dimension , reference , color , enum-->
+    <!--https://www.cnblogs.com/kross/p/3458068.html-->
+    <declare-styleable name="MySpinner">
+        <attr name="myspinner_name" format="string"/>
+        <attr name="myspinner_name_size" format="dimension"/>
+    </declare-styleable>
+    <!--format:string , integer , dimension , reference , color , enum-->
+    <!--https://www.cnblogs.com/kross/p/3458068.html-->
+    <declare-styleable name="MyWaveSpinner">
+        <attr name="spinner_name" format="string"/>
+        <attr name="spinner_name_size" format="dimension"/>
+    </declare-styleable>
+
+
+    <declare-styleable name="Style_Spinner_Unit">
+        <attr name="Uspinner_name" format="string"/>
+        <attr name="Uspinner_focusable" format="boolean"/>
+        <attr name="Uspinner_name_size" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="Style_TextView">
+        <attr name="T_title_name" format="string"/>
+        <attr name="T_size" format="dimension"/>
+    </declare-styleable>
+        <!--<attr name="T_world_name" format="string"/>-->
+        <!--<attr name="T_world_name_size" format="dimension"/>-->
+</resources>

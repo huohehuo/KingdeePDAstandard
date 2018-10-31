@@ -1,0 +1,195 @@
+<resources>
+    <string name="app_name">扫描助手</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="wgrkxt">外购入库下推</string>
+    <string name="storage">仓库</string>
+    <string name="wavehouse">仓位</string>
+    <string name="name">名称</string>
+    <string name="unit">单位</string>
+    <string name="pihao">批号</string>
+    <string name="num">数量</string>
+    <string name="add">添加</string>
+    <string name="push">回单</string>
+    <string name="review">查看</string>
+    <string name="bring_storage">是否带出默认仓库</string>
+    <string name="auto_add">自动添加</string>
+    <string name="date">日期:</string>
+    <string name="purchase_method">采购方式:</string>
+    <string name="jh_adress">交货地点:</string>
+    <string name="manager">主管:</string>
+    <string name="hbdxtcprk">汇报单下推产品入库</string>
+    <string name="hebing">合并</string>
+    <string name="db">调拨</string>
+    <string name="out_storage">调出仓库</string>
+    <string name="out_wavehouse">调出仓位</string>
+    <string name="in_storage">调入仓库</string>
+    <string name="in_wavehouse">调入仓位</string>
+    <string name="product_code">物料编码</string>
+    <string name="product_name">物料名称</string>
+    <string name="out_store">调出库存</string>
+    <string name="in_store">调入库存</string>
+    <string name="model">规格型号</string>
+    <string name="finish_order">完单</string>
+    <string name="department">部门:</string>
+    <string name="employee">业务员:</string>
+    <string name="sign_person">验收:</string>
+    <string name="capture_person">保管:</string>
+    <string name="fhtzd_xt_dbd">发货通知单下推调拨单</string>
+    <string name="store">库存</string>
+    <string name="beizhu">备注</string>
+
+
+
+
+    <!--//自定义控件spinner的自动保存key===========================================================================-->
+    <string name="spEmployee_po">spEmployee_po</string>
+    <string name="spManager_po">spManager_po</string>
+    <string name="spDepartment_po">spDepartment_po</string>
+    <string name="spPayMethod_po">spPayMethod_po</string>
+    <string name="spYuandan_po">spYuandan_po</string>
+    <string name="spPurchaseMethod_po">spPurchaseMethod_po</string>
+    <string name="spPurchaseScope_po">spPurchaseScope_po</string>
+
+    <string name="spEmployee_pis">spEmployee_pis</string>
+    <string name="spManager_pis">spManager_pis</string>
+    <string name="spDepartment_pis">spDepartment_pis</string>
+    <string name="spPayMethod_pis">spPayMethod_pis</string>
+    <string name="spYuandan_pis">spYuandan_pis</string>
+    <string name="spPurchaseMethod_pis">spPurchaseMethod_pis</string>
+    <string name="spPurchaseScope_pis">spPurchaseScope_pis</string>
+    <string name="spWanglaikemu_pis">spWanglaikemu_pis</string>
+    <string name="spSignPerson_pis">spSignPerson_pis</string>
+    <string name="spCapturePerson_pis">spCapturePerson_pis</string>
+
+    <string name="spYuandan_pris">spYuandan_pris</string>
+    <string name="spYanshou_pris">spYanshou_pris</string>
+    <string name="spCapture_pris">spCapture_pris</string>
+
+    <string name="spYuandan_so">spYuandan_so</string>
+    <string name="spPayMethod_so">spPayMethod_so</string>
+    <string name="spDepartment_so">spDepartment_so</string>
+    <string name="spEmployee_so">spEmployee_so</string>
+    <string name="spManager_so">spManager_so</string>
+    <string name="spSaleScope_so">spSaleScope_so</string>
+    <string name="spSaleMethod_so">spSaleMethod_so</string>
+    <string name="spSendMethod_so">spSendMethod_so</string>
+
+    <string name="spYuandan_soldo">spYuandan_soldo</string>
+    <string name="spManager_soldo">spManager_soldo</string>
+    <string name="spEmployee_soldo">spEmployee_soldo</string>
+    <string name="spDepartment_soldo">spDepartment_soldo</string>
+    <string name="spSendMethod_soldo">spSendMethod_soldo</string>
+    <string name="spSaleScope_soldo">spSaleScope_soldo</string>
+    <string name="spSaleMethod_soldo">spSaleMethod_soldo</string>
+    <string name="spPayMethod_soldo">spPayMethod_soldo</string>
+
+    <string name="spDepartment_pag">spDepartment_pag</string>
+    <string name="spGetType_pag">spGetType_pag</string>
+    <string name="spGetman_pag">spGetman_pag</string>
+    <string name="spSendman_pag">spSendman_pag</string>
+
+    <string name="spCapturePerson_db">spCapturePerson_db</string>
+    <string name="spEmployee_db">spEmployee_db</string>
+    <string name="spSignPerson_db">spSignPerson_db</string>
+    <string name="spDepartment_db">spDepartment_db</string>
+
+    <string name="spInStoreType_ois">spInStoreType_ois</string>
+    <string name="spCapturePerson_ois">spCapturePerson_ois</string>
+    <string name="spEmployee_ois">spEmployee_ois</string>
+    <string name="spManager_ois">spManager_ois</string>
+    <string name="spSignPerson_ois">spSignPerson_ois</string>
+    <string name="spDepartment_ois">spDepartment_ois</string>
+
+    <string name="spCapturePerson_oos">spCapturePerson_oos</string>
+    <string name="spDepartment_oos">spDepartment_oos</string>
+    <string name="spInStoreType_oos">spInStoreType_oos</string>
+    <string name="spSignPerson_oos">spSignPerson_oos</string>
+    <string name="spManager_oos">spManager_oos</string>
+    <string name="spEmployee_oos">spEmployee_oos</string>
+
+    <string name="spSaleScope_pd_mt">spSaleScope_pd_mt</string>
+    <string name="spSaleMethod_pd_mt">spSaleMethod_pd_mt</string>
+    <string name="spYuandan_pd_mt">spYuandan_pd_mt</string>
+    <string name="spPayMethod_pd_mt">spPayMethod_pd_mt</string>
+    <string name="spSendMethod_pd_mt">spSendMethod_pd_mt</string>
+    <string name="spManager_pd_mt">spManager_pd_mt</string>
+    <string name="spCapture_pd_mt">spCapture_pd_mt</string>
+    <string name="spSendman_pd_mt">spSendman_pd_mt</string>
+
+    <string name="spPurchaseMethod_pd_po">spPurchaseMethod_pd_po</string>
+    <string name="spPurchaseScope_pd_po">spPurchaseScope_pd_po</string>
+    <string name="spYuandan_pd_po">spYuandan_pd_po</string>
+    <string name="spPayMethod_pd_po">spPayMethod_pd_po</string>
+    <string name="spManager_pd_po">spManager_pd_po</string>
+    <string name="spCapture_pd_po">spCapture_pd_po</string>
+
+    <string name="spCapture_pd_sn">spCapture_pd_sn</string>
+    <string name="spSendman_pd_sn">spSendman_pd_sn</string>
+    <string name="spManager_pd_sn">spManager_pd_sn</string>
+    <string name="spSaleMethod_pd_sn">spSaleMethod_pd_sn</string>
+    <string name="spPayMethod_pd_sn">spPayMethod_pd_sn</string>
+
+    <string name="spPurchaseMethod_pd_sltz">spPurchaseMethod_pd_sltz</string>
+    <string name="spWanglaikemu_pd_sltz">spWanglaikemu_pd_sltz</string>
+    <string name="spSignPerson_pd_sltz">spSignPerson_pd_sltz</string>
+    <string name="spManager_pd_sltz">spManager_pd_sltz</string>
+    <string name="spCapture_pd_sltz">spCapture_pd_sltz</string>
+    <string name="spCapturePerson_pd_sltz">spCapturePerson_pd_sltz</string>
+
+    <string name="spCapturePerson_pd_oois">spCapturePerson_pd_oois</string>
+    <string name="spSignPerson_pd_oois">spSignPerson_pd_oois</string>
+
+    <string name="spCapturePerson_pd_ooos">spCapturePerson_pd_ooos</string>
+    <string name="spSignPerson_pd_ooos">spSignPerson_pd_ooos</string>
+
+    <string name="spManager_pd_ppis">spManager_pd_ppis</string>
+    <string name="spCapturePerson_pd_ppis">spCapturePerson_pd_ppis</string>
+    <string name="spCapture_pd_ppis">spCapture_pd_ppis</string>
+    <string name="spEmployee_pd_ppis">spEmployee_pd_ppis</string>
+    <string name="spPurchaseMethod_pd_ppis">spPurchaseMethod_pd_ppis</string>
+    <string name="spWanglaikemu_pd_ppis">spWanglaikemu_pd_ppis</string>
+
+    <string name="spGetdepartment_pd_scrwdxtll">spGetdepartment_pd_scrwdxtll</string>
+    <string name="spGetType_pd_scrwdxtll">spGetType_pd_scrwdxtll</string>
+    <string name="spGetman_pd_scrwdxtll">spGetman_pd_scrwdxtll</string>
+    <string name="spSendman_pd_scrwdxtll">spSendman_pd_scrwdxtll</string>
+
+    <string name="spManager_pd_cgsl">spManager_pd_cgsl</string>
+    <string name="spPurchaseMethod_pd_cgsl">spPurchaseMethod_pd_cgsl</string>
+
+    <string name="spManager_pd_ssfl">spManager_pd_ssfl</string>
+    <string name="spCapture_pd_ssfl">spCapture_pd_ssfl</string>
+
+    <string name="spCapture_pd_hbrk">spCapture_pd_hbrk</string>
+    <string name="spYanshou_pd_hbrk">spYanshou_pd_hbrk</string>
+    <string name="spManager_pd_hbrk">spManager_pd_hbrk</string>
+
+    <string name="spCapturePerson_pd_fhdb">spCapturePerson_pd_fhdb</string>
+    <string name="spEmployee_pd_fhdb">spEmployee_pd_fhdb</string>
+    <string name="spSignPerson_pd_fhdb">spSignPerson_pd_fhdb</string>
+    <string name="spDepartment_pd_fhdb">spDepartment_pd_fhdb</string>
+
+    <!--===========================================================================-->
+
+
+
+
+
+
+
+    <string name="spCapturePerson_PPIS">spCapturePerson_PPIS</string>
+    <string name="spManager_PPIS">spManager_PPIS</string>
+    <string name="spEmployee_PPIS">spEmployee_PPIS</string>
+    <string name="spcapture_PPIS">spcapture_PPIS</string>
+    <string name="spCapturePerson_DB">spCapturePerson_DB</string>
+    <string name="spSignPerson_DB">spSignPerson_DB</string>
+    <string name="spCaptureperson_SN">spCaptureperson_SN</string>
+    <string name="spSend_SN">spSend_SN</string>
+    <string name="spManager_SN">spManager_SN</string>
+
+
+
+
+</resources>
