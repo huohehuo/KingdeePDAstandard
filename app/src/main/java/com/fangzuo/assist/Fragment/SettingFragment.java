@@ -20,7 +20,7 @@ import android.widget.ListView;
 import com.fangzuo.assist.ABase.BaseFragment;
 import com.fangzuo.assist.Activity.IpPortActivity;
 import com.fangzuo.assist.Activity.SettingActivity;
-import com.fangzuo.assist.Activity.TestActivity;
+import com.fangzuo.assist.Activity.TestingActivity;
 import com.fangzuo.assist.Adapter.SettingListAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.NewVersionBean;
@@ -105,7 +105,7 @@ public class SettingFragment extends BaseFragment {
                         startActivity(new Intent(mContext, IpPortActivity.class));
                         break;
                     case 5:
-                        startActivity(new Intent(mContext, TestActivity.class));
+                        startActivity(new Intent(mContext, TestingActivity.class));
                         break;
                 }
 

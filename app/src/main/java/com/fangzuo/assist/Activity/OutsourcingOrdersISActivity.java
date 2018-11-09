@@ -29,6 +29,7 @@ import com.fangzuo.assist.Adapter.UnitSpAdapter;
 import com.fangzuo.assist.Adapter.WaveHouseSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.PurchaseInStoreUploadBean;
 import com.fangzuo.assist.Dao.BarCode;
 import com.fangzuo.assist.Dao.Employee;
@@ -48,7 +49,9 @@ import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.DoubleUtil;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
@@ -164,8 +167,6 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
     private String wanglaikemuName;
     private String datePay;
     private String date;
-    private T_mainDao t_mainDao;
-    private T_DetailDao t_detailDao;
     private BatchNoSpAdapter batchNoSpAdapter;
     private String departmentName;
     private String employeeName;
@@ -186,6 +187,7 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
     private boolean fromScan = false;
     private String wavehouseAutoString="";
     private Storage storage;
+    private long ordercode;
     @Override
     protected void initView() {
         setContentView(R.layout.activity_outsourcing_orders_is);
@@ -216,6 +218,8 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
             departmentId = list1.get(0).FDeptID;
             billNo = list1.get(0).FBillNo;
         }
+        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
+        Lg.e("得到ordercode:"+ordercode);
     }
 
     private void getList() {
@@ -661,8 +665,6 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
             batchNo = edBatchNo.getText().toString();
             String discount = "";
             String num = edNum.getText().toString();
-            T_DetailDao t_detailDao = daosession.getT_DetailDao();
-            T_mainDao t_mainDao = daosession.getT_mainDao();
 
             if (edNum.getText().toString().equals("")||edNum.getText().toString().equals("0")) {
                 MediaPlayer.getInstance(mContext).error();
@@ -719,7 +721,7 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
                 t_main.FDepartmentId = departmentId == null ? "" : departmentId;
                 t_main.FIndex = second;
                 t_main.FPaymentDate = "";
-                t_main.orderId = 0;
+                t_main.orderId = ordercode;
                 t_main.orderDate = tvDate.getText().toString();
                 t_main.FPurchaseUnit = "";
                 t_main.FSalesMan = employeeName == null ? "" : employeeName;
@@ -752,7 +754,7 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
                 T_Detail t_detail = new T_Detail();
                 t_detail.FBillNo = billNo;
                 t_detail.FBatch = batchNo == null ? "" : batchNo;
-                t_detail.FOrderId = 0;
+                t_detail.FOrderId = ordercode;
                 t_detail.FProductId = product.FItemID;
                 t_detail.FProductName = product.FName;
                 t_detail.FProductCode = product.FNumber;
@@ -822,24 +824,23 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
 
     private void upload() {
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();
-        t_mainDao = daosession.getT_mainDao();
-        t_detailDao = daosession.getT_DetailDao();
         fidc = new ArrayList<>();
         ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data = new ArrayList<>();
         List<T_main> mainsTemp = t_mainDao.queryBuilder().where(T_mainDao.Properties.Activity.eq(activity)).build().list();
         Lg.e(mainsTemp.size()+"");
-        TreeSet<String> getFids=new TreeSet<>();
+        TreeSet<Long> getFids=new TreeSet<>();
         for (int i = 0; i < mainsTemp.size(); i++) {
-            getFids.add(mainsTemp.get(i).FDeliveryType);
+            getFids.add(mainsTemp.get(i).orderId);
         }
-        for (String str:getFids) {
+        for (Long str:getFids) {
             List<T_main> mains = t_mainDao.queryBuilder().where(
                     T_mainDao.Properties.Activity.eq(activity),
-                    T_mainDao.Properties.FDeliveryType.eq(str)
+                    T_mainDao.Properties.OrderId.eq(str)
             ).build().list();
             for (int i = 0; i < mains.size(); i++) {
-                if (i > 0 && mains.get(i).FDeliveryType.equals(mains.get(i - 1).FDeliveryType)) {
-
+//                if (i > 0 && mains.get(i).FDeliveryType.equals(mains.get(i - 1).FDeliveryType)) {
+                if (i > 0 && mains.get(i).orderId==(mains.get(i - 1).orderId)) {
+                    fidc.add(mains.get(i).FDeliveryType);
                 } else {
                     PurchaseInStoreUploadBean.purchaseInStore puBean = pBean.new purchaseInStore();
                     detailContainer = new ArrayList<>();
@@ -857,7 +858,7 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
                             "" + "|";
                     puBean.main = main;
                     List<T_Detail> details = t_detailDao.queryBuilder().where(
-                            T_DetailDao.Properties.FInterID.eq(t_main.FDeliveryType),
+                            T_DetailDao.Properties.FOrderId.eq(t_main.orderId),
                             T_DetailDao.Properties.Activity.eq(activity)
                     ).build().list();
                     for (int j = 0; j < details.size(); j++) {
@@ -907,8 +908,51 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
 
             }
         }
-        postToServer(data);
+        pBean.list = data;
+        DataModel.upload(mContext,getBaseUrl()+ WebApi.PushDownOCISUpload,gson.toJson(pBean));
+//        postToServer(data);
+
     }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg){
+            case EventBusInfoCode.Upload_OK://回单成功
+                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+                        T_DetailDao.Properties.Activity.eq(activity)
+                ).build().list());
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+                        T_mainDao.Properties.Activity.eq(activity)
+                ).build().list());
+                for (int i = 0; i < fidc.size(); i++) {
+                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
+                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
+                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+                }
+                btnBackorder.setClickable(true);
+                LoadingUtil.dismiss();
+                Toast.showText(mContext, "上传成功");
+                MediaPlayer.getInstance(mContext).ok();
+                Bundle b = new Bundle();
+                b.putInt("123", tag);
+                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
+                break;
+            case EventBusInfoCode.Upload_Error://回单失败
+                String error = (String)event.postEvent;
+                Toast.showText(mContext, error);
+                btnBackorder.setClickable(true);
+                LoadingUtil.dismiss();
+                MediaPlayer.getInstance(mContext).error();
+                break;
+        }
+    }
+
 
     private void postToServer(ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data) {
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();

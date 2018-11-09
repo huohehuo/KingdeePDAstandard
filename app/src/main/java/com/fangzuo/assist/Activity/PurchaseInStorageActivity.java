@@ -1283,16 +1283,16 @@ public class PurchaseInStorageActivity extends BaseActivity {
                     InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
                     List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
                             InStorageNumDao.Properties.FBatchNo.eq(edPihao.getText().toString()),
-                            InStorageNumDao.Properties.FStockID.eq(storageId)
-                            , InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID),
+                            InStorageNumDao.Properties.FStockID.eq(storageId),
+                            InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID),
                             InStorageNumDao.Properties.FItemID.eq(product.FItemID)
                     ).build().list();
                     if (innum.size() > 0) {
-                        innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(num) * unitrate)) + "";
+                        innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) * unitrate)) + "";
                         inStorageNumDao.update(innum.get(0));
                     } else {
                         InStorageNum i = new InStorageNum();
-                        i.FQty = (Double.parseDouble(num) * unitrate) + "";
+                        i.FQty = (Double.parseDouble(edNum.getText().toString()) * unitrate) + "";
                         i.FItemID = product.FItemID;
                         i.FBatchNo = edPihao.getText().toString();
                         i.FStockID = storageId;

@@ -202,10 +202,6 @@ public class DownLoadData {
         ab.create().show();
     }
     private void downloadData(final ArrayList<Integer> choose) {
-//        pg = new ProgressDialog(mContext);
-//        pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//        pg.setCancelable(false);
-//        pg.show();
         LoadingUtil.show(mContext,"正在下载...");
         String json = JsonCreater.DownLoadData(share.getDatabaseIp(),
                 share.getDatabasePort(), share.getDataBaseUser(), share.getDataBasePass(),

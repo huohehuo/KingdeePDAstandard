@@ -54,24 +54,24 @@ public class TextViewCard extends RelativeLayout {
         list = new ArrayList<>();
         share = BasicShareUtil.getInstance(context);
         // 获取控件
-        title = (TextView) findViewById(R.id.tv_title);
-        world = (TextView) findViewById(R.id.tv_world);
+        title = (TextView) findViewById(R.id.tv_cardtitle);
+        world = (TextView) findViewById(R.id.tv_cardworld);
 
         TypedArray attrArray = context.obtainStyledAttributes(attributeSet, R.styleable.Style_TextView);
         int count = attrArray.getIndexCount();
         for (int i = 0; i < count; i++) {
             int attrName = attrArray.getIndex(i);
             switch (attrName) {
-                case R.styleable.Style_TextView_T_title_name:
-                    title.setText(attrArray.getString(R.styleable.Style_TextView_T_title_name));
-                    world.setText(attrArray.getString(R.styleable.Style_TextView_T_title_name));
+                case R.styleable.Style_TextView_textcardtext:
+                    title.setText(attrArray.getString(R.styleable.Style_TextView_textcardtext));
+//                    world.setText(attrArray.getString(R.styleable.Style_TextView_textcardtext));
                     break;
 //                case R.styleable.Style_Spinner_Unit_Uspinner_focusable:
 //                    mSp.setEnabled(attrArray.getBoolean(R.styleable.Style_Spinner_Unit_Uspinner_focusable, true));
 //                    break;
-                case R.styleable.Style_TextView_T_size:
-                    title.setTextSize(attrArray.getDimension(R.styleable.Style_TextView_T_size, 10));
-                    world.setTextSize(attrArray.getDimension(R.styleable.Style_TextView_T_size, 10));
+                case R.styleable.Style_TextView_textcardsize:
+                    title.setTextSize(attrArray.getDimension(R.styleable.Style_TextView_textcardsize, 10));
+//                    world.setTextSize(attrArray.getDimension(R.styleable.Style_TextView_textcardsize, 10));
                     break;
             }
         }

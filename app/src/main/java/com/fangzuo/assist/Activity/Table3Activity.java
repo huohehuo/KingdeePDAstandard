@@ -178,9 +178,9 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                         T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)
                                 ).build().unique();
                                 Log.e(TAG, "获取到T_Detail:" + t_detail.toString());
-//                                T_main t_main = t_mainDao.queryBuilder().where(
-//                                        T_mainDao.Properties.FIndex.eq(list1.get(j).FIndex)
-//                                ).build().unique();
+                                T_main t_main = t_mainDao.queryBuilder().where(
+                                        T_mainDao.Properties.FIndex.eq(list.get(j).FIndex)
+                                ).build().unique();
                                 PushDownSubDao pushDownSubDao = daoSession.getPushDownSubDao();
                                 List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(
                                         PushDownSubDao.Properties.FInterID.eq(t_detail.FInterID),
@@ -199,7 +199,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                     Lg.e("QTY:"+pushDownSubs.get(0).FQtying);
                                 }
                                 t_detailDao.delete(t_detail);
-//                                t_mainDao.delete(t_main);
+                                t_mainDao.delete(t_main);
                                 Toast.showText(mContext, "删除成功");
                             }
                         }

@@ -34,6 +34,7 @@ import com.fangzuo.assist.Adapter.WaveHouseSpAdapter;
 import com.fangzuo.assist.Adapter.YuandanSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.GetBatchNoBean;
 import com.fangzuo.assist.Beans.InStoreNumBean;
 import com.fangzuo.assist.Beans.PurchaseInStoreUploadBean;
@@ -59,6 +60,7 @@ import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.DoubleUtil;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
@@ -203,8 +205,6 @@ public class PushDownMTActivity extends BaseActivity {
     private int day;
     private String datePay;
     private String date;
-    private T_mainDao t_mainDao;
-    private T_DetailDao t_detailDao;
     private PushDownMainDao pushDownMainDao;
     private String fwanglaiUnit;
     private ArrayList<String> fidcontainer;
@@ -237,8 +237,6 @@ public class PushDownMTActivity extends BaseActivity {
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
         daosession = GreenDaoManager.getmInstance(mContext).getDaoSession();
-        t_detailDao = daosession.getT_DetailDao();
-        t_mainDao = daosession.getT_mainDao();
         method = CommonMethod.getMethod(mContext);
         year = Calendar.getInstance().get(Calendar.YEAR);
         month = Calendar.getInstance().get(Calendar.MONTH);
@@ -264,14 +262,14 @@ public class PushDownMTActivity extends BaseActivity {
             Log.e("departmentId", departmentId == null ? "" : departmentId);
             billNo = list1.get(0).FBillNo;
         }
-        dealOrderCode();
-
+        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
+        Lg.e("得到ordercode:"+ordercode);
+//        dealOrderCode();
     }
     private long ordercode;
     private ArrayList<T_main> mainTips;
     //处理多单据下推时，统一ordercode（PDA单号）
     private void dealOrderCode(){
-        mainTips = new ArrayList<>();
         String con="";
         for (String str:fidcontainer) {
             con= con+str+",";
@@ -279,6 +277,7 @@ public class PushDownMTActivity extends BaseActivity {
         if (con.length() > 0) {
             con = con.subSequence(0, con.length() - 1).toString();
         }
+
         String SQL = "SELECT ORDER_ID,FINDEX,FDELIVERY_TYPE FROM T_MAIN WHERE ACTIVITY=? AND FDELIVERY_TYPE IN ("+con+")";
         Lg.e("SQL:"+SQL);
         Cursor cursor = daosession.getDatabase().rawQuery(SQL, new String[]{activity + ""});
@@ -577,8 +576,11 @@ public class PushDownMTActivity extends BaseActivity {
             }
         }
         if (list1.size() > 0) {
-            Log.e("本地：FQty", list1.get(0).FQuantity);
-            double qty = Double.parseDouble(list1.get(0).FQuantity);
+            double qty=0;
+            for (int i = 0; i < list1.size(); i++) {
+                qty+=Double.parseDouble(list1.get(i).FQuantity);
+            }
+            Lg.e("本地：FQty:"+qty);
             return Double.parseDouble(num) - qty + "";
         } else {
             return num;
@@ -1068,11 +1070,7 @@ public class PushDownMTActivity extends BaseActivity {
                     return;
                 }
             }
-            ProgressDialog pg = new ProgressDialog(mContext);
-            pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pg.setMessage("请稍后...");
-            pg.setCancelable(false);
-            pg.show();
+            LoadingUtil.show(mContext,"请稍后...");
             boolean isHebing = true;
             if (isHebing) {
                 List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
@@ -1165,12 +1163,12 @@ public class PushDownMTActivity extends BaseActivity {
                 pushDownSubListAdapter.notifyDataSetChanged();
                 qty = 0.0;
                 resetAll();
-                pg.dismiss();
+                LoadingUtil.dismiss();
             } else {
                 Toast.showText(mContext, "添加失败，请重试");
                 MediaPlayer.getInstance(mContext).error();
                 qty = 0.0;
-                pg.dismiss();
+                LoadingUtil.dismiss();
             }
 
         } else {
@@ -1277,8 +1275,6 @@ public class PushDownMTActivity extends BaseActivity {
 
     private void upload() {
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();
-        t_mainDao = daosession.getT_mainDao();
-        t_detailDao = daosession.getT_DetailDao();
         fidc = new ArrayList<>();
         ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data = new ArrayList<>();
         List<T_main> mainsTemp = t_mainDao.queryBuilder().where(
@@ -1367,8 +1363,51 @@ public class PushDownMTActivity extends BaseActivity {
 
             }
         }
-        postToServer(data);
+        pBean.list = data;
+        DataModel.upload(mContext,getBaseUrl()+ WebApi.PUSHDOWNSOUPLOAD,gson.toJson(pBean));
+//        postToServer(data);
 
+    }
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg){
+            case EventBusInfoCode.Upload_OK://回单成功
+                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+                        T_DetailDao.Properties.Activity.eq(activity)
+                ).build().list());
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+                        T_mainDao.Properties.Activity.eq(activity)
+                ).build().list());
+                for (int i = 0; i < fidc.size(); i++) {
+                    List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(
+                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list();
+                    pushDownSubDao.deleteInTx(pushDownSubs);
+                    List<PushDownMain> pushDownMains = pushDownMainDao.queryBuilder().where(
+                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list();
+                    pushDownMainDao.deleteInTx(pushDownMains);
+                }
+                btnBackorder.setClickable(true);
+                LoadingUtil.dismiss();
+                Toast.showText(mContext, "上传成功");
+                MediaPlayer.getInstance(mContext).ok();
+                Bundle b = new Bundle();
+                b.putInt("123", tag);
+                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
+                break;
+            case EventBusInfoCode.Upload_Error://回单失败
+                String error = (String)event.postEvent;
+                Toast.showText(mContext, error);
+                btnBackorder.setClickable(true);
+                LoadingUtil.dismiss();
+                MediaPlayer.getInstance(mContext).error();
+                break;
+        }
     }
 
     private void postToServer(ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data) {

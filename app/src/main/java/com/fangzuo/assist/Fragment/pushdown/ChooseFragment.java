@@ -53,6 +53,8 @@ import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.PushDownMainDao;
 import com.fangzuo.greendao.gen.PushDownSubDao;
+import com.fangzuo.greendao.gen.T_DetailDao;
+import com.fangzuo.greendao.gen.T_mainDao;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -410,6 +412,11 @@ public class ChooseFragment extends Fragment {
             for (int j = 0; j < pushDownSubs.size(); j++) {
                 pushDownSubDao.delete(pushDownSubs.get(j));
             }
+            //删掉与该单据相关的明细
+            daosession.getT_DetailDao().deleteInTx(daosession.getT_DetailDao().queryBuilder().where(
+                    T_DetailDao.Properties.FInterID.eq(downloadIDs.get(i).FInterID)).build().list());
+            daosession.getT_mainDao().deleteInTx(daosession.getT_mainDao().queryBuilder().where(
+                    T_mainDao.Properties.FDeliveryType.eq(downloadIDs.get(i).FInterID)).build().list());
             pushDownMainDao.delete(downloadIDs.get(i));
             Toast.showText(mContext, "删除成功");
         }

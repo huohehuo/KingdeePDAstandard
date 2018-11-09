@@ -125,7 +125,6 @@ public class MyWaveHouseSpinner extends RelativeLayout {
     public void setAuto(final Context context, final Storage storage, String spid) {
             autoString = spid;
         Lg.e("setAuto:"+spid);
-        waveHouses.clear();
         if(share.getIsOL()){
             Log.e("CommonMethod:","getWaveHouseAdapter联网");
             ArrayList<Integer> choose = new ArrayList<>();
@@ -146,6 +145,7 @@ public class MyWaveHouseSpinner extends RelativeLayout {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     WaveHouseDao wavehouseDao = daoSession.getWaveHouseDao();
                     wavehouseDao.deleteAll();
+                    waveHouses.clear();
                     for (int i = 0; i < dBean.wavehouse.size(); i++) {
                         if (storage.FSPGroupID.equals(dBean.wavehouse.get(i).FSPGroupID)){
                             waveHouses.add(dBean.wavehouse.get(i));
@@ -176,6 +176,7 @@ public class MyWaveHouseSpinner extends RelativeLayout {
             ).build().list();
 //            waveHouseList.add(new WaveHouse());
             if (waveHouseList.size()>0){
+                waveHouses.clear();
                 waveHouses.addAll(waveHouseList);
 //                Log.e("CommonMethod:","获取到本地数据waveHouse:"+waveHouseList.toString());
                 waveHouseSpAdapter.notifyDataSetChanged();
@@ -186,6 +187,7 @@ public class MyWaveHouseSpinner extends RelativeLayout {
                     }
                 }
             }else{
+                waveHouses.clear();
                 waveHouseSpAdapter.notifyDataSetChanged();
 
 //                Log.e("CommonMethod:","无数据：waveHouse:");

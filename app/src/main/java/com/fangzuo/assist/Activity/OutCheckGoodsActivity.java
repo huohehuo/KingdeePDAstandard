@@ -132,7 +132,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
     private String unitName;
     private double unitrate;
     private double unitrateSub;
-    private T_DetailDao t_detailDao;
     private String billNo;
     private ArrayList<String> fidc;
     private ArrayList<String> fidno;
@@ -143,6 +142,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
     private boolean fromScan = false;
     private String wavehouseAutoString="";
     private Storage storage;
+    private long ordercode;
     @Override
     protected void initView() {
         setContentView(R.layout.activity_out_check_goods);
@@ -166,6 +166,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
         if (list1.size() > 0) {
             billNo = list1.get(0).FBillNo;
         }
+        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
+        Lg.e("得到ordercode:"+ordercode);
     }
 
     //初始化仓库Spinner
@@ -531,8 +533,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
             String discount = "";
             //数量
             String num = edNum.getText().toString();
-            T_DetailDao t_detailDao = daoSession.getT_DetailDao();
-            T_mainDao t_mainDao = daoSession.getT_mainDao();
             if (edNum.getText().toString().equals("")) {
                 Toast.showText(mContext, "请输入数量");
                 return;
@@ -575,7 +575,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 String second = getTimesecond();
                 T_Detail t_detail = new T_Detail();
                 t_detail.FBatch = batchNo == null ? "" : batchNo;
-                t_detail.FOrderId = 0;
+                t_detail.FOrderId = ordercode;
                 t_detail.FProductId = product.FItemID;
                 t_detail.FProductName = product.FName;
                 t_detail.FProductCode = product.FNumber;
@@ -626,7 +626,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
         int q = 0;
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();
         PurchaseInStoreUploadBean.purchaseInStore puBean = pBean.new purchaseInStore();
-        t_detailDao = daoSession.getT_DetailDao();
         ArrayList<String> detailContainer = new ArrayList<>();
         String detail = "";
         final ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data = new ArrayList<>();
@@ -643,7 +642,9 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     flag = false;
                 }
             }
-            List<T_Detail> details = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(list1.get(i).FInterID)).build().list();
+            List<T_Detail> details = t_detailDao.queryBuilder().where(
+                    T_DetailDao.Properties.Activity.eq(activity),
+                    T_DetailDao.Properties.FInterID.eq(list1.get(i).FInterID)).build().list();
             if(details.size()>0){
                 t_detail = details.get(0);
                 if (flag) {

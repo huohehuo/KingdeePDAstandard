@@ -13,10 +13,13 @@
         android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <RelativeLayout
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:id="@+id/rl"
             android:layout_alignParentBottom="true"
-            android:background="#dab3b2b2"
+            android:layout_height="wrap_content">
+        <RelativeLayout
+            android:background="#efeceded"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
@@ -141,7 +144,30 @@
             </LinearLayout>
 
         </RelativeLayout>
+        </android.support.v7.widget.CardView>
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:id="@+id/tvtiti"
+            android:text="账套选择："
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <View
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="#79707070"
+            android:layout_below="@+id/tvtiti"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@+id/tvtiti"
+            android:id="@+id/ry_data_search"
+            android:layout_width="match_parent"
+            android:layout_above="@id/rl"
+            android:layout_height="match_parent"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
         <HorizontalScrollView
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_above="@id/rl"
             android:fillViewport="true"

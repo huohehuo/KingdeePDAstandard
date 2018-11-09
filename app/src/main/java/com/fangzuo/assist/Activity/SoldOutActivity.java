@@ -1011,8 +1011,11 @@ public class SoldOutActivity extends BaseActivity {
             }
         }
         if (list1.size() > 0) {
-            Log.e("本地：FQty", list1.get(0).FQuantity);
-            double qty = Double.parseDouble(list1.get(0).FQuantity);
+            double qty=0;
+            for (int i = 0; i < list1.size(); i++) {
+                qty+=Double.parseDouble(list1.get(i).FQuantity);
+            }
+            Lg.e("本地：FQty:"+qty);
             return Double.parseDouble(num) - qty + "";
         } else {
             return num;

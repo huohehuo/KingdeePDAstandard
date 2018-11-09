@@ -22,7 +22,7 @@
             android:background="@color/dividerLine" />
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/tv_cardtitle"
             android:layout_width="match_parent"
             android:textSize="15sp"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:background="@color/dividerLine" />
 
         <TextView
-            android:id="@+id/tv_world"
+            android:id="@+id/tv_cardworld"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/tv_bg"

@@ -55,16 +55,6 @@ import butterknife.OnClick;
 
 public class SplashActivity extends AppCompatActivity {
 
-    //    @BindView(R.id.tv_code)
-//    TextView tvCode;
-//    @BindView(R.id.ipchange)
-//    Button ipchange;
-//    @BindView(R.id.btn_try)
-//    Button btnTry;
-//    @BindView(R.id.btn_register)
-//    Button btnRegister;
-//    @BindView(R.id.iv_try)
-//    ImageView mIvTry;
     private SplashActivity mContext;
     private BasicShareUtil instance;
     private long serverTime;
@@ -81,10 +71,7 @@ public class SplashActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
-
-//        setContentView(R.layout.activity_splash);
         mContext = this;
-//        ButterKnife.bind(mContext);
 
         if (getNewMac() != null && !getNewMac().equals("")) {
             binding.tvCode.setText("注册码：" + MD5.getMD5(getNewMac()));

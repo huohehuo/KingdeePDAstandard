@@ -23,6 +23,7 @@ import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.EmployeeDao;
+import com.fangzuo.greendao.gen.PayTypeDao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.orhanobut.hawk.Hawk;
 
@@ -94,6 +95,10 @@ public class SpinnerPeople extends RelativeLayout {
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     container.addAll(dBean.employee);
+                    EmployeeDao payTypeDao = daoSession.getEmployeeDao();
+                    payTypeDao.deleteAll();
+                    payTypeDao.insertOrReplaceInTx(dBean.employee);
+                    payTypeDao.detachAll();
                     if (autoString != null) {
                         setAutoSelection(saveKeyString,autoString);
                     }

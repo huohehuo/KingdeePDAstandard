@@ -53,8 +53,8 @@
         <attr name="Uspinner_name_size" format="dimension"/>
     </declare-styleable>
     <declare-styleable name="Style_TextView">
-        <attr name="T_title_name" format="string"/>
-        <attr name="T_size" format="dimension"/>
+        <attr name="textcardtext" format="string"/>
+        <attr name="textcardsize" format="dimension"/>
     </declare-styleable>
         <!--<attr name="T_world_name" format="string"/>-->
         <!--<attr name="T_world_name_size" format="dimension"/>-->

@@ -757,8 +757,10 @@ public class DBActivity extends BaseActivity {
         if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
             fBatchManager = true;
             setfocus(edPihao);
+            spPihao.setEnabled(true);
             edPihao.setEnabled(true);
         } else {
+            spPihao.setEnabled(false);
             edPihao.setEnabled(false);
             fBatchManager = false;
         }
@@ -805,7 +807,8 @@ public class DBActivity extends BaseActivity {
             edNum.setText("1.0");
         }
 
-        if ((isAuto && !fBatchManager) || (isAuto && fBatchManager && !edPihao.getText().toString().equals(""))) {
+//        if ((isAuto && !fBatchManager) || (isAuto && fBatchManager && !edPihao.getText().toString().equals(""))) {
+        if ((isAuto && !fBatchManager) || (isAuto && fBatchManager && !"".equals(pihao))) {
 //        if ((isAuto && !fBatchManager) || (isAuto && fBatchManager)) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -969,8 +972,11 @@ public class DBActivity extends BaseActivity {
             }
         }
         if (list1.size() > 0) {
-            Log.e("本地：FQty", list1.get(0).FQuantity);
-            double qty = Double.parseDouble(list1.get(0).FQuantity);
+            double qty=0;
+            for (int i = 0; i < list1.size(); i++) {
+                qty+=Double.parseDouble(list1.get(i).FQuantity);
+            }
+            Lg.e("本地：FQty:"+qty);
             return Double.parseDouble(num) - qty + "";
         } else {
             return num;

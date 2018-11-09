@@ -7,4 +7,15 @@ package com.fangzuo.assist.Beans;
 public class SettingList {
     public int ImageResourse;
     public String tv;
+    public String tag;
+    public SettingList(){}
+    public SettingList(String tv,int Image){
+        this.ImageResourse = Image;
+        this.tv=tv;
+    }
+    public SettingList(String tv,String tag,int Image){
+        this.ImageResourse = Image;
+        this.tv=tv;
+        this.tag = tag;
+    }
 }

@@ -41,8 +41,6 @@
     <string name="beizhu">备注</string>
 
 
-
-
     <!--//自定义控件spinner的自动保存key===========================================================================-->
     <string name="spEmployee_po">spEmployee_po</string>
     <string name="spManager_po">spManager_po</string>
@@ -174,11 +172,6 @@
     <!--===========================================================================-->
 
 
-
-
-
-
-
     <string name="spCapturePerson_PPIS">spCapturePerson_PPIS</string>
     <string name="spManager_PPIS">spManager_PPIS</string>
     <string name="spEmployee_PPIS">spEmployee_PPIS</string>
@@ -188,8 +181,6 @@
     <string name="spCaptureperson_SN">spCaptureperson_SN</string>
     <string name="spSend_SN">spSend_SN</string>
     <string name="spManager_SN">spManager_SN</string>
-
-
 
 
 </resources>
