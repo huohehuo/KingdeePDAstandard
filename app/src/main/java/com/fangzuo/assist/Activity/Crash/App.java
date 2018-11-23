@@ -41,7 +41,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class App extends MultiDexApplication {
-    public static String Company="通用版";
     public static boolean isDebug=true;
 
     private static Context mContext;

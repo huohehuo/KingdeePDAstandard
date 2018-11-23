@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.device.scanner.configuration.PropertyID;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,6 +26,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -34,6 +37,7 @@ import android.widget.TextView;
 
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
+import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusUtil;
@@ -47,6 +51,7 @@ import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
 import com.nineoldandroids.view.ViewHelper;
 import com.orhanobut.hawk.Hawk;
+import com.zebra.adc.decoder.Barcode2DWithSoft;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -65,7 +70,7 @@ public abstract class BaseActivity extends FragmentActivity {
     public Context mContext;
     public ShareUtil share;
     private IntentFilter scanDataIntentFilter;
-    private String barcodeStr;
+    public String barcodeStr;
     public String TAG = getClass().getSimpleName();
     public Gson gson;
     public T_mainDao t_mainDao;
@@ -92,8 +97,8 @@ public abstract class BaseActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("com.android.scanservice.scancontext")) {
-                String str = intent.getStringExtra("Scan_context");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("Scan_context");
+                OnReceive(barcodeStr);
             }
         }
     };
@@ -104,8 +109,8 @@ public abstract class BaseActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
-                String str = intent.getStringExtra("decode_data");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("decode_data");
+                OnReceive(barcodeStr);
             }
         }
     };
@@ -116,13 +121,29 @@ public abstract class BaseActivity extends FragmentActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ACTION_M60)) {
-                String str = intent.getStringExtra("decode_rslt");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("decode_rslt");
+                OnReceive(barcodeStr);
             }
         }
     };
 
+    public Barcode2DWithSoft.ScanCallback mScanCallback = new Barcode2DWithSoft.ScanCallback() {
+        @Override
+        public void onScanComplete(int i, int length, byte[] data) {
 
+            Log.i("ErDSoftScanFragment", "onScanComplete() i=" + i);
+//
+//            if (length < 1) {
+//
+//                editText1.append(getString(R.string.yid_msg_scan_fail) + "\n");
+//
+//                return;
+//            }
+            barcodeStr = new String(data);
+            OnReceive(barcodeStr);
+
+        }
+    };
 
 
 //    //UBX
@@ -166,7 +187,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
 
 
-
+    public Barcode2DWithSoft mReader;
     private String date;
     private int year;
     private int month;
@@ -190,32 +211,13 @@ public abstract class BaseActivity extends FragmentActivity {
         //UBX
 //        initScan();
 
-        //手机4：不需要注册
-//        if (App.PDA_Choose!=4){
-            if (App.PDA_Choose == 1) {
-                //G02A
-                IntentFilter scanDataIntentFilter = new IntentFilter();
-                scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
-                registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
-            } else if (App.PDA_Choose==2){
-                //u8000
-                sm = new ScanDevice();
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("scan.rcv.message");
-                registerReceiver(mScanDataReceiver, filter);
-            }else if (App.PDA_Choose==3){
-                //5000
-                IntentFilter filter = new IntentFilter();
-                filter.addAction("scan.rcv.message");
-                filter.addAction("com.android.scanservice.scancontext");
-                registerReceiver(mScanDataReceiverFor5000, filter);
-            }else if (App.PDA_Choose==4){
-                //M60
-                IntentFilter scanDataIntentFilter = new IntentFilter();
-                scanDataIntentFilter.addAction(ACTION_M60);
-                registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
+        if (App.PDA_Choose==6){
+            try {
+                mReader = Barcode2DWithSoft.getInstance();
+            } catch (Exception ex) {
+                Toast.showText(mContext,"初始化H100设备错误"+ex.toString());
             }
-//        }
+        }
 
 
 
@@ -226,11 +228,55 @@ public abstract class BaseActivity extends FragmentActivity {
 //    public BroadcastReceiver getBroadcastReceiver(){
 //        return mScanDataReceiver;
 //    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+@Override
+protected void onResume() {
+    // TODO Auto-generated method stub
+    super.onResume();
+//手机4：不需要注册
 //        if (App.PDA_Choose!=4){
+    if (App.PDA_Choose == 1) {
+        //G02A
+        IntentFilter scanDataIntentFilter = new IntentFilter();
+        scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
+        registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
+    } else if (App.PDA_Choose==2){
+        //u8000
+        sm = new ScanDevice();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("scan.rcv.message");
+        registerReceiver(mScanDataReceiver, filter);
+    }else if (App.PDA_Choose==3){
+        //5000
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("scan.rcv.message");
+        filter.addAction("com.android.scanservice.scancontext");
+        registerReceiver(mScanDataReceiverFor5000, filter);
+    }else if (App.PDA_Choose==4){
+        //M60
+        IntentFilter scanDataIntentFilter = new IntentFilter();
+        scanDataIntentFilter.addAction(ACTION_M60);
+        registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
+    }else if (App.PDA_Choose==6){
+        if (mReader != null) {
+//            new InitTask().execute();
+            boolean result = mReader.open(mContext);
+            if (result) {
+                mReader.setParameter(324, 1);
+                mReader.setParameter(300, 0); // Snapshot Aiming
+                mReader.setParameter(361, 0); // Image Capture Illumination
+                mReader.setScanCallback(mScanCallback);
+            }else{
+                Toast.showText(mContext,"H100设备启动出错");
+            }
+        }
+    }
+//        }
+}
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        unregisterReceiver(mScanDataReceiver);
+        //        if (App.PDA_Choose!=4){
         if (mScanDataReceiver != null ||
                 mScanDataReceiverForG02A != null||
                 mScanDataReceiverFor5000 != null||
@@ -244,9 +290,76 @@ public abstract class BaseActivity extends FragmentActivity {
                 unregisterReceiver(mScanDataReceiverFor5000);
             }else if (App.PDA_Choose == 4){
                 unregisterReceiver(mScanDataReceiverForM60);
+            }else if (App.PDA_Choose == 6){
+//                Toast.showText(mContext,"关闭H100设备");
+                if (mReader != null) {
+                    mReader.close();
+                }
             }
         }
 //        }
+    }
+
+    /**
+     * 设备上电异步类
+     *
+     * @author liuruifeng
+     */
+    public class InitTask extends AsyncTask<String, Integer, Boolean> {
+        ProgressDialog mypDialog;
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+
+            boolean result = false;
+
+            if (mReader != null) {
+                result = mReader.open(mContext);
+                Lg.e("打开检测："+result);
+                if (result) {
+                    mReader.setParameter(324, 1);
+                    mReader.setParameter(300, 0); // Snapshot Aiming
+                    mReader.setParameter(361, 0); // Image Capture Illumination
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+
+            mypDialog.cancel();
+
+            if (!result) {
+
+                Toast.showText(mContext, "init fail");
+            }
+
+            if (mReader != null) {
+
+                mReader.setScanCallback(mScanCallback);
+            }
+        }
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            super.onPreExecute();
+
+            mypDialog = new ProgressDialog(mContext);
+            mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            mypDialog.setMessage("init...");
+            mypDialog.setCanceledOnTouchOutside(false);
+            mypDialog.show();
+        }
+
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
         if (isRegisterEventBus()) {
             EventBusUtil.unregister(this);
         }
@@ -289,18 +402,9 @@ public abstract class BaseActivity extends FragmentActivity {
         return date;
     }
 
-    @Override
-    protected void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
 
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        unregisterReceiver(mScanDataReceiver);
-    }
+
 
     protected abstract void initView();
 
@@ -521,5 +625,24 @@ public abstract class BaseActivity extends FragmentActivity {
                     localLayoutParams.flags);
         }
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == 139) {
+            if (event.getRepeatCount() == 0) {
+                mReader.scan();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == 139) {
+            mReader.stopScan();
+        }
+
+        return super.onKeyUp(keyCode, event);
     }
 }

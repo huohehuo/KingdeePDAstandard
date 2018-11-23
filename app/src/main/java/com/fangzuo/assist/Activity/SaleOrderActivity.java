@@ -47,6 +47,7 @@ import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.Dao.YuandanType;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
@@ -88,6 +89,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
 //销售订单
 public class SaleOrderActivity extends BaseActivity {
 
@@ -175,12 +177,12 @@ public class SaleOrderActivity extends BaseActivity {
     private UnitSpAdapter unitAdapter;
     private String datePay;
     private String date;
-//    private String sendMethodId;
+    //    private String sendMethodId;
 //    private String sendMethodName;
     private String unitId;
     private String unitName;
     private double unitrate;
-//    private String departmentId;
+    //    private String departmentId;
 //    private String departmentName;
 //    private String SaleMethodId;
 //    private String SaleMethodName;
@@ -219,9 +221,10 @@ public class SaleOrderActivity extends BaseActivity {
         edOnsale.setText("0");
         autoAdd.setChecked(share.getSOisAuto());
         isAuto = share.getSOisAuto();
-        isGetStorage = share.getBoolean(Info.Storage+activity);
+        isGetStorage = share.getBoolean(Info.Storage + activity);
         cbIsStorage.setChecked(isGetStorage);
     }
+
     @Override
     protected boolean isRegisterEventBus() {
         return true;
@@ -229,9 +232,9 @@ public class SaleOrderActivity extends BaseActivity {
 
     @Override
     protected void receiveEvent(ClassEvent event) {
-        switch (event.Msg){
+        switch (event.Msg) {
             case EventBusInfoCode.PRODUCTRETURN:
-                product = (Product)event.postEvent;
+                product = (Product) event.postEvent;
                 setDATA("", true);
                 break;
             case EventBusInfoCode.Upload_OK://回单成功
@@ -246,7 +249,7 @@ public class SaleOrderActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).ok();
                 break;
             case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String)event.postEvent;
+                String error = (String) event.postEvent;
                 Toast.showText(mContext, error);
                 btnBackorder.setClickable(true);
                 LoadingUtil.dismiss();
@@ -254,6 +257,7 @@ public class SaleOrderActivity extends BaseActivity {
                 break;
         }
     }
+
     @Override
     public void initData() {
         method = CommonMethod.getMethod(mContext);
@@ -275,7 +279,7 @@ public class SaleOrderActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isGetStorage = b;
-                share.setBooleam(Info.Storage+activity,b);
+                share.setBooleam(Info.Storage + activity, b);
             }
         });
         cbHebing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -295,7 +299,7 @@ public class SaleOrderActivity extends BaseActivity {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == 0 && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    setDATA(edCode.getText().toString(),false);
+                    setDATA(edCode.getText().toString(), false);
                     setfocus(edCode);
                 }
                 return true;
@@ -540,12 +544,12 @@ public class SaleOrderActivity extends BaseActivity {
                 finishOrder();
                 break;
             case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext,activity)){
+                if (DataModel.checkHasDetail(mContext, activity)) {
                     btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext,"正在回单...");
+                    LoadingUtil.show(mContext, "正在回单...");
                     upload();
-                }else{
-                    Toast.showText(mContext,"无单据信息");
+                } else {
+                    Toast.showText(mContext, "无单据信息");
                 }
                 break;
             case R.id.btn_checkorder:
@@ -561,6 +565,7 @@ public class SaleOrderActivity extends BaseActivity {
                 break;
         }
     }
+
     private void getArrivedate() {
         final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -573,7 +578,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 int year = datePickerDialog.getDatePicker().getYear();
                 int month = datePickerDialog.getDatePicker().getMonth();
-                int day =  datePickerDialog.getDatePicker().getDayOfMonth();
+                int day = datePickerDialog.getDatePicker().getDayOfMonth();
                 dateArrive = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
                 tvDateArrive.setText(dateArrive);
                 Toast.showText(mContext, dateArrive);
@@ -595,7 +600,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 int year = datePickerDialog.getDatePicker().getYear();
                 int month = datePickerDialog.getDatePicker().getMonth();
-                int day =  datePickerDialog.getDatePicker().getDayOfMonth();
+                int day = datePickerDialog.getDatePicker().getDayOfMonth();
                 datePay = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
                 tvDatePay.setText(datePay);
                 Toast.showText(mContext, datePay);
@@ -618,7 +623,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 int year = datePickerDialog.getDatePicker().getYear();
                 int month = datePickerDialog.getDatePicker().getMonth();
-                int day =  datePickerDialog.getDatePicker().getDayOfMonth();
+                int day = datePickerDialog.getDatePicker().getDayOfMonth();
                 date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
                 tvDate.setText(date);
                 Toast.showText(mContext, date);
@@ -637,14 +642,14 @@ public class SaleOrderActivity extends BaseActivity {
 //        slaesRange = method.getPurchaseRange(spSaleScope);
 //        payMethodSpinner = method.getPayMethodSpinner(spSaleMethod);
 
-        spYuandan.setAutoSelection(getString(R.string.spYuandan_so),"");
-        spPayMethod.setAutoSelection(getString(R.string.spPayMethod_so),"");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_so),"");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_so),"");
-        spManager.setAutoSelection(getString(R.string.spManager_so),"");
-        spSaleScope.setAutoSelection(getString(R.string.spSaleScope_so),"");
-        spSaleMethod.setAutoSelection(getString(R.string.spSaleMethod_so),"");
-        spSendMethod.setAutoSelection(getString(R.string.spSendMethod_so),"");
+        spYuandan.setAutoSelection(getString(R.string.spYuandan_so), "");
+        spPayMethod.setAutoSelection(getString(R.string.spPayMethod_so), "");
+        spDepartment.setAutoSelection(getString(R.string.spDepartment_so), "");
+        spEmployee.setAutoSelection(getString(R.string.spEmployee_so), "");
+        spManager.setAutoSelection(getString(R.string.spManager_so), "");
+        spSaleScope.setAutoSelection(getString(R.string.spSaleScope_so), "");
+        spSaleMethod.setAutoSelection(getString(R.string.spSaleMethod_so), "");
+        spSendMethod.setAutoSelection(getString(R.string.spSendMethod_so), "");
 
 //        yuandanSpAdapter = method.getyuandanSp(spYuandan);
 //        payTypeSpAdapter = method.getpayType(spPayMethod);
@@ -677,21 +682,23 @@ public class SaleOrderActivity extends BaseActivity {
         } else if (requestCode == Info.SEARCHFORRESULTCLIRNT) {
             if (resultCode == Info.SEARCHFORRESULTCLIRNT) {
                 Bundle b = data.getExtras();
-                clientId  = b.getString("001");
-                Log.d("clientId",clientId==null?"null":clientId);
+                clientId = b.getString("001");
+                Log.d("clientId", clientId == null ? "null" : clientId);
                 clientName = b.getString("002");
                 edClient.setText(clientName);
                 setfocus(edCode);
             }
         }
     }
-    private void tvorisAuto(Product product){
-        edCode.setText(product.FNumber);
-        tvModel.setText(product.FModel);
-        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
-        tvGoodName.setText(product.FName);
 
-        spUnit.setAuto(mContext,product.FUnitGroupID,default_unitID,SpinnerUnit.Id);
+    private void tvorisAuto(Product product) {
+        try {
+            edCode.setText(product.FNumber);
+            tvModel.setText(product.FModel);
+            edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
+            tvGoodName.setText(product.FName);
+
+            spUnit.setAuto(mContext, product.FUnitGroupID, default_unitID, SpinnerUnit.Id);
 //        unitAdapter = CommonMethod.getMethod(mContext).getUnitAdapter(product.FUnitGroupID, spUnit);
 
 //        chooseUnit(default_unitID);
@@ -708,16 +715,19 @@ public class SaleOrderActivity extends BaseActivity {
 //            },100);
 //        }
 
-        if (isAuto) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    edNum.setText("1.0");
-                    edOnsale.setText("0");
-                    Addorder();
-                }
-            }, 150);
+            if (isAuto) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        edNum.setText("1.0");
+                        edOnsale.setText("0");
+                        Addorder();
+                    }
+                }, 150);
 
+            }
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
     }
 
@@ -738,27 +748,27 @@ public class SaleOrderActivity extends BaseActivity {
 //        }
 //    }
 
-    private void setDATA(String fnumber,boolean flag) {
+    private void setDATA(String fnumber, boolean flag) {
         default_unitID = null;
-        if(flag){
+        if (flag) {
             default_unitID = product.FUnitID;
             tvorisAuto(product);
-        }else{
-            if(BasicShareUtil.getInstance(mContext).getIsOL()){
+        } else {
+            if (BasicShareUtil.getInstance(mContext).getIsOL()) {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.SEARCHPRODUCTS, fnumber, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                        final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson,DownloadReturnBean.class);
-                        if(dBean.products.size()==1){
-                            getProductOL(dBean,0);
+                        final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
+                        if (dBean.products.size() == 1) {
+                            getProductOL(dBean, 0);
                             default_unitID = dBean.products.get(0).FUnitID;
 //                            chooseUnit(default_unitID);
-                        }else if(dBean.products.size()>1){
+                        } else if (dBean.products.size() > 1) {
                             AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
                             ab.setTitle("请选择物料");
-                            View v  = LayoutInflater.from(mContext).inflate(R.layout.pd_alert,null);
+                            View v = LayoutInflater.from(mContext).inflate(R.layout.pd_alert, null);
                             ListView lv = v.findViewById(R.id.lv_alert);
-                            productselectAdapter1 = new ProductselectAdapter1(mContext,dBean.products);
+                            productselectAdapter1 = new ProductselectAdapter1(mContext, dBean.products);
                             lv.setAdapter(productselectAdapter);
                             ab.setView(v);
                             final AlertDialog alertDialog = ab.create();
@@ -766,7 +776,7 @@ public class SaleOrderActivity extends BaseActivity {
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                    getProductOL(dBean,i);
+                                    getProductOL(dBean, i);
                                     default_unitID = dBean.products.get(i).FUnitID;
 //                                    chooseUnit(default_unitID);
                                     alertDialog.dismiss();
@@ -777,25 +787,25 @@ public class SaleOrderActivity extends BaseActivity {
 
                     @Override
                     public void onFailed(String Msg, AsyncHttpClient client) {
-                        Toast.showText(mContext,Msg);
+                        Toast.showText(mContext, Msg);
                     }
                 });
-            }else{
+            } else {
                 final ProductDao productDao = daoSession.getProductDao();
                 BarCodeDao barCodeDao = daoSession.getBarCodeDao();
                 final List<BarCode> barCodes = barCodeDao.queryBuilder().where(BarCodeDao.Properties.FBarCode.eq(fnumber)).build().list();
 
                 if (barCodes.size() > 0) {
-                    if(barCodes.size()==1){
+                    if (barCodes.size() == 1) {
                         products = productDao.queryBuilder().where(ProductDao.Properties.FItemID.eq(barCodes.get(0).FItemID)).build().list();
                         default_unitID = barCodes.get(0).FUnitID;
                         getProductOFL(products);
-                    }else{
+                    } else {
                         AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
                         ab.setTitle("请选择物料");
-                        View v  = LayoutInflater.from(mContext).inflate(R.layout.pd_alert,null);
+                        View v = LayoutInflater.from(mContext).inflate(R.layout.pd_alert, null);
                         ListView lv = v.findViewById(R.id.lv_alert);
-                        productselectAdapter = new ProductselectAdapter(mContext,barCodes);
+                        productselectAdapter = new ProductselectAdapter(mContext, barCodes);
                         lv.setAdapter(productselectAdapter);
                         ab.setView(v);
                         final AlertDialog alertDialog = ab.create();
@@ -804,16 +814,16 @@ public class SaleOrderActivity extends BaseActivity {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 BarCode barCode = (BarCode) productselectAdapter.getItem(i);
-                                default_unitID =barCode.FUnitID;
+                                default_unitID = barCode.FUnitID;
                                 products = productDao.queryBuilder().where(ProductDao.Properties.FItemID.eq(barCode.FItemID)).build().list();
                                 getProductOFL(products);
                                 alertDialog.dismiss();
                             }
                         });
                     }
-                }else{
+                } else {
                     MediaPlayer.getInstance(mContext).error();
-                    Toast.showText(mContext,"未找到条码" );
+                    Toast.showText(mContext, "未找到条码");
                 }
 
             }
@@ -822,7 +832,7 @@ public class SaleOrderActivity extends BaseActivity {
 
     }
 
-    private void getProductOFL(List<Product> list){
+    private void getProductOFL(List<Product> list) {
         if (list != null && list.size() > 0) {
             product = list.get(0);
             tvorisAuto(product);
@@ -832,7 +842,8 @@ public class SaleOrderActivity extends BaseActivity {
             setfocus(edCode);
         }
     }
-    private void getProductOL(DownloadReturnBean dBean, int j){
+
+    private void getProductOL(DownloadReturnBean dBean, int j) {
         product = dBean.products.get(j);
         tvorisAuto(product);
     }
@@ -857,13 +868,14 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setOrderCode(SaleOrderActivity.this,ordercode);
+                share.setOrderCode(SaleOrderActivity.this, ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
         ab.create().show();
 
     }
+
     @Override
     public void onBackPressed() {
         AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
@@ -874,7 +886,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setOrderCode(SaleOrderActivity.this,ordercode);
+                share.setOrderCode(SaleOrderActivity.this, ordercode);
                 finish();
             }
         });
@@ -883,113 +895,118 @@ public class SaleOrderActivity extends BaseActivity {
     }
 
     private void Addorder() {
-        String discount = edOnsale.getText().toString();
-        String num = edNum.getText().toString();
+        try {
+            String discount = edOnsale.getText().toString();
+            String num = edNum.getText().toString();
 
-        if (clientId==null || "".equals(edClient.getText().toString())){
-            Toast.showText(mContext, "请选择客户");
-            MediaPlayer.getInstance(mContext).error();
-            return;
-        }
-
-
-        if (edOnsale.getText().toString().equals("")||edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
-            MediaPlayer.getInstance(mContext).error();
-            if (edCode.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入物料编号");
-            } else if (edPricesingle.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入单价");
-            } else if (edNum.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入数量");
-            }else if(edOnsale.getText().toString().equals("")){
-                Toast.showText(mContext, "请输入折扣率");
+            if (clientId == null || "".equals(edClient.getText().toString())) {
+                Toast.showText(mContext, "请选择客户");
+                MediaPlayer.getInstance(mContext).error();
+                return;
             }
-        } else {
-            if (isHebing) {
-                List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
-                        T_DetailDao.Properties.Activity.eq(activity),
-                        T_DetailDao.Properties.FOrderId.eq(ordercode),
-                        T_DetailDao.Properties.FProductId.eq(product.FItemID),
-                        T_DetailDao.Properties.FUnitId.eq(unitId),
-                        T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
-                        T_DetailDao.Properties.FDiscount.eq(discount)).build().list();
-                if (detailhebing.size() > 0) {
-                    for (int i = 0; i < detailhebing.size(); i++) {
-                        num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
-                        t_detailDao.delete(detailhebing.get(i));
+
+
+            if (edOnsale.getText().toString().equals("") || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
+                MediaPlayer.getInstance(mContext).error();
+                if (edCode.getText().toString().equals("")) {
+                    Toast.showText(mContext, "请输入物料编号");
+                } else if (edPricesingle.getText().toString().equals("")) {
+                    Toast.showText(mContext, "请输入单价");
+                } else if (edNum.getText().toString().equals("")) {
+                    Toast.showText(mContext, "请输入数量");
+                } else if (edOnsale.getText().toString().equals("")) {
+                    Toast.showText(mContext, "请输入折扣率");
+                }
+            } else {
+                if (isHebing) {
+                    List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
+                            T_DetailDao.Properties.Activity.eq(activity),
+                            T_DetailDao.Properties.FOrderId.eq(ordercode),
+                            T_DetailDao.Properties.FProductId.eq(product.FItemID),
+                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
+                            T_DetailDao.Properties.FDiscount.eq(discount)).build().list();
+                    if (detailhebing.size() > 0) {
+                        for (int i = 0; i < detailhebing.size(); i++) {
+                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
+                            t_detailDao.delete(detailhebing.get(i));
+                        }
                     }
                 }
+                List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
+                t_mainDao.deleteInTx(dewlete);
+                String second = getTimesecond();
+                T_main t_main = new T_main();
+                t_main.FDepartment = spDepartment.getDataName();
+                t_main.FDepartmentId = spDepartment.getDataId();
+                t_main.FIndex = second;
+                t_main.FPaymentDate = tvDatePay.getText().toString();
+                t_main.orderId = ordercode;
+                t_main.orderDate = tvDate.getText().toString();
+                t_main.FPurchaseUnit = clientId == null ? "" : clientId;
+                t_main.FSalesMan = spEmployee.getEmployeeName();
+                t_main.FSalesManId = spEmployee.getEmployeeId();
+                t_main.FMaker = share.getUserName();
+                t_main.FMakerId = share.getsetUserID();
+                t_main.FDirector = spManager.getEmployeeName();
+                t_main.FDirectorId = spManager.getEmployeeId();
+                t_main.FPaymentType = spPayMethod.getDataName();
+                t_main.FPaymentTypeId = spPayMethod.getDataId();
+                t_main.saleWayId = spSaleMethod.getDataId();
+                t_main.saleWay = spSaleScope.getDataName();
+                t_main.FDeliveryAddress = "";
+                t_main.FRemark = edZhaiyao.getText().toString();
+                t_main.FCustody = spSaleScope.getDataName();
+                t_main.FCustodyId = spSaleScope.getDataId();
+                t_main.FAcount = spSendMethod.getDataId();
+                t_main.FAcountID = dateArrive == null ? "" : dateArrive;
+                t_main.Rem = edZhaiyao.getText().toString();
+                t_main.supplier = clientName == null ? "" : clientName;
+                t_main.supplierId = clientId == null ? "" : clientId;
+                t_main.FSendOutId = "";
+                t_main.FDeliveryType = "";
+                t_main.activity = activity;
+                t_main.sourceOrderTypeId = spYuandan.getDataId();
+                long insert1 = t_mainDao.insert(t_main);
+
+                T_Detail t_detail = new T_Detail();
+                t_detail.FBatch = "";
+                t_detail.FOrderId = ordercode;
+                t_detail.FProductCode = edCode.getText().toString();
+                t_detail.FProductId = product.FItemID;
+                t_detail.model = product.FModel;
+                t_detail.FProductName = product.FName;
+                t_detail.FIndex = second;
+                t_detail.FUnitId = unitId == null ? "" : unitId;
+                t_detail.FUnit = unitName == null ? "" : unitName;
+                t_detail.FDateDelivery = tvDateArrive.getText().toString();
+                Log.e("date", tvDateArrive.getText().toString());
+                t_detail.FStorage = "";
+                t_detail.FStorageId = "";
+                t_detail.FPosition = "";
+                t_detail.FPositionId = "";
+                t_detail.activity = activity;
+                t_detail.FDiscount = discount;
+                t_detail.FQuantity = num;
+                t_detail.unitrate = unitrate;
+                t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
+
+                long insert = t_detailDao.insert(t_detail);
+
+                if (insert1 > 0 && insert > 0) {
+                    Toast.showText(mContext, "添加成功");
+                    MediaPlayer.getInstance(mContext).ok();
+                    resetAll();
+                } else {
+                    Toast.showText(mContext, "添加失败，请重试");
+                    MediaPlayer.getInstance(mContext).error();
+                }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-            t_mainDao.deleteInTx(dewlete);
-            String second = getTimesecond();
-            T_main t_main = new T_main();
-            t_main.FDepartment = spDepartment.getDataName();
-            t_main.FDepartmentId = spDepartment.getDataId();
-            t_main.FIndex = second;
-            t_main.FPaymentDate = tvDatePay.getText().toString();
-            t_main.orderId = ordercode;
-            t_main.orderDate = tvDate.getText().toString();
-            t_main.FPurchaseUnit = clientId==null?"":clientId;
-            t_main.FSalesMan = spEmployee.getEmployeeName();
-            t_main.FSalesManId = spEmployee.getEmployeeId();
-            t_main.FMaker = share.getUserName();
-            t_main.FMakerId = share.getsetUserID();
-            t_main.FDirector = spManager.getEmployeeName();
-            t_main.FDirectorId = spManager.getEmployeeId();
-            t_main.FPaymentType = spPayMethod.getDataName();
-            t_main.FPaymentTypeId = spPayMethod.getDataId();
-            t_main.saleWayId = spSaleMethod.getDataId();
-            t_main.saleWay = spSaleScope.getDataName();
-            t_main.FDeliveryAddress = "";
-            t_main.FRemark = edZhaiyao.getText().toString();
-            t_main.FCustody = spSaleScope.getDataName();
-            t_main.FCustodyId = spSaleScope.getDataId();
-            t_main.FAcount = spSendMethod.getDataId();
-            t_main.FAcountID = dateArrive==null?"":dateArrive;
-            t_main.Rem = edZhaiyao.getText().toString();
-            t_main.supplier = clientName==null?"":clientName;
-            t_main.supplierId = clientId==null?"":clientId;
-            t_main.FSendOutId = "";
-            t_main.FDeliveryType = "";
-            t_main.activity = activity;
-            t_main.sourceOrderTypeId = spYuandan.getDataId();
-            long insert1 = t_mainDao.insert(t_main);
-
-            T_Detail t_detail = new T_Detail();
-            t_detail.FBatch = "";
-            t_detail.FOrderId = ordercode;
-            t_detail.FProductCode = edCode.getText().toString();
-            t_detail.FProductId = product.FItemID;
-            t_detail.model = product.FModel;
-            t_detail.FProductName = product.FName;
-            t_detail.FIndex = second;
-            t_detail.FUnitId = unitId==null?"":unitId;
-            t_detail.FUnit = unitName==null?"":unitName;
-            t_detail.FDateDelivery = tvDateArrive.getText().toString();
-            Log.e("date",tvDateArrive.getText().toString());
-            t_detail.FStorage = "";
-            t_detail.FStorageId = "";
-            t_detail.FPosition = "";
-            t_detail.FPositionId = "";
-            t_detail.activity = activity;
-            t_detail.FDiscount = discount;
-            t_detail.FQuantity = num;
-            t_detail.unitrate = unitrate;
-            t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
-
-            long insert = t_detailDao.insert(t_detail);
-
-            if (insert1 > 0 && insert > 0) {
-                Toast.showText(mContext, "添加成功");
-                MediaPlayer.getInstance(mContext).ok();
-                resetAll();
-            } else {
-                Toast.showText(mContext, "添加失败，请重试");
-                MediaPlayer.getInstance(mContext).error();
-            }
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
     }
+
     private void upload() {
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();
         PurchaseInStoreUploadBean.purchaseInStore puBean = pBean.new purchaseInStore();
@@ -1009,7 +1026,7 @@ public class SaleOrderActivity extends BaseActivity {
                         t_main.orderDate + "|" +
                         t_main.FPaymentDate + "|" +
                         t_main.saleWayId + "|"
-                        +"1"+"|"+
+                        + "1" + "|" +
                         t_main.FDepartmentId + "|" +
                         t_main.FSalesManId + "|" +
                         t_main.FDirectorId + "|" +
@@ -1017,8 +1034,8 @@ public class SaleOrderActivity extends BaseActivity {
                         t_main.FRemark + "|" +
                         t_main.FCustodyId + "|" +
                         t_main.FPaymentTypeId + "|" +
-                        t_main.FAcount+"|"+
-                        t_main.sourceOrderTypeId + "|" ;
+                        t_main.FAcount + "|" +
+                        t_main.sourceOrderTypeId + "|";
                 puBean.main = main;
                 List<T_Detail> details = t_detailDao.queryBuilder().where(
                         T_DetailDao.Properties.FOrderId.eq(t_main.orderId),
@@ -1048,7 +1065,7 @@ public class SaleOrderActivity extends BaseActivity {
                                 t_detail.FTaxUnitPrice + "|" +
                                 t_detail.FQuantity + "|" +
                                 t_detail.FDiscount + "|" +
-                                t_detail.FDateDelivery + "|" ;
+                                t_detail.FDateDelivery + "|";
                         Log.e("detail1", detail);
                     }
 
@@ -1065,7 +1082,7 @@ public class SaleOrderActivity extends BaseActivity {
 
         }
         pBean.list = data;
-        DataModel.upload(mContext,getBaseUrl()+ WebApi.UPLOADSO,gson.toJson(pBean));
+        DataModel.upload(mContext, getBaseUrl() + WebApi.UPLOADSO, gson.toJson(pBean));
 //        postToServer(data);
     }
 
@@ -1073,7 +1090,7 @@ public class SaleOrderActivity extends BaseActivity {
         PurchaseInStoreUploadBean pBean = new PurchaseInStoreUploadBean();
         pBean.list = data;
         Gson gson = new Gson();
-        Asynchttp.post(mContext,getBaseUrl()+ WebApi.UPLOADSO, gson.toJson(pBean), new Asynchttp.Response() {
+        Asynchttp.post(mContext, getBaseUrl() + WebApi.UPLOADSO, gson.toJson(pBean), new Asynchttp.Response() {
             @Override
             public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                 MediaPlayer.getInstance(mContext).ok();
@@ -1105,12 +1122,12 @@ public class SaleOrderActivity extends BaseActivity {
     }
 
     //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst=false;
-    private boolean isFirst2=false;
-    private boolean isFirst3=false;
-    private boolean isFirst4=false;
-    private boolean isFirst5=false;
-    private boolean isFirst6=false;
-    private boolean isFirst7=false;
-    private boolean isFirst8=false;
+    private boolean isFirst = false;
+    private boolean isFirst2 = false;
+    private boolean isFirst3 = false;
+    private boolean isFirst4 = false;
+    private boolean isFirst5 = false;
+    private boolean isFirst6 = false;
+    private boolean isFirst7 = false;
+    private boolean isFirst8 = false;
 }

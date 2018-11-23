@@ -11,9 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Server.WebAPI;
 import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.widget.LoadingUtil;
@@ -73,45 +76,26 @@ public class DownLoadData {
         AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
         ab.setTitle("请选择要下载的内容");
         View v = LayoutInflater.from(mContext).inflate(R.layout.selectdownload, null);
-        CheckBox cb1 = v.findViewById(R.id.cb1);
-        CheckBox cb2 = v.findViewById(R.id.cb2);
-        CheckBox cb3 = v.findViewById(R.id.cb3);
-        CheckBox cb4 = v.findViewById(R.id.cb4);
-        CheckBox cb5 = v.findViewById(R.id.cb5);
-        CheckBox cb6 = v.findViewById(R.id.cb6);
-        CheckBox cb7 = v.findViewById(R.id.cb7);
-        CheckBox cb8 = v.findViewById(R.id.cb8);
-        CheckBox cb9 = v.findViewById(R.id.cb9);
-        CheckBox cb10 = v.findViewById(R.id.cb10);
-        CheckBox cb11 = v.findViewById(R.id.cb11);
-        CheckBox cb12 = v.findViewById(R.id.cb12);
-        CheckBox cb13 = v.findViewById(R.id.cb13);
-        CheckBox cb14 = v.findViewById(R.id.cb14);
-        CheckBox cb15 = v.findViewById(R.id.cb15);
-        CheckBox cb16 = v.findViewById(R.id.cb16);
-        CheckBox cb17 = v.findViewById(R.id.cb17);
-        CheckBox cb18 = v.findViewById(R.id.cb18);
-        CheckBox cb19 = v.findViewById(R.id.cb19);
         final ArrayList<CheckBox> cbList = new ArrayList<>();
-        cbList.add(cb1);
-        cbList.add(cb2);
-        cbList.add(cb3);
-        cbList.add(cb4);
-        cbList.add(cb5);
-        cbList.add(cb6);
-        cbList.add(cb7);
-        cbList.add(cb8);
-        cbList.add(cb9);
-        cbList.add(cb10);
-        cbList.add(cb11);
-        cbList.add(cb12);
-        cbList.add(cb13);
-        cbList.add(cb14);
-        cbList.add(cb15);
-        cbList.add(cb16);
-        cbList.add(cb17);
-        cbList.add(cb18);
-        cbList.add(cb19);
+        cbList.add((CheckBox)v.findViewById(R.id.cb1));
+        cbList.add((CheckBox)v.findViewById(R.id.cb2));
+        cbList.add((CheckBox)v.findViewById(R.id.cb3));
+        cbList.add((CheckBox)v.findViewById(R.id.cb4));
+        cbList.add((CheckBox)v.findViewById(R.id.cb5));
+        cbList.add((CheckBox)v.findViewById(R.id.cb6));
+        cbList.add((CheckBox)v.findViewById(R.id.cb7));
+        cbList.add((CheckBox)v.findViewById(R.id.cb8));
+        cbList.add((CheckBox)v.findViewById(R.id.cb9));
+        cbList.add((CheckBox)v.findViewById(R.id.cb10));
+        cbList.add((CheckBox)v.findViewById(R.id.cb11));
+        cbList.add((CheckBox)v.findViewById(R.id.cb12));
+        cbList.add((CheckBox)v.findViewById(R.id.cb13));
+        cbList.add((CheckBox)v.findViewById(R.id.cb14));
+        cbList.add((CheckBox)v.findViewById(R.id.cb15));
+        cbList.add((CheckBox)v.findViewById(R.id.cb16));
+        cbList.add((CheckBox)v.findViewById(R.id.cb17));
+        cbList.add((CheckBox)v.findViewById(R.id.cb18));
+        cbList.add((CheckBox)v.findViewById(R.id.cb19));
         ab.setView(v);
         ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
@@ -192,7 +176,7 @@ public class DownLoadData {
                 //单位表7   条码表8   供应商表9    结算方式表10      商品资料表11
                 //用户信息表12    客户信息表13    交货单位14     销售/采购方式表15
                 //源单类型16   往来科目17  价格政策18  入库类型19
-                for (int j = 1; j < 20; j++) {
+                for (int j = 1; j <= cbList.size(); j++) {
                     chooseAll.add(j);
                 }
                 downloadData(chooseAll);
@@ -207,26 +191,38 @@ public class DownLoadData {
                 share.getDatabasePort(), share.getDataBaseUser(), share.getDataBasePass(),
                 share.getDataBase(), share.getVersion(), choose);
         nowTime = System.currentTimeMillis();
-
-        RetrofitUtil.getInstance(mContext).createReq(WebAPI.class).
-                downloadData(RetrofitUtil.getParams(mContext,json)).enqueue(new CallBack() {
+        App.getRService().downloadData(json, new MySubscribe<CommonResponse>() {
             @Override
-            public void onSucceed(CommonResponse cBean) {
-                DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
+            public void onNext(CommonResponse commonResponse) {
+                DownloadReturnBean dBean = new Gson().fromJson(commonResponse.returnJson, DownloadReturnBean.class);
                 insert(dBean);
             }
 
             @Override
-            public void OnFail(String Msg) {
+            public void onError(Throwable e) {
                 LoadingUtil.dismiss();
-                SnackBarUtil.LongSnackbar(container, Msg, SnackBarUtil.Alert).setAction("重试", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        downloadData(choose);
-                    }
-                }).show();
+                Toast.showText(mContext,"下载错误:"+e.toString());
             }
         });
+//        RetrofitUtil.getInstance(mContext).createReq(WebAPI.class).
+//                downloadData(RetrofitUtil.getParams(mContext,json)).enqueue(new CallBack() {
+//            @Override
+//            public void onSucceed(CommonResponse cBean) {
+//                DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
+//                insert(dBean);
+//            }
+//
+//            @Override
+//            public void OnFail(String Msg) {
+//                LoadingUtil.dismiss();
+//                SnackBarUtil.LongSnackbar(container, Msg, SnackBarUtil.Alert).setAction("重试", new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        downloadData(choose);
+//                    }
+//                }).show();
+//            }
+//        });
     }
 
     private void insert(final DownloadReturnBean dBean) {

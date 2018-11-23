@@ -50,6 +50,7 @@ import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.Dao.WaveHouse;
 import com.fangzuo.assist.Dao.YuandanType;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
@@ -97,7 +98,7 @@ import butterknife.OnClick;
 
 //采购订单下推外购入库
 public class PushDownPOActivity extends BaseActivity {
-    private int tag =2;
+    private int tag = 2;
     private int activity = Config.PushDownPOActivity;
 
     @BindView(R.id.lv_pushsub)
@@ -140,7 +141,7 @@ public class PushDownPOActivity extends BaseActivity {
     ScrollView scrollView;
     @BindView(R.id.ed_pihao)
     EditText edPihao;
-//    private DaoSession daosession;
+    //    private DaoSession daosession;
     private CommonMethod method;
     private int year;
     private int month;
@@ -162,7 +163,7 @@ public class PushDownPOActivity extends BaseActivity {
     private PayTypeSpAdapter payTypeSpAdapter;
     private WaveHouseSpAdapter waveHouseAdapter;
     ArrayList<String> detailContainer;
-//    private String SaleMethodId;
+    //    private String SaleMethodId;
 //    private String SaleMethodName;
 //    private String saleRangeId;
 //    private String saleRangeName;
@@ -200,14 +201,14 @@ public class PushDownPOActivity extends BaseActivity {
     CheckBox cbIsAuto;
     private boolean isAuto = false;
     private ShareUtil share;
-//    private String captureID;
+    //    private String captureID;
 //    private String captureName;
     private String billNo;
     private ArrayList<String> fidc;
     private String default_unitID;
     private boolean fBatchManager;
-    private boolean fromScan=false;
-    private String wavehouseAutoString="";
+    private boolean fromScan = false;
+    private String wavehouseAutoString = "";
     private Storage storage;
     private long ordercode;
 
@@ -270,15 +271,15 @@ public class PushDownPOActivity extends BaseActivity {
                     } else {
 //                        for (int i = 0; i < pushDownSubListAdapter.getCount(); i++) {
 //                            PushDownSub pushDownSub = (PushDownSub) pushDownSubListAdapter.getItem(i);
-                        if (!"".equals(default_unitID)){
-                            if (default_unitID.equals(pushDownSub1.FUnitID)){
+                        if (!"".equals(default_unitID)) {
+                            if (default_unitID.equals(pushDownSub1.FUnitID)) {
                                 flag = false;
                                 hasUnit = true;
                                 lvPushsub.setSelection(j);
                                 lvPushsub.performItemClick(lvPushsub.getChildAt(j), j, lvPushsub.getItemIdAtPosition(j));
                                 break;
                             }
-                        }else{
+                        } else {
                             flag = false;
                             hasUnit = true;
                             lvPushsub.setSelection(j);
@@ -321,7 +322,7 @@ public class PushDownPOActivity extends BaseActivity {
         cbIsAuto.setChecked(share.getPDPOisAuto());
         isAuto = share.getPDPOisAuto();
         edPihao.setEnabled(false);
-        isGetDefaultStorage = share.getBoolean(Info.Storage+activity);
+        isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
         cbIsStorage.setChecked(isGetDefaultStorage);
     }
 
@@ -341,8 +342,8 @@ public class PushDownPOActivity extends BaseActivity {
             departmentId = list1.get(0).FDeptID;
             billNo = list1.get(0).FBillNo;
         }
-        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
-        Lg.e("得到ordercode:"+ordercode);
+        ordercode = DataModel.findOrderCode(mContext, activity, fidcontainer);
+        Lg.e("得到ordercode:" + ordercode);
 
     }
 
@@ -356,7 +357,7 @@ public class PushDownPOActivity extends BaseActivity {
             container.addAll(list);
         }
         if (container.size() > 0) {
-            Lg.e("PushDownSub:"+container.toString());
+            Lg.e("PushDownSub:" + container.toString());
             pushDownSubListAdapter = new PushDownSubListAdapter(mContext, container);
             lvPushsub.setAdapter(pushDownSubListAdapter);
             pushDownSubListAdapter.notifyDataSetChanged();
@@ -369,12 +370,12 @@ public class PushDownPOActivity extends BaseActivity {
         tvDate.setText(getTime(true));
         tvDatePay.setText(getTime(true));
         storageSpinner = method.getStorageSpinner(spStorage);
-        spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_pd_po),"");
-        spPurchaseScope.setAutoSelection(getString(R.string.spPurchaseScope_pd_po),"");
+        spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_pd_po), "");
+        spPurchaseScope.setAutoSelection(getString(R.string.spPurchaseScope_pd_po), "");
 //        spYuandan.setAutoSelection(getString(R.string.spYuandan_pd_po),"");
-        spPayMethod.setAutoSelection(getString(R.string.spPayMethod_pd_po),"");
-        spManager.setAutoSelection(getString(R.string.spManager_pd_po),"");
-        spCapture.setAutoSelection(getString(R.string.spCapture_pd_po),"");
+        spPayMethod.setAutoSelection(getString(R.string.spPayMethod_pd_po), "");
+        spManager.setAutoSelection(getString(R.string.spManager_pd_po), "");
+        spCapture.setAutoSelection(getString(R.string.spCapture_pd_po), "");
 
 //        slaesRange = method.getPurchaseRange(spPurchaseScope);
 //        payMethodSpinner = method.getPayMethodSpinner(spPurchaseMethod);
@@ -404,7 +405,7 @@ public class PushDownPOActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isGetDefaultStorage = b;
-                share.setBooleam(Info.Storage+activity,b);
+                share.setBooleam(Info.Storage + activity, b);
             }
         });
 
@@ -412,7 +413,7 @@ public class PushDownPOActivity extends BaseActivity {
         edPihao.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                Log.e(TAG,"批号监听。。。");
+                Log.e(TAG, "批号监听。。。");
                 if (i == 0 && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
 //                    getInstorageNum(product);
                     setfocus(edPihao);
@@ -582,11 +583,11 @@ public class PushDownPOActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 storage = (Storage) storageSpinner.getItem(i);
-                waveHouseID="0";
+                waveHouseID = "0";
                 storageID = storage.FItemID;
                 storageName = storage.FName;
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
-                spWavehouse.setAuto(mContext,storage,wavehouseAutoString);
+                spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
 
 
             }
@@ -616,33 +617,33 @@ public class PushDownPOActivity extends BaseActivity {
                 pushDownSub = (PushDownSub) pushDownSubListAdapter.getItem(i);
                 getUnitrateSub(pushDownSub);
                 ProductDao productDao = daoSession.getProductDao();
-                    if (BasicShareUtil.getInstance(mContext).getIsOL()) {
-                        Asynchttp.post(mContext, getBaseUrl() + WebApi.PRPDUCTSEARCHWHERE, pushDownSub.FItemID, new Asynchttp.Response() {
-                            @Override
-                            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                                final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
-                                Log.e("product.size", dBean.products.size() + "");
-                                if (dBean.products.size() > 0) {
-                                    product = dBean.products.get(0);
-                                    Log.e("product.size", product + "");
-                                    clickList(product);
-                                }
+                if (BasicShareUtil.getInstance(mContext).getIsOL()) {
+                    Asynchttp.post(mContext, getBaseUrl() + WebApi.PRPDUCTSEARCHWHERE, pushDownSub.FItemID, new Asynchttp.Response() {
+                        @Override
+                        public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                            final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
+                            Log.e("product.size", dBean.products.size() + "");
+                            if (dBean.products.size() > 0) {
+                                product = dBean.products.get(0);
+                                Log.e("product.size", product + "");
+                                clickList(product);
                             }
-
-                            @Override
-                            public void onFailed(String Msg, AsyncHttpClient client) {
-                                Toast.showText(mContext, Msg);
-                            }
-                        });
-                    } else {
-                        products = productDao.queryBuilder().where(
-                                ProductDao.Properties.FItemID.eq(pushDownSub.FItemID)
-                        ).build().list();
-                        if (products.size() > 0) {
-                            product = products.get(0);
-                            clickList(product);
                         }
+
+                        @Override
+                        public void onFailed(String Msg, AsyncHttpClient client) {
+                            Toast.showText(mContext, Msg);
+                        }
+                    });
+                } else {
+                    products = productDao.queryBuilder().where(
+                            ProductDao.Properties.FItemID.eq(pushDownSub.FItemID)
+                    ).build().list();
+                    if (products.size() > 0) {
+                        product = products.get(0);
+                        clickList(product);
                     }
+                }
 
             }
         });
@@ -672,24 +673,24 @@ public class PushDownPOActivity extends BaseActivity {
     }
 
     //获取明细里面的单位的换算率
-    private void getUnitrateSub(PushDownSub pushDownSub){
+    private void getUnitrateSub(PushDownSub pushDownSub) {
         UnitDao unitDao = daoSession.getUnitDao();
         List<Unit> units = unitDao.queryBuilder().where(
                 UnitDao.Properties.FMeasureUnitID.eq(pushDownSub.FUnitID)
         ).build().list();
-        if (units.size()>0){
-            unitrateSub=MathUtil.toD(units.get(0).FCoefficient);
-            Lg.e("获得明细换算率："+unitrateSub);
-        }else{
-            unitrateSub=1;
-            Lg.e("获得明细换算率失败："+unitrateSub);
+        if (units.size() > 0) {
+            unitrateSub = MathUtil.toD(units.get(0).FCoefficient);
+            Lg.e("获得明细换算率：" + unitrateSub);
+        } else {
+            unitrateSub = 1;
+            Lg.e("获得明细换算率失败：" + unitrateSub);
         }
     }
 
     private void clickList(final Product product) {
         productName.setText(product.FName);
         productID = pushDownSub.FItemID;
-        wavehouseAutoString=product.FSPID;
+        wavehouseAutoString = product.FSPID;
         if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
             fBatchManager = true;
             spBatchNo.setEnabled(true);
@@ -702,7 +703,7 @@ public class PushDownPOActivity extends BaseActivity {
         }
         if (isGetDefaultStorage) {
             for (int j = 0; j < storageSpinner.getCount(); j++) {
-                if (((Storage)storageSpinner.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
+                if (((Storage) storageSpinner.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
                     spStorage.setSelection(j);
                     break;
                 }
@@ -710,7 +711,7 @@ public class PushDownPOActivity extends BaseActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    spWavehouse.setAuto(mContext,storage,wavehouseAutoString);
+                    spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
 //                    for (int j = 0; j < waveHouseAdapter.getCount(); j++) {
 //                        if (((WaveHouse)waveHouseAdapter.getItem(j)).FSPID.equals(product.FSPID)) {
 //                            spWavehouse.setSelection(j);
@@ -718,16 +719,16 @@ public class PushDownPOActivity extends BaseActivity {
 //                        }
 //                    }
                 }
-            },50);
+            }, 50);
         }
         fid = pushDownSub.FInterID;
         fentryid = pushDownSub.FEntryID;
         fprice = pushDownSub.FAuxPrice;
         unitAdapter = CommonMethod.getMethod(mContext).getUnitAdapter(product.FUnitGroupID, spUnit);
 
-        if (fromScan){
+        if (fromScan) {
             chooseUnit(default_unitID);
-        }else{
+        } else {
             chooseUnit(pushDownSub.FUnitID);
         }
         fromScan = false;
@@ -742,18 +743,20 @@ public class PushDownPOActivity extends BaseActivity {
             }, 100);
         }
     }
+
     //定位单位
-    private void chooseUnit(String str){
-        if (str!=null){
-            for(int i = 0;i<unitAdapter.getCount();i++){
-                if(((Unit)unitAdapter.getItem(i)).FMeasureUnitID.equals(str)){
-                    Lg.e("定位单位："+unitAdapter.getItem(i).toString());
+    private void chooseUnit(String str) {
+        if (str != null) {
+            for (int i = 0; i < unitAdapter.getCount(); i++) {
+                if (((Unit) unitAdapter.getItem(i)).FMeasureUnitID.equals(str)) {
+                    Lg.e("定位单位：" + unitAdapter.getItem(i).toString());
                     spUnit.setSelection(i);
                 }
             }
         }
 
     }
+
     @Override
     protected void OnReceive(String code) {
         ScanBarCode(code);
@@ -768,12 +771,12 @@ public class PushDownPOActivity extends BaseActivity {
                 Addorder();
                 break;
             case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext,activity)){
+                if (DataModel.checkHasDetail(mContext, activity)) {
                     btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext,"正在回单...");
+                    LoadingUtil.show(mContext, "正在回单...");
                     upload();
-                }else{
-                    Toast.showText(mContext,"无单据信息");
+                } else {
+                    Toast.showText(mContext, "无单据信息");
                 }
                 break;
             case R.id.btn_checkorder:
@@ -791,7 +794,6 @@ public class PushDownPOActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -800,37 +802,37 @@ public class PushDownPOActivity extends BaseActivity {
     }
 
 
-
     private void Addorder() {
-        if(product!=null){
-            batchNo = edPihao.getText().toString();
-            String discount = "";
-            String num = edNum.getText().toString();
-            if (fBatchManager && "".equals(batchNo)){
-                Toast.showText(mContext, "请输入批次");
-                return;
-            }
-            if (edNum.getText().toString().equals("")||edNum.getText().toString().equals("0")) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请输入数量");
-                return;
-            }
-            if (fid == null) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请选择单据");
-                return;
-            }
-            if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate)/unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
-                return;
-            }
+        try {
+            if (product != null) {
+                batchNo = edPihao.getText().toString();
+                String discount = "";
+                String num = edNum.getText().toString();
+                if (fBatchManager && "".equals(batchNo)) {
+                    Toast.showText(mContext, "请输入批次");
+                    return;
+                }
+                if (edNum.getText().toString().equals("") || edNum.getText().toString().equals("0")) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请输入数量");
+                    return;
+                }
+                if (fid == null) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请选择单据");
+                    return;
+                }
+                if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate) / unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
+                    return;
+                }
 
-            ProgressDialog pg = new ProgressDialog(mContext);
-            pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pg.setMessage("请稍后...");
-            pg.setCancelable(false);
-            pg.show();
+                ProgressDialog pg = new ProgressDialog(mContext);
+                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pg.setMessage("请稍后...");
+                pg.setCancelable(false);
+                pg.show();
 //            if (edNum.getText().toString().equals("0")
 //                    ||edNum.getText().toString().equals("")
 //                    || fid == null
@@ -863,7 +865,7 @@ public class PushDownPOActivity extends BaseActivity {
                             num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                             List<T_main> t_mainList = t_mainDao.queryBuilder().where(
                                     T_mainDao.Properties.FIndex.eq(detailhebing.get(i).FIndex)).build().list();
-                            if(t_mainList.size()>0){
+                            if (t_mainList.size() > 0) {
                                 t_mainDao.delete(t_mainList.get(0));
                             }
                             t_detailDao.delete(detailhebing.get(i));
@@ -930,7 +932,7 @@ public class PushDownPOActivity extends BaseActivity {
                 long insert = t_detailDao.insert(t_detail);
 
                 if (insert1 > 0 && insert > 0) {
-                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying) ,(MathUtil.toD(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
+                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying), (MathUtil.toD(edNum.getText().toString()) * unitrate) / unitrateSub) + "";
                     pushDownSubDao.update(pushDownSub);
                     Toast.showText(mContext, "添加成功");
                     MediaPlayer.getInstance(mContext).ok();
@@ -943,16 +945,18 @@ public class PushDownPOActivity extends BaseActivity {
                     pg.dismiss();
                 }
 
-        }else{
-            Toast.showText(mContext,"未选中物料");
+            } else {
+                Toast.showText(mContext, "未选中物料");
+            }
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
-
     }
 
-    private void resetAll(){
+    private void resetAll() {
         edNum.setText("");
         productName.setText("");
-        product=null;
+        product = null;
         edPihao.setText("");
     }
 
@@ -1025,19 +1029,19 @@ public class PushDownPOActivity extends BaseActivity {
         fidc = new ArrayList<>();
         ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data = new ArrayList<>();
         List<T_main> mainsTemp = t_mainDao.queryBuilder().where(T_mainDao.Properties.Activity.eq(activity)).build().list();
-        Lg.e(mainsTemp.size()+"");
-        TreeSet<Long> getFids=new TreeSet<>();
+        Lg.e(mainsTemp.size() + "");
+        TreeSet<Long> getFids = new TreeSet<>();
         for (int i = 0; i < mainsTemp.size(); i++) {
             getFids.add(mainsTemp.get(i).orderId);
         }
-        for (Long str:getFids) {
+        for (Long str : getFids) {
             List<T_main> mains = t_mainDao.queryBuilder().where(
                     T_mainDao.Properties.Activity.eq(activity),
                     T_mainDao.Properties.OrderId.eq(str)
             ).build().list();
             for (int i = 0; i < mains.size(); i++) {
 //                if (i > 0 && mains.get(i).FDeliveryType.equals(mains.get(i - 1).FDeliveryType)) {
-                if (i > 0 && mains.get(i).orderId==(mains.get(i - 1).orderId)) {
+                if (i > 0 && mains.get(i).orderId == (mains.get(i - 1).orderId)) {
                     fidc.add(mains.get(i).FDeliveryType);
                 } else {
                     PurchaseInStoreUploadBean.purchaseInStore puBean = pBean.new purchaseInStore();
@@ -1110,7 +1114,7 @@ public class PushDownPOActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext,getBaseUrl()+ WebApi.PUSHDOWNPOUPLOAD,gson.toJson(pBean));
+        DataModel.upload(mContext, getBaseUrl() + WebApi.PUSHDOWNPOUPLOAD, gson.toJson(pBean));
 //        postToServer(data);
 
     }
@@ -1122,7 +1126,7 @@ public class PushDownPOActivity extends BaseActivity {
 
     @Override
     protected void receiveEvent(ClassEvent event) {
-        switch (event.Msg){
+        switch (event.Msg) {
             case EventBusInfoCode.Upload_OK://回单成功
                 t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
                         T_DetailDao.Properties.Activity.eq(activity)
@@ -1145,7 +1149,7 @@ public class PushDownPOActivity extends BaseActivity {
                 startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
                 break;
             case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String)event.postEvent;
+                String error = (String) event.postEvent;
                 Toast.showText(mContext, error);
                 btnBackorder.setClickable(true);
                 LoadingUtil.dismiss();
@@ -1188,8 +1192,8 @@ public class PushDownPOActivity extends BaseActivity {
                 btnBackorder.setClickable(true);
                 LoadingUtil.dismiss();
                 Bundle b = new Bundle();
-                b.putInt("123",tag);
-                startNewActivity(PushDownPagerActivity.class,0,0,true,b);
+                b.putInt("123", tag);
+                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
             }
 
             @Override
@@ -1206,9 +1210,10 @@ public class PushDownPOActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Bundle b = new Bundle();
-        b.putInt("123",tag);
-        startNewActivity(PushDownPagerActivity.class,0,0,true,b);
+        b.putInt("123", tag);
+        startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
+
     private void getPaydate() {
         final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -1255,13 +1260,14 @@ public class PushDownPOActivity extends BaseActivity {
         });
         datePickerDialog.show();
     }
+
     //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst=false;
-    private boolean isFirst2=false;
-    private boolean isFirst3=false;
-    private boolean isFirst4=false;
-    private boolean isFirst5=false;
-    private boolean isFirst6=false;
-    private boolean isFirst7=false;
-    private boolean isFirst8=false;
+    private boolean isFirst = false;
+    private boolean isFirst2 = false;
+    private boolean isFirst3 = false;
+    private boolean isFirst4 = false;
+    private boolean isFirst5 = false;
+    private boolean isFirst6 = false;
+    private boolean isFirst7 = false;
+    private boolean isFirst8 = false;
 }

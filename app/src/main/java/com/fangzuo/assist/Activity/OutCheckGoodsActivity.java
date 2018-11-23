@@ -38,6 +38,7 @@ import com.fangzuo.assist.Dao.T_Detail;
 import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.Dao.WaveHouse;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
@@ -76,7 +77,7 @@ import butterknife.OnClick;
 
 //            出库验货
 public class OutCheckGoodsActivity extends BaseActivity {
-    private int tag =7;
+    private int tag = 7;
     private int activity = Config.OutCheckGoodsActivity;
 
     @BindView(R.id.ishebing)
@@ -136,13 +137,14 @@ public class OutCheckGoodsActivity extends BaseActivity {
     private ArrayList<String> fidc;
     private ArrayList<String> fidno;
     private String FstorageID;
-    private String FwaveHouseID="";
+    private String FwaveHouseID = "";
     private String Batch;
     private String default_unitID;
     private boolean fromScan = false;
-    private String wavehouseAutoString="";
+    private String wavehouseAutoString = "";
     private Storage storage;
     private long ordercode;
+
     @Override
     protected void initView() {
         setContentView(R.layout.activity_out_check_goods);
@@ -164,8 +166,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
         if (list1.size() > 0) {
             billNo = list1.get(0).FBillNo;
         }
-        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
-        Lg.e("得到ordercode:"+ordercode);
+        ordercode = DataModel.findOrderCode(mContext, activity, fidcontainer);
+        Lg.e("得到ordercode:" + ordercode);
     }
 
     //初始化仓库Spinner
@@ -186,7 +188,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
             container.addAll(list);
         }
         if (container.size() > 0) {
-            Log.e("OCGA","getList获取pushSub："+container.toString());
+            Log.e("OCGA", "getList获取pushSub：" + container.toString());
             pushDownSubListAdapter = new PushDownSubListAdapter(mContext, container);
             lvPushsub.setAdapter(pushDownSubListAdapter);
             pushDownSubListAdapter.notifyDataSetChanged();
@@ -210,9 +212,9 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 storageID = storage.FItemID;
                 storageName = storage.FName;
                 //根据仓库，带出仓位信息
-                waveHouseID="0";
+                waveHouseID = "0";
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
-                spWavehouse.setAuto(mContext,storage,FwaveHouseID);
+                spWavehouse.setAuto(mContext, storage, FwaveHouseID);
 
 //                if (FwaveHouseID != null) {
 //                    for (int j = 0; j < waveHouseAdapter.getCount(); j++) {
@@ -251,7 +253,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Unit unit = (Unit) unitAdapter.getItem(i);
                 if (unit != null) {
-                    Log.e(TAG,"获取到Unit："+unit.toString());
+                    Log.e(TAG, "获取到Unit：" + unit.toString());
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
                     unitrate = MathUtil.toD(unit.FCoefficient);
@@ -275,34 +277,34 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 getUnitrateSub(pushDownSub);
                 ProductDao productDao = daoSession.getProductDao();
                 if (BasicShareUtil.getInstance(mContext).getIsOL()) {
-                    Log.e(TAG,"ListView点击事件联网");
+                    Log.e(TAG, "ListView点击事件联网");
                     Asynchttp.post(mContext, getBaseUrl() + WebApi.PRPDUCTSEARCHWHERE, pushDownSub.FItemID, new Asynchttp.Response() {
-                            @Override
-                            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                                final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
-                                Log.e("product.size", dBean.products.size() + "");
-                                if (dBean.products.size() > 0) {
-                                    product = dBean.products.get(0);
-                                    Log.e("product.size", product + "");
-                                    clickList(product);
-                                }
+                        @Override
+                        public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                            final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
+                            Log.e("product.size", dBean.products.size() + "");
+                            if (dBean.products.size() > 0) {
+                                product = dBean.products.get(0);
+                                Log.e("product.size", product + "");
+                                clickList(product);
                             }
+                        }
 
-                            @Override
-                            public void onFailed(String Msg, AsyncHttpClient client) {
-                                Toast.showText(mContext, Msg);
-                            }
-                        });
+                        @Override
+                        public void onFailed(String Msg, AsyncHttpClient client) {
+                            Toast.showText(mContext, Msg);
+                        }
+                    });
                 } else {
-                    Log.e(TAG,"ListView点击事件--不-联网");
+                    Log.e(TAG, "ListView点击事件--不-联网");
                     products = productDao.queryBuilder().where(
                             ProductDao.Properties.FItemID.eq(pushDownSub.FItemID)
                     ).build().list();
-                        if (products.size() > 0) {
-                            product = products.get(0);
-                            clickList(product);
-                        }
+                    if (products.size() > 0) {
+                        product = products.get(0);
+                        clickList(product);
                     }
+                }
 
             }
         });
@@ -318,23 +320,25 @@ public class OutCheckGoodsActivity extends BaseActivity {
             }
         });
     }
+
     //获取明细里面的单位的换算率
-    private void getUnitrateSub(PushDownSub pushDownSub){
+    private void getUnitrateSub(PushDownSub pushDownSub) {
         UnitDao unitDao = daoSession.getUnitDao();
         List<Unit> units = unitDao.queryBuilder().where(
                 UnitDao.Properties.FMeasureUnitID.eq(pushDownSub.FUnitID)
         ).build().list();
-        if (units.size()>0){
-            unitrateSub=MathUtil.toD(units.get(0).FCoefficient);
-            Lg.e("获得明细换算率："+unitrateSub);
-        }else{
-            unitrateSub=1;
-            Lg.e("获得明细换算率失败："+unitrateSub);
+        if (units.size() > 0) {
+            unitrateSub = MathUtil.toD(units.get(0).FCoefficient);
+            Lg.e("获得明细换算率：" + unitrateSub);
+        } else {
+            unitrateSub = 1;
+            Lg.e("获得明细换算率失败：" + unitrateSub);
         }
     }
+
     //获取到Product详情
     private void clickList(Product product) {
-        Log.e(TAG,"获取product:\n"+product.toString());
+        Log.e(TAG, "获取product:\n" + product.toString());
         FstorageID = pushDownSub.FDCStockID;
         FwaveHouseID = pushDownSub.FDCSPID;
         batchNo = pushDownSub.FBatchNo;
@@ -353,9 +357,9 @@ public class OutCheckGoodsActivity extends BaseActivity {
         fentryid = pushDownSub.FEntryID;
         fprice = pushDownSub.FAuxPrice;
         unitAdapter = CommonMethod.getMethod(mContext).getUnitAdapter(product.FUnitGroupID, spUnit);
-        if (fromScan){
+        if (fromScan) {
             chooseUnit(default_unitID);
-        }else{
+        } else {
             chooseUnit(pushDownSub.FUnitID);
         }
         fromScan = false;
@@ -370,18 +374,20 @@ public class OutCheckGoodsActivity extends BaseActivity {
             }, 100);
         }
     }
+
     //定位单位
-    private void chooseUnit(String str){
-        if (str!=null){
-            for(int i = 0;i<unitAdapter.getCount();i++){
-                if(((Unit)unitAdapter.getItem(i)).FMeasureUnitID.equals(str)){
-                    Lg.e("定位单位："+unitAdapter.getItem(i).toString());
+    private void chooseUnit(String str) {
+        if (str != null) {
+            for (int i = 0; i < unitAdapter.getCount(); i++) {
+                if (((Unit) unitAdapter.getItem(i)).FMeasureUnitID.equals(str)) {
+                    Lg.e("定位单位：" + unitAdapter.getItem(i).toString());
                     spUnit.setSelection(i);
                 }
             }
         }
 
     }
+
     @Override
     protected void OnReceive(String code) {
         //获取扫码数据
@@ -394,7 +400,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
         ProductDao productDao = daoSession.getProductDao();
         BarCodeDao barCodeDao = daoSession.getBarCodeDao();
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
-            Log.e(TAG,"ScanBarCode事件联网");
+            Log.e(TAG, "ScanBarCode事件联网");
             Asynchttp.post(mContext, getBaseUrl() + WebApi.SEARCHPRODUCTS, barcode, new Asynchttp.Response() {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -413,7 +419,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 }
             });
         } else {
-            Log.e(TAG,"ScanBarCode事件--不-联网");
+            Log.e(TAG, "ScanBarCode事件--不-联网");
             final List<BarCode> barCodes = barCodeDao.queryBuilder().where(
                     BarCodeDao.Properties.FBarCode.eq(barcode)
             ).build().list();
@@ -422,14 +428,14 @@ public class OutCheckGoodsActivity extends BaseActivity {
                         ProductDao.Properties.FItemID.eq(barCodes.get(0).FItemID)
                 ).build().list();
                 if (products != null && products.size() > 0) {
-                    Log.e("OCGA","获取条码对应的product信息："+products.get(0));
+                    Log.e("OCGA", "获取条码对应的product信息：" + products.get(0));
                     product = products.get(0);
                     default_unitID = barCodes.get(0).FUnitID;
-                    fromScan=true;
+                    fromScan = true;
                     setProduct(product);
                 }
-            }else{
-                Toast.showText(mContext,"条码不存在");
+            } else {
+                Toast.showText(mContext, "条码不存在");
                 MediaPlayer.getInstance(mContext).error();
             }
         }
@@ -438,7 +444,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     //扫码后设置product数据
     private void setProduct(Product product) {
-        Log.e("OCGA","获取setProduct对应的product信息："+product);
+        Log.e("OCGA", "获取setProduct对应的product信息：" + product);
         if (product != null) {
             boolean flag = true;
             boolean hasUnit = false;
@@ -451,15 +457,15 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     } else {
 //                        for (int i = 0; i < pushDownSubListAdapter.getCount(); i++) {
 //                            PushDownSub pushDownSub = (PushDownSub) pushDownSubListAdapter.getItem(i);
-                        if (!"".equals(default_unitID)){
-                            if (default_unitID.equals(pushDownSub1.FUnitID)){
+                        if (!"".equals(default_unitID)) {
+                            if (default_unitID.equals(pushDownSub1.FUnitID)) {
                                 hasUnit = true;
                                 flag = false;
                                 lvPushsub.setSelection(j);
                                 lvPushsub.performItemClick(lvPushsub.getChildAt(j), j, lvPushsub.getItemIdAtPosition(j));
                                 break;
                             }
-                        }else{
+                        } else {
                             hasUnit = true;
                             flag = false;
                             lvPushsub.setSelection(j);
@@ -483,8 +489,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 }
             }
 
-            if(flag){
-                Toast.showText(mContext,"商品不存在");
+            if (flag) {
+                Toast.showText(mContext, "商品不存在");
                 MediaPlayer.getInstance(mContext).error();
 
             }
@@ -500,12 +506,12 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 Addorder();
                 break;
             case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext,activity)){
+                if (DataModel.checkHasDetail(mContext, activity)) {
                     btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext,"正在回单...");
+                    LoadingUtil.show(mContext, "正在回单...");
                     upload();
-                }else{
-                    Toast.showText(mContext,"无单据信息");
+                } else {
+                    Toast.showText(mContext, "无单据信息");
                 }
                 break;
             case R.id.btn_checkorder:
@@ -526,30 +532,31 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     //添加
     private void Addorder() {
-        if(product!=null){
-            batchNo = edBatchNo.getText().toString();
-            String discount = "";
-            //数量
-            String num = edNum.getText().toString();
-            if (edNum.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入数量");
-                return;
-            }
-            if (edNum.getText().toString().equals("")||edNum.getText().toString().equals("0")) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请输入数量");
-                return;
-            }
-            if (fid == null) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请选择单据");
-                return;
-            }
-            if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate)/unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
-                return;
-            }
+        try {
+            if (product != null) {
+                batchNo = edBatchNo.getText().toString();
+                String discount = "";
+                //数量
+                String num = edNum.getText().toString();
+                if (edNum.getText().toString().equals("")) {
+                    Toast.showText(mContext, "请输入数量");
+                    return;
+                }
+                if (edNum.getText().toString().equals("") || edNum.getText().toString().equals("0")) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请输入数量");
+                    return;
+                }
+                if (fid == null) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请选择单据");
+                    return;
+                }
+                if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate) / unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
+                    return;
+                }
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
@@ -594,13 +601,13 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 t_detail.FInterID = fid == null ? "" : fid;
 
                 long insert = t_detailDao.insert(t_detail);
-                Log.e(TAG,"添加条数："+insert);
-                Log.e(TAG,"添加了数据："+t_detail.toString());
+                Log.e(TAG, "添加条数：" + insert);
+                Log.e(TAG, "添加了数据：" + t_detail.toString());
 
                 if (insert > 0) {
                     //更新订单详情的已验收数量
-                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying) ,
-                            (MathUtil.toD(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
+                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying),
+                            (MathUtil.toD(edNum.getText().toString()) * unitrate) / unitrateSub) + "";
                     pushDownSubDao.update(pushDownSub);
                     Toast.showText(mContext, "添加成功");
 //                    MediaPlayer.getInstance(mContext).ok();
@@ -610,10 +617,12 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     Toast.showText(mContext, "添加失败，请重试");
 //                    MediaPlayer.getInstance(mContext).error();
                 }
-        }else{
-            Toast.showText(mContext,"未选择物料");
+            } else {
+                Toast.showText(mContext, "未选择物料");
+            }
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
-
     }
 
     //回单
@@ -643,15 +652,15 @@ public class OutCheckGoodsActivity extends BaseActivity {
             List<T_Detail> details = t_detailDao.queryBuilder().where(
                     T_DetailDao.Properties.Activity.eq(activity),
                     T_DetailDao.Properties.FInterID.eq(list1.get(i).FInterID)).build().list();
-            if(details.size()>0){
+            if (details.size() > 0) {
                 t_detail = details.get(0);
                 if (flag) {
                     fidc.add(t_detail.FInterID);
                     detail = detail + t_detail.FDiscount + "|" + t_detail.FInterID + "|";
-                }else{
+                } else {
                     fidno.add(t_detail.FBillNo);
                 }
-            }else{
+            } else {
                 fidno.add(list1.get(0).FBillNo);
             }
 
@@ -677,7 +686,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
             ab.setPositiveButton("继续", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    LoadingUtil.show(mContext,"正在回单...");
+                    LoadingUtil.show(mContext, "正在回单...");
                     postToServer(data);
 
                 }
@@ -707,7 +716,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     }
 
                     for (int i = 0; i < fidc.size(); i++) {
-                        Log.e("fidc",fidc.size()+"");
+                        Log.e("fidc", fidc.size() + "");
                         List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list();
                         pushDownSubDao.deleteInTx(pushDownSubs);
                         List<PushDownMain> pushDownMains = pushDownMainDao.queryBuilder().where(PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list();
@@ -717,8 +726,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 btnBackorder.setClickable(true);
                 LoadingUtil.dismiss();
                 Bundle b = new Bundle();
-                b.putInt("123",tag);
-                startNewActivity(PushDownPagerActivity.class,0,0,true,b);
+                b.putInt("123", tag);
+                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
             }
 
             @Override
@@ -735,7 +744,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
     public void onBackPressed() {
         super.onBackPressed();
         Bundle b = new Bundle();
-        b.putInt("123",tag);
-        startNewActivity(PushDownPagerActivity.class,0,0,true,b);
+        b.putInt("123", tag);
+        startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
 }

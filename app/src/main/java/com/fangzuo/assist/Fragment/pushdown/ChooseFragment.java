@@ -46,6 +46,7 @@ import com.fangzuo.assist.Dao.PushDownMain;
 import com.fangzuo.assist.Dao.PushDownSub;
 import com.fangzuo.assist.Dao.Suppliers;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.CommonMethod;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.GreenDaoManager;
@@ -406,44 +407,52 @@ public class ChooseFragment extends Fragment {
 
     //删除本地数据
     private void delete() {
-        PushDownSubDao pushDownSubDao = daosession.getPushDownSubDao();
-        for (int i = 0; i < downloadIDs.size(); i++) {
-            List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(PushDownSubDao.Properties.FInterID.eq(downloadIDs.get(i).FInterID)).build().list();
-            for (int j = 0; j < pushDownSubs.size(); j++) {
-                pushDownSubDao.delete(pushDownSubs.get(j));
+        try {
+            PushDownSubDao pushDownSubDao = daosession.getPushDownSubDao();
+            for (int i = 0; i < downloadIDs.size(); i++) {
+                List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(PushDownSubDao.Properties.FInterID.eq(downloadIDs.get(i).FInterID)).build().list();
+                for (int j = 0; j < pushDownSubs.size(); j++) {
+                    pushDownSubDao.delete(pushDownSubs.get(j));
+                }
+                //删掉与该单据相关的明细
+                daosession.getT_DetailDao().deleteInTx(daosession.getT_DetailDao().queryBuilder().where(
+                        T_DetailDao.Properties.FInterID.eq(downloadIDs.get(i).FInterID)).build().list());
+                daosession.getT_mainDao().deleteInTx(daosession.getT_mainDao().queryBuilder().where(
+                        T_mainDao.Properties.FDeliveryType.eq(downloadIDs.get(i).FInterID)).build().list());
+                pushDownMainDao.delete(downloadIDs.get(i));
+                Toast.showText(mContext, "删除成功");
             }
-            //删掉与该单据相关的明细
-            daosession.getT_DetailDao().deleteInTx(daosession.getT_DetailDao().queryBuilder().where(
-                    T_DetailDao.Properties.FInterID.eq(downloadIDs.get(i).FInterID)).build().list());
-            daosession.getT_mainDao().deleteInTx(daosession.getT_mainDao().queryBuilder().where(
-                    T_mainDao.Properties.FDeliveryType.eq(downloadIDs.get(i).FInterID)).build().list());
-            pushDownMainDao.delete(downloadIDs.get(i));
-            Toast.showText(mContext, "删除成功");
-        }
 
-        initList();
-        Search();
+            initList();
+            Search();
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
+        }
     }
 
     //查找本地数据
     private void Search() {
-        String code = edCode.getText().toString();
-        String endtime = endDate.getText().toString();
-        String startTime = startDate.getText().toString();
-        List<PushDownMain> list = pushDownMainDao.queryBuilder().where(
-                PushDownMainDao.Properties.FBillNo.like("%" + code + "%"),
-                PushDownMainDao.Properties.FSupplyID.like("%" + supplierID + "%"),
-                PushDownMainDao.Properties.FDate.between(startTime, endtime)
-        ).build().list();
-        if (list.size() > 0) {
-            container.clear();
-            container.addAll(list);
+        try {
+            String code = edCode.getText().toString();
+            String endtime = endDate.getText().toString();
+            String startTime = startDate.getText().toString();
+            List<PushDownMain> list = pushDownMainDao.queryBuilder().where(
+                    PushDownMainDao.Properties.FBillNo.like("%" + code + "%"),
+                    PushDownMainDao.Properties.FSupplyID.like("%" + supplierID + "%"),
+                    PushDownMainDao.Properties.FDate.between(startTime, endtime)
+            ).build().list();
+            if (list.size() > 0) {
+                container.clear();
+                container.addAll(list);
 
-        } else {
-            Toast.showText(mContext, "未查询到数据");
+            } else {
+                Toast.showText(mContext, "未查询到数据");
+            }
+
+            pushDownListAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
-
-        pushDownListAdapter.notifyDataSetChanged();
     }
 
 

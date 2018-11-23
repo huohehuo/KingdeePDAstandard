@@ -46,6 +46,7 @@ import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.Dao.WaveHouse;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
@@ -90,7 +91,7 @@ import butterknife.OnClick;
 
 
 public class XSDDPDFLTZDActivity extends BaseActivity {
-    private int tag =15;
+    private int tag = 15;
     private int activity = Config.XSDDPDFLTZDActivity;
 
     @BindView(R.id.sp_capture)
@@ -155,9 +156,9 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
     private String yuandanName;
     private String payTypeId;
     private String payTypeName;
-//    private String ManagerId;
+    //    private String ManagerId;
     ArrayList<String> detailContainer;
-//    private String ManagerName;
+    //    private String ManagerName;
     private String storageID;
     private String storageName;
     private String waveHouseID;
@@ -184,14 +185,14 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
 
     private boolean isAuto = false;
     private ShareUtil share;
-//    private String captureID;
+    //    private String captureID;
 //    private String captureName;
     private String billNo;
     private ArrayList<String> fidc;
     private boolean fBatchManager;
     private String default_unitID;
-    private boolean fromScan=false;
-    private String wavehouseAutoString="";
+    private boolean fromScan = false;
+    private String wavehouseAutoString = "";
     private Storage storage;
     private long ordercode;
 
@@ -226,7 +227,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 if (products != null && products.size() > 0) {
                     product = products.get(0);
                     default_unitID = barCodes.get(0).FUnitID;
-                    fromScan=true;
+                    fromScan = true;
                     setProduct(product);
                 }
             } else {
@@ -250,15 +251,15 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                     } else {
 //                        for (int i = 0; i < pushDownSubListAdapter.getCount(); i++) {
 //                            PushDownSub pushDownSub = (PushDownSub) pushDownSubListAdapter.getItem(i);
-                        if (!"".equals(default_unitID)){
-                            if (default_unitID.equals(pushDownSub1.FUnitID)){
+                        if (!"".equals(default_unitID)) {
+                            if (default_unitID.equals(pushDownSub1.FUnitID)) {
                                 flag = false;
                                 hasUnit = true;
                                 lvPushsub.setSelection(j);
                                 lvPushsub.performItemClick(lvPushsub.getChildAt(j), j, lvPushsub.getItemIdAtPosition(j));
                                 break;
                             }
-                        }else{
+                        } else {
                             flag = false;
                             hasUnit = true;
                             lvPushsub.setSelection(j);
@@ -298,7 +299,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getPDPOisAuto());
         isAuto = share.getPDPOisAuto();
-        isGetDefaultStorage = share.getBoolean(Info.Storage+activity);
+        isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
         cbIsStorage.setChecked(isGetDefaultStorage);
     }
 
@@ -316,8 +317,8 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
             departmentId = list1.get(0).FDeptID;
             billNo = list1.get(0).FBillNo;
         }
-        ordercode = DataModel.findOrderCode(mContext,activity,fidcontainer);
-        Lg.e("得到ordercode:"+ordercode);
+        ordercode = DataModel.findOrderCode(mContext, activity, fidcontainer);
+        Lg.e("得到ordercode:" + ordercode);
     }
 
     private void getList() {
@@ -341,8 +342,8 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
     private void LoadBasicData() {
         storageSpinner = method.getStorageSpinner(spStorage);
         tvDate.setText(getTime(true));
-        spManager.setAutoSelection(getString(R.string.spManager_pd_ssfl),"");
-        spCapture.setAutoSelection(getString(R.string.spCapture_pd_ssfl),"");
+        spManager.setAutoSelection(getString(R.string.spManager_pd_ssfl), "");
+        spCapture.setAutoSelection(getString(R.string.spCapture_pd_ssfl), "");
 //        employeeAdapter = method.getEmployeeAdapter(spManager);
 //        spCapture.setAdapter(employeeAdapter);
 //        spManager.setSelection(share.getPDPOManager());
@@ -385,12 +386,9 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isGetDefaultStorage = b;
-                share.setBooleam(Info.Storage+activity,b);
+                share.setBooleam(Info.Storage + activity, b);
             }
         });
-
-
-
 
 
 //        spManager.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -441,9 +439,9 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 storage = (Storage) storageSpinner.getItem(i);
                 storageID = storage.FItemID;
                 storageName = storage.FName;
-                waveHouseID="0";
+                waveHouseID = "0";
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
-                spWavehouse.setAuto(mContext,storage,wavehouseAutoString);
+                spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
 
             }
 
@@ -527,23 +525,24 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
     }
 
     //获取明细里面的单位的换算率
-    private void getUnitrateSub(PushDownSub pushDownSub){
+    private void getUnitrateSub(PushDownSub pushDownSub) {
         UnitDao unitDao = daoSession.getUnitDao();
         List<Unit> units = unitDao.queryBuilder().where(
                 UnitDao.Properties.FMeasureUnitID.eq(pushDownSub.FUnitID)
         ).build().list();
-        if (units.size()>0){
-            unitrateSub=MathUtil.toD(units.get(0).FCoefficient);
-            Lg.e("获得明细换算率："+unitrateSub);
-        }else{
-            unitrateSub=1;
-            Lg.e("获得明细换算率失败："+unitrateSub);
+        if (units.size() > 0) {
+            unitrateSub = MathUtil.toD(units.get(0).FCoefficient);
+            Lg.e("获得明细换算率：" + unitrateSub);
+        } else {
+            unitrateSub = 1;
+            Lg.e("获得明细换算率失败：" + unitrateSub);
         }
     }
+
     private void clickList(final Product product) {
         productName.setText(product.FName);
         productID = pushDownSub.FItemID;
-        wavehouseAutoString=product.FSPID;
+        wavehouseAutoString = product.FSPID;
         if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
             fBatchManager = true;
             spBatchNo.setEnabled(true);
@@ -561,7 +560,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    spWavehouse.setAuto(mContext,storage,wavehouseAutoString);
+                    spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
 //                    for (int j = 0; j < waveHouseAdapter.getCount(); j++) {
 //                        if (((WaveHouse) waveHouseAdapter.getItem(j)).FSPID.equals(product.FSPID)) {
 //                            spWavehouse.setSelection(j);
@@ -575,9 +574,9 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
         fentryid = pushDownSub.FEntryID;
         fprice = pushDownSub.FAuxPrice;
         unitAdapter = CommonMethod.getMethod(mContext).getUnitAdapter(product.FUnitGroupID, spUnit);
-        if (fromScan){
+        if (fromScan) {
             chooseUnit(default_unitID);
-        }else{
+        } else {
             chooseUnit(pushDownSub.FUnitID);
         }
         fromScan = false;
@@ -592,18 +591,20 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
             }, 100);
         }
     }
+
     //定位单位
-    private void chooseUnit(String str){
-        if (str!=null){
-            for(int i = 0;i<unitAdapter.getCount();i++){
-                if(((Unit)unitAdapter.getItem(i)).FMeasureUnitID.equals(str)){
-                    Lg.e("定位单位："+unitAdapter.getItem(i).toString());
+    private void chooseUnit(String str) {
+        if (str != null) {
+            for (int i = 0; i < unitAdapter.getCount(); i++) {
+                if (((Unit) unitAdapter.getItem(i)).FMeasureUnitID.equals(str)) {
+                    Lg.e("定位单位：" + unitAdapter.getItem(i).toString());
                     spUnit.setSelection(i);
                 }
             }
         }
 
     }
+
     @Override
     protected void OnReceive(String code) {
         ScanBarCode(code);
@@ -618,12 +619,12 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 Addorder();
                 break;
             case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext,activity)){
+                if (DataModel.checkHasDetail(mContext, activity)) {
                     btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext,"正在回单...");
+                    LoadingUtil.show(mContext, "正在回单...");
                     upload();
-                }else{
-                    Toast.showText(mContext,"无单据信息");
+                } else {
+                    Toast.showText(mContext, "无单据信息");
                 }
                 break;
             case R.id.btn_checkorder:
@@ -671,31 +672,32 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
 
 
     private void Addorder() {
-        if (product != null) {
+        try {
+            if (product != null) {
 
-            String discount = "";
-            String num = edNum.getText().toString();
+                String discount = "";
+                String num = edNum.getText().toString();
 
-            if (edNum.getText().toString().equals("")||edNum.getText().toString().equals("0")) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请输入数量");
-                return;
-            }
-            if (fid == null) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请选择单据");
-                return;
-            }
-            if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate)/unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
-                MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
-                return;
-            }
-            ProgressDialog pg = new ProgressDialog(mContext);
-            pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            pg.setMessage("请稍后...");
-            pg.setCancelable(false);
-            pg.show();
+                if (edNum.getText().toString().equals("") || edNum.getText().toString().equals("0")) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请输入数量");
+                    return;
+                }
+                if (fid == null) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "请选择单据");
+                    return;
+                }
+                if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate) / unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
+                    return;
+                }
+                ProgressDialog pg = new ProgressDialog(mContext);
+                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                pg.setMessage("请稍后...");
+                pg.setCancelable(false);
+                pg.show();
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
                             , T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID)
@@ -716,7 +718,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 t_main.FDepartment = "";
                 t_main.FDepartmentId = departmentId == null ? "" : departmentId;
                 t_main.FIndex = second;
-                t_main.FPaymentDate ="";
+                t_main.FPaymentDate = "";
                 t_main.orderId = ordercode;
                 t_main.orderDate = tvDate.getText().toString();
                 t_main.FPurchaseUnit = "";
@@ -771,7 +773,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 long insert = t_detailDao.insert(t_detail);
 
                 if (insert1 > 0 && insert > 0) {
-                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying) , (MathUtil.toD(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
+                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying), (MathUtil.toD(edNum.getText().toString()) * unitrate) / unitrateSub) + "";
                     pushDownSubDao.update(pushDownSub);
                     Toast.showText(mContext, "添加成功");
                     MediaPlayer.getInstance(mContext).ok();
@@ -783,10 +785,12 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                     MediaPlayer.getInstance(mContext).error();
                     pg.dismiss();
                 }
-        } else {
-            Toast.showText(mContext, "未选中物料");
+            } else {
+                Toast.showText(mContext, "未选中物料");
+            }
+        } catch (Exception e) {
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
-
     }
 
     private void resetAll() {
@@ -842,19 +846,19 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
         fidc = new ArrayList<>();
         ArrayList<PurchaseInStoreUploadBean.purchaseInStore> data = new ArrayList<>();
         List<T_main> mainsTemp = t_mainDao.queryBuilder().where(T_mainDao.Properties.Activity.eq(activity)).build().list();
-        Lg.e(mainsTemp.size()+"");
-        TreeSet<Long> getFids=new TreeSet<>();
+        Lg.e(mainsTemp.size() + "");
+        TreeSet<Long> getFids = new TreeSet<>();
         for (int i = 0; i < mainsTemp.size(); i++) {
             getFids.add(mainsTemp.get(i).orderId);
         }
-        for (Long str:getFids) {
+        for (Long str : getFids) {
             List<T_main> mains = t_mainDao.queryBuilder().where(
                     T_mainDao.Properties.Activity.eq(activity),
                     T_mainDao.Properties.OrderId.eq(str)
             ).build().list();
             for (int i = 0; i < mains.size(); i++) {
 //                if (i > 0 && mains.get(i).FDeliveryType.equals(mains.get(i - 1).FDeliveryType)) {
-                if (i > 0 && mains.get(i).orderId==(mains.get(i - 1).orderId)) {
+                if (i > 0 && mains.get(i).orderId == (mains.get(i - 1).orderId)) {
                     fidc.add(mains.get(i).FDeliveryType);
                 } else {
                     PurchaseInStoreUploadBean.purchaseInStore puBean = pBean.new purchaseInStore();
@@ -904,7 +908,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext,getBaseUrl()+ WebApi.XSDDPDFLTZUPLOAD,gson.toJson(pBean));
+        DataModel.upload(mContext, getBaseUrl() + WebApi.XSDDPDFLTZUPLOAD, gson.toJson(pBean));
 //        postToServer(data);
 
     }
@@ -916,7 +920,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
 
     @Override
     protected void receiveEvent(ClassEvent event) {
-        switch (event.Msg){
+        switch (event.Msg) {
             case EventBusInfoCode.Upload_OK://回单成功
                 t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
                         T_DetailDao.Properties.Activity.eq(activity)
@@ -939,7 +943,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
                 startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
                 break;
             case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String)event.postEvent;
+                String error = (String) event.postEvent;
                 Toast.showText(mContext, error);
                 btnBackorder.setClickable(true);
                 LoadingUtil.dismiss();
@@ -995,13 +999,14 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
         b.putInt("123", tag);
         startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
+
     //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst=false;
-    private boolean isFirst2=false;
-    private boolean isFirst3=false;
-    private boolean isFirst4=false;
-    private boolean isFirst5=false;
-    private boolean isFirst6=false;
-    private boolean isFirst7=false;
-    private boolean isFirst8=false;
+    private boolean isFirst = false;
+    private boolean isFirst2 = false;
+    private boolean isFirst3 = false;
+    private boolean isFirst4 = false;
+    private boolean isFirst5 = false;
+    private boolean isFirst6 = false;
+    private boolean isFirst7 = false;
+    private boolean isFirst8 = false;
 }

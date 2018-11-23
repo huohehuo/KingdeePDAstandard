@@ -1,6 +1,9 @@
 package com.fangzuo.assist.Utils;
 
 public class Config {
+    //    public static final String Error_Url = "http://192.168.0.115:8083/Assist/GetLogMessage";
+    public static final String Error_Url = "http://148.70.108.65:8080/LogAssist/GetLogMessage";
+    public static String Company="通用版";
 
     public static final String DATABASESETTING = "master";
     public static final String PDA = "PDA";

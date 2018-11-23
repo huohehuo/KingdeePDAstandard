@@ -45,6 +45,7 @@ import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.Dao.WaveHouse;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
@@ -614,6 +615,7 @@ public class SCRWDPDSCHBDActivity extends BaseActivity {
 
 
     private void Addorder() {
+        try{
         if (product != null) {
             String discount = "";
             String num = edNum.getText().toString();
@@ -729,7 +731,9 @@ public class SCRWDPDSCHBDActivity extends BaseActivity {
         } else {
             Toast.showText(mContext, "未选中物料");
         }
-
+        }catch (Exception e){
+            DataService.pushError(mContext,this.getClass().getSimpleName(),e);
+        }
     }
 
     private void resetAll() {

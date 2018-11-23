@@ -106,6 +106,23 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
         pw.println("CPU ABI:" + Build.CPU_ABI);
 
         ex.printStackTrace(pw);
+        //------------------------------崩溃时，上传数据到云端
+        StringBuilder builder = new StringBuilder();
+        builder.append(ex.toString()+"\n");
+        StackTraceElement[] stes = ex.getStackTrace();
+        for (int i = 0; i < stes.length; i ++) {
+            builder.append(i + "->"  + stes[i].getClassName() + "-->" + stes[i].getMethodName() + "-->" + stes[i].getFileName()+"\n");
+        }
+        com.fangzuo.assist.Utils.Asynchttp.post(mContext, Config.Error_Url, Config.Company+"^"+"Crash"+"^"+builder.toString(), new com.fangzuo.assist.Utils.Asynchttp.Response() {
+            @Override
+            public void onSucceed(com.fangzuo.assist.Beans.CommonResponse cBean, com.loopj.android.http.AsyncHttpClient client) {
+
+            }
+
+            @Override
+            public void onFailed(String Msg, com.loopj.android.http.AsyncHttpClient client) {
+            }
+        });
         pw.close();
 
     }
