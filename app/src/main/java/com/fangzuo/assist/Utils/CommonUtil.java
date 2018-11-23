@@ -1,10 +1,14 @@
 package com.fangzuo.assist.Utils;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.util.Log;
 
 import com.fangzuo.assist.Activity.Crash.App;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class CommonUtil {
@@ -83,6 +87,42 @@ public class CommonUtil {
 //            Toast.showText(App.getContext(), "条码有误");
 //            return new ArrayList<>();
 //        }
+    }
+
+
+
+    //生成单据编号
+    public static long createOrderCode(Activity activity){
+        Long ordercode=0l;
+        ShareUtil share =ShareUtil.getInstance(activity.getApplicationContext());
+        if (share.getOrderCode(activity) == 0) {
+            ordercode = Long.parseLong(getTimeLong(false) + "001");
+            share.setOrderCode(activity,ordercode);
+        } else {
+            //当不是当天时，生成新的单据，重新计算
+            if (String.valueOf(share.getOrderCode(activity)).contains(getTime(false))){
+                ordercode =share.getOrderCode(activity);
+            }else{
+                ordercode = Long.parseLong(getTimeLong(false) + "001");
+                share.setOrderCode(activity,ordercode);
+            }
+        }
+        Log.e("生成新的单据:", ordercode + "");
+        return ordercode;
+    }
+    public static String getTime(boolean b){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd":"yyyyMMdd");
+        Date curDate = new Date();
+        Log.e("date",curDate.toString());
+        String str = format.format(curDate);
+        return str;
+    }
+    public static String getTimeLong(boolean b){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd-HH-mm-ss":"yyyyMMddHHmmss");
+        Date curDate = new Date();
+        Log.e("date",curDate.toString());
+        String str = format.format(curDate);
+        return str;
     }
 }
 

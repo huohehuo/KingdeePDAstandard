@@ -8,6 +8,7 @@ import java.util.Map;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -78,6 +79,10 @@ interface ServiceRequest {
     @FormUrlEncoded
     @POST("GetClassification")
     Observable<CommonResponse> getClassification(@FieldMap Map<String, String> params);
+
+    @FormUrlEncoded
+    @POST("{actionio}")
+    Observable<CommonResponse> actionIO(@Path("actionio") String io , @FieldMap Map<String, String> params);
 
 
 

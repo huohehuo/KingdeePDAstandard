@@ -1,5 +1,6 @@
 package com.fangzuo.assist.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -28,6 +29,14 @@ public class ShareUtil {
         shared = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         editor = shared.edit();
     }
+    //获取单据的单据编号：key为activity的类名字
+    public void setOrderCode(Activity activity, long orderCode){
+        editor.putLong(activity.getClass().getSimpleName(),orderCode).apply();
+    }
+    public long getOrderCode(Activity activity){
+        return shared.getLong(activity.getClass().getSimpleName(),0);
+    }
+
     public void setBooleam(String key,boolean val){
         editor.putBoolean(key,val);
         editor.apply();

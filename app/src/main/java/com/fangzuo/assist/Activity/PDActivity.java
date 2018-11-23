@@ -62,6 +62,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -310,7 +311,7 @@ public class PDActivity extends BaseActivity {
                 Unit unit = (Unit) spUnit.getAdapter().getItem(i);
                 unitId = unit.FMeasureUnitID;
                 unitName = unit.FName;
-                unitrate = Double.parseDouble(unit.FCoefficient);
+                unitrate = MathUtil.toD(unit.FCoefficient);
                 Log.e("点击单位", unit.toString());
 
 
@@ -458,7 +459,7 @@ public class PDActivity extends BaseActivity {
 //                        if(dBean.InstorageNum!=null){
 //                            for (int i = 0; i < dBean.InstorageNum.size(); i++) {
 //                                if (dBean.InstorageNum.get(i).FQty != null
-//                                        && Double.parseDouble(dBean.InstorageNum.get(i).FQty) > 0) {
+//                                        && MathUtil.toD(dBean.InstorageNum.get(i).FQty) > 0) {
 //                                    Log.e(TAG,"有库存的批次："+dBean.InstorageNum.get(i).toString());
 //                                    container.add(dBean.InstorageNum.get(i));
 //                                }
@@ -646,7 +647,7 @@ public class PDActivity extends BaseActivity {
                         T_DetailDao.Properties.FPositionId.eq(wavehouseID == null ? "0" : wavehouseID)).build().list();
                 if (detailhebing.size() > 0) {
                     for (int i = 0; i < detailhebing.size(); i++) {
-                        num = (Double.parseDouble(edPdnum.getText().toString()) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                        num = (MathUtil.toD(edPdnum.getText().toString()) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                         t_detailDao.delete(detailhebing.get(i));
                     }
                 }
@@ -679,7 +680,7 @@ public class PDActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).ok();
                 Toast.showText(mContext, "添加成功");
                 if (pdsubChoice != null) {
-                    pdsubChoice.FCheckQty = (Double.parseDouble(pdsubChoice.FCheckQty) + Double.parseDouble(edPdnum.getText().toString())) + "";
+                    pdsubChoice.FCheckQty = (MathUtil.toD(pdsubChoice.FCheckQty) + MathUtil.toD(edPdnum.getText().toString())) + "";
                     pdSubDao.update(pdsubChoice);
                     ResetAll();
                 } else {
@@ -779,9 +780,10 @@ public class PDActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         }
     }
@@ -1081,7 +1083,6 @@ public class PDActivity extends BaseActivity {
                         }
                     }
                 }
-
 
                 Toast.showText(mContext, "下载完成");
                 pdMainSpAdapter = method.getpdmain(spPdplan);

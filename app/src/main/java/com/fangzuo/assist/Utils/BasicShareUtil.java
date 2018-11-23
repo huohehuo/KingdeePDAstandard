@@ -25,7 +25,13 @@ public class BasicShareUtil {
         shared = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
         editor = shared.edit();
     }
+    public void setIMIE(String imie){
+        editor.putString("imie",imie).apply();
+    }
 
+    public String getIMIE(){
+        return shared.getString("imie","");
+    }
     public void setIP(String Ip){
         editor.putString("serverIp",Ip);
         editor.apply();

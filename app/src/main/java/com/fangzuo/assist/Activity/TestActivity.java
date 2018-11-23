@@ -60,15 +60,9 @@ public class TestActivity extends BaseActivity {
             @Override
             public boolean onLongClick(View view) {
                 tvResult.setText(Hawk.get(Config.Text_Log, ""));
-
-//                AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
-//                ab.setTitle("Text_Log_error");
-//                ab.setMessage(Hawk.get(Config.Text_Log,""));
-//                ab.create().show();
                 return false;
             }
         });
-
     }
 
     @Override

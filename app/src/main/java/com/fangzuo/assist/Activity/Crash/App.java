@@ -41,6 +41,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class App extends MultiDexApplication {
+    public static String Company="通用版";
     public static boolean isDebug=true;
 
     private static Context mContext;
@@ -57,7 +58,7 @@ public class App extends MultiDexApplication {
     public static boolean isChangeIp=false;
     private static RService mService;//本地retrofit方法
 
-    public static int PDA_Choose;//{" 1 G02A设备","2 8000设备","3 5000设备"4 手机端};
+    public static int PDA_Choose;//{" 1 G02A设备","2 8000设备","3 5000设备"4 M60,"5手机端，6 h100};
 
     @Override
     protected void attachBaseContext(Context base) {

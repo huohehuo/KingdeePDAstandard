@@ -61,7 +61,6 @@ import java.util.List;
  */
 
 public abstract class BaseActivity extends FragmentActivity {
-    private static final String ACTION_DISPLAY_SCAN_RESULT = "techain.intent.action.DISPLAY_SCAN_RESULT";
 
     public Context mContext;
     public ShareUtil share;
@@ -99,6 +98,7 @@ public abstract class BaseActivity extends FragmentActivity {
         }
     };
     //G02A
+    private static final String ACTION_DISPLAY_SCAN_RESULT = "techain.intent.action.DISPLAY_SCAN_RESULT";
     private BroadcastReceiver mScanDataReceiverForG02A = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -109,6 +109,21 @@ public abstract class BaseActivity extends FragmentActivity {
             }
         }
     };
+    //  M60
+    private static final String ACTION_M60 = "com.mobilead.tools.action.scan_result";
+    private BroadcastReceiver mScanDataReceiverForM60 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_M60)) {
+                String str = intent.getStringExtra("decode_rslt");
+                OnReceive(str);
+            }
+        }
+    };
+
+
+
 
 //    //UBX
 //    private ScanManager mScanManager;
@@ -194,6 +209,11 @@ public abstract class BaseActivity extends FragmentActivity {
                 filter.addAction("scan.rcv.message");
                 filter.addAction("com.android.scanservice.scancontext");
                 registerReceiver(mScanDataReceiverFor5000, filter);
+            }else if (App.PDA_Choose==4){
+                //M60
+                IntentFilter scanDataIntentFilter = new IntentFilter();
+                scanDataIntentFilter.addAction(ACTION_M60);
+                registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
             }
 //        }
 
@@ -207,6 +227,30 @@ public abstract class BaseActivity extends FragmentActivity {
 //        return mScanDataReceiver;
 //    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        if (App.PDA_Choose!=4){
+        if (mScanDataReceiver != null ||
+                mScanDataReceiverForG02A != null||
+                mScanDataReceiverFor5000 != null||
+                mScanDataReceiverForM60 != null
+                ) {
+            if (App.PDA_Choose == 1) {
+                unregisterReceiver(mScanDataReceiverForG02A);
+            } else if (App.PDA_Choose==2){
+                unregisterReceiver(mScanDataReceiver);
+            }else if (App.PDA_Choose == 3){
+                unregisterReceiver(mScanDataReceiverFor5000);
+            }else if (App.PDA_Choose == 4){
+                unregisterReceiver(mScanDataReceiverForM60);
+            }
+        }
+//        }
+        if (isRegisterEventBus()) {
+            EventBusUtil.unregister(this);
+        }
+    }
     protected boolean isRegisterEventBus() {
         return false;
     }
@@ -452,24 +496,6 @@ public abstract class BaseActivity extends FragmentActivity {
         return false;
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-//        if (App.PDA_Choose!=4){
-            if (mScanDataReceiver != null || mScanDataReceiverForG02A != null|| mScanDataReceiverFor5000 != null) {
-                if (App.PDA_Choose == 1) {
-                    unregisterReceiver(mScanDataReceiverForG02A);
-                } else if (App.PDA_Choose==2){
-                    unregisterReceiver(mScanDataReceiver);
-                }else if (App.PDA_Choose == 3){
-                    unregisterReceiver(mScanDataReceiverFor5000);
-                }
-            }
-//        }
-        if (isRegisterEventBus()) {
-            EventBusUtil.unregister(this);
-        }
-    }
 
     //使状态栏透明并沉浸到activity
     protected void initBar() {

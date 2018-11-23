@@ -51,11 +51,13 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -235,14 +237,15 @@ public class DBActivity extends BaseActivity {
         isAutoAdd.setChecked(share.getDBisAuto());
         tvDate.setText(getTime(true));
         method = CommonMethod.getMethod(mContext);
-        if (share.getDBOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setDBOrderCode(ordercode);
-        } else {
-            ordercode = share.getDBOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getDBOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setDBOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getDBOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode = CommonUtil.createOrderCode(this);
         loadBasicData();
     }
 
@@ -397,7 +400,7 @@ public class DBActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
 
@@ -619,9 +622,10 @@ public class DBActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         }
     }
@@ -848,7 +852,7 @@ public class DBActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.GETINSTORENUM, json, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                        double inQty = Double.parseDouble(cBean.returnJson);
+                        double inQty = MathUtil.toD(cBean.returnJson);
                         tvNuminStore.setText((inQty / unitrate) + "");
                         Log.e("inQty", inQty + "   " + unitrate);
                     }
@@ -868,7 +872,7 @@ public class DBActivity extends BaseActivity {
                 ).build().list();
                 if (list1.size() > 0) {
                     Log.e("FQty", list1.get(0).FQty);
-                    Double inQty = Double.parseDouble(list1.get(0).FQty);
+                    Double inQty = MathUtil.toD(list1.get(0).FQty);
                     Log.e("qty", qty + "");
                     if (inQty > 0) {
                         tvNuminStore.setText((inQty / unitrate) + "");
@@ -911,11 +915,11 @@ public class DBActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.GETINSTORENUM, json, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                        qty = Double.parseDouble(cBean.returnJson);
+                        qty = MathUtil.toD(cBean.returnJson);
                         Log.e("QTY", qty + "   " + unitrate);
 //                        tvNumoutStore.setText((qty / unitrate) + "");
                         tvNumoutStore.setText(dealStoreNumForOut((qty / unitrate) + ""));
-                        qty = Double.parseDouble(dealStoreNumForOut(qty+""));
+                        qty = MathUtil.toD(dealStoreNumForOut(qty+""));
 
                     }
 
@@ -934,7 +938,7 @@ public class DBActivity extends BaseActivity {
                 ).build().list();
                 if (list1.size() > 0) {
                     Log.e("FQty", list1.get(0).FQty);
-                    qty = Double.parseDouble(list1.get(0).FQty);
+                    qty = MathUtil.toD(list1.get(0).FQty);
                     Log.e("qty", qty + "");
                     if (qty > 0) {
                         tvNumoutStore.setText((qty / unitrate) + "");
@@ -974,10 +978,10 @@ public class DBActivity extends BaseActivity {
         if (list1.size() > 0) {
             double qty=0;
             for (int i = 0; i < list1.size(); i++) {
-                qty+=Double.parseDouble(list1.get(i).FQuantity);
+                qty+=MathUtil.toD(list1.get(i).FQuantity);
             }
             Lg.e("本地：FQty:"+qty);
-            return Double.parseDouble(num) - qty + "";
+            return MathUtil.toD(num) - qty + "";
         } else {
             return num;
         }
@@ -1011,7 +1015,7 @@ public class DBActivity extends BaseActivity {
                         if(dBean.InstorageNum!=null){
                             for (int i = 0; i < dBean.InstorageNum.size(); i++) {
                                 if (dBean.InstorageNum.get(i).FQty != null
-                                        && Double.parseDouble(dBean.InstorageNum.get(i).FQty) > 0) {
+                                        && MathUtil.toD(dBean.InstorageNum.get(i).FQty) > 0) {
                                     Log.e(TAG,"有库存的批次："+dBean.InstorageNum.get(i).toString());
                                     container.add(dBean.InstorageNum.get(i));
                                 }
@@ -1069,8 +1073,8 @@ public class DBActivity extends BaseActivity {
 
         //是否开启库存管理 true，开启允许负库存
         if (!checkStorage) {
-//            if (qty < Double.parseDouble(num)) {
-            if (Double.parseDouble(tvNumoutStore.getText().toString()) < Double.parseDouble(num)) {
+//            if (qty < MathUtil.toD(num)) {
+            if (MathUtil.toD(tvNumoutStore.getText().toString()) < MathUtil.toD(num)) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟 库存不够了");
                 return;
@@ -1092,7 +1096,7 @@ public class DBActivity extends BaseActivity {
                     ).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
-                            num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                             t_detailDao.delete(detailhebing.get(i));
                         }
                     }
@@ -1171,13 +1175,13 @@ public class DBActivity extends BaseActivity {
                                 InStorageNumDao.Properties.FItemID.eq(product.FItemID)).build().list();
                         if (outnum.size() > 0) {
                             if (checkStorage){
-                                outnum.get(0).FQty = String.valueOf(((Double.parseDouble(outnum.get(0).FQty) + (Double.parseDouble("-"+edNum.getText().toString())))));
+                                outnum.get(0).FQty = String.valueOf(((MathUtil.toD(outnum.get(0).FQty) + (MathUtil.toD("-"+edNum.getText().toString())))));
                             }else{
                                 Log.e("innum", outnum.get(0).FQty);
                                 Log.e("innum", outnum.size() + "");
-                                outnum.get(0).FQty = (Double.parseDouble(outnum.get(0).FQty) - Double.parseDouble(edNum.getText().toString())) + "";
+                                outnum.get(0).FQty = (MathUtil.toD(outnum.get(0).FQty) - MathUtil.toD(edNum.getText().toString())) + "";
 
-//                                outnum.get(0).FQty = (Double.parseDouble(outnum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) / unitrate)) + "";
+//                                outnum.get(0).FQty = (MathUtil.toD(outnum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) / unitrate)) + "";
                             }
                             inStorageNumDao.update(outnum.get(0));
 
@@ -1187,10 +1191,10 @@ public class DBActivity extends BaseActivity {
                                 inStorageNum.FBatchNo = edPihao.getText().toString();
                                 inStorageNum.FStockPlaceID = outwavehouseID == null ? "0" : outwavehouseID;
                                 inStorageNum.FStockID = outstorageId == null ? "0" : outstorageId;
-                                inStorageNum.FQty = (Double.parseDouble("-"+edNum.getText().toString()) * unitrate)+"";
+                                inStorageNum.FQty = (MathUtil.toD("-"+edNum.getText().toString()) * unitrate)+"";
                                 inStorageNumDao.insert(inStorageNum);
                         }
-//                        outnum.get(0).FQty = (Double.parseDouble(outnum.get(0).FQty) - Double.parseDouble(edNum.getText().toString())) + "";
+//                        outnum.get(0).FQty = (MathUtil.toD(outnum.get(0).FQty) - MathUtil.toD(edNum.getText().toString())) + "";
 
                         inStorageNumDao.update(outnum.get(0));
                         List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
@@ -1203,7 +1207,7 @@ public class DBActivity extends BaseActivity {
                         if (innum.size() > 0) {
                             Log.e("innum", innum.get(0).FQty);
                             Log.e("innum", innum.size() + "");
-                            innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) / unitrate)) + "";
+                            innum.get(0).FQty = (MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) / unitrate)) + "";
                             inStorageNumDao.update(innum.get(0));
 
                         } else {
@@ -1243,7 +1247,7 @@ public class DBActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPISOrderCode(ordercode);
+                share.setOrderCode(DBActivity.this,ordercode);
                 finish();
             }
         });
@@ -1260,7 +1264,7 @@ public class DBActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPROISOrderCode(ordercode);
+                share.setOrderCode(DBActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);

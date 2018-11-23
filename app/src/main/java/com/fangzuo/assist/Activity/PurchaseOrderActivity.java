@@ -52,12 +52,14 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -263,14 +265,16 @@ public class PurchaseOrderActivity extends BaseActivity {
     @Override
     public void initData() {
         method = CommonMethod.getMethod(mContext);
-        if (share.getPOOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setPOOrderCode(ordercode);
-        } else {
-            ordercode = share.getPOOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getPOOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setPOOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getPOOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode  = CommonUtil.createOrderCode(this);
+
         loadBasicData();
 //        new Handler().postDelayed(new Runnable() {
 //            @Override
@@ -508,7 +512,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("选取单位：", unit.toString() + "");
                 }
 
@@ -598,7 +602,7 @@ public class PurchaseOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPISOrderCode(ordercode);
+                share.setOrderCode(PurchaseOrderActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
@@ -616,7 +620,7 @@ public class PurchaseOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPISOrderCode(ordercode);
+                share.setOrderCode(PurchaseOrderActivity.this,ordercode);
                 finish();
             }
         });
@@ -743,7 +747,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     private void tvorisAuto(Product product) {
         edCode.setText(product.FNumber);
         tvModel.setText(product.FModel);
-        edPricesingle.setText(df.format(Double.parseDouble(product.FSalePrice)));
+        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
         tvGoodName.setText(product.FName);
         spUnit.setAuto(mContext,product.FUnitGroupID,default_unitID,SpinnerUnit.Id);
 //        unitAdapter = CommonMethod.getMethod(mContext).getUnitAdapter(product.FUnitGroupID, spUnit);
@@ -815,7 +819,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                 ).build().list();
                 if (detailhebing.size() > 0) {
                     for (int i = 0; i < detailhebing.size(); i++) {
-                        num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                        num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                         t_detailDao.delete(detailhebing.get(i));
                     }
                 }

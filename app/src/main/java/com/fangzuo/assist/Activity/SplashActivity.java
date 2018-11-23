@@ -1,5 +1,6 @@
 package com.fangzuo.assist.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -52,8 +54,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import pub.devrel.easypermissions.EasyPermissions;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity  implements EasyPermissions.PermissionCallbacks {
 
     private SplashActivity mContext;
     private BasicShareUtil instance;
@@ -72,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         mContext = this;
-
+        getPermisssion();
         if (getNewMac() != null && !getNewMac().equals("")) {
             binding.tvCode.setText("注册码：" + MD5.getMD5(getNewMac()));
             register_code = MD5.getMD5(getNewMac()) + "fzkj601";
@@ -206,9 +209,17 @@ public class SplashActivity extends AppCompatActivity {
                     App.PDA_Choose =3;
                     Toast.showText(mContext,"选择了5000设备"+App.PDA_Choose);
                 } else if ("手机端".equals(string)) {
+                    Hawk.put(Config.PDA,5);
+                    App.PDA_Choose =5;
+                    Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
+                }else if ("M60".equals(string)){
                     Hawk.put(Config.PDA,4);
                     App.PDA_Choose =4;
                     Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
+                }else if ("H100".equals(string)){
+                    Hawk.put(Config.PDA,6);
+                    App.PDA_Choose =6;
+                    Toast.showText(mContext,"选择了H100"+App.PDA_Choose);
                 }
             }
 
@@ -398,4 +409,35 @@ public class SplashActivity extends AppCompatActivity {
         return BasicShareUtil.getInstance(mContext).getBaseURL();
     }
 
+
+
+    //权限获取-------------------------------------------------------------
+    private void getPermisssion() {
+        String[] perm = {
+                Manifest.permission.CAMERA,
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (!EasyPermissions.hasPermissions(mContext, perm)) {
+            EasyPermissions.requestPermissions(this, "必要的权限", 0, perm);
+        }
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //把申请权限的回调交由EasyPermissions处理
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode, List<String> perms) {
+        Log.i("permisssion", "获取成功的权限" + perms);
+    }
+
+    @Override
+    public void onPermissionsDenied(int requestCode, List<String> perms) {
+        Log.i("permisssion", "获取失败的权限" + perms);
+    }
 }

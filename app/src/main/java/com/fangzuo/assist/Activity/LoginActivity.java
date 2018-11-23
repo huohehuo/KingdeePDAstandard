@@ -1,10 +1,13 @@
 package com.fangzuo.assist.Activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +23,7 @@ import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.LoginSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.useBean;
 import com.fangzuo.assist.Dao.User;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
@@ -36,7 +40,13 @@ import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.UserDao;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.orhanobut.hawk.Hawk;
+
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +95,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         mTvVersion.setText("标准版 Ver:" + getVersionName());
         Lg.e("PDA：" + App.PDA_Choose);
         isRemPass.setChecked(Hawk.get(Info.IsRemanber,false));
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        @SuppressLint({"HardwareIds", "MissingPermission"}) String deviceId = tm.getDeviceId();
+        Log.e("IMIE",deviceId);
+        share.setIMIE(deviceId);
     }
 
     @Override
@@ -200,10 +214,9 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void OnReceive(String code) {
+        Toast.showText(mContext,"测试扫码:"+code);
         Log.e("CODE", code + ":获得的code");
     }
-
-
     private class CommonListener implements View.OnClickListener {
 
         @Override
@@ -247,6 +260,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     private void getPermisssion() {
         String[] perm = {
                 Manifest.permission.CAMERA,
+                Manifest.permission.READ_PHONE_STATE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE};
         if (!EasyPermissions.hasPermissions(mContext, perm)) {
             EasyPermissions.requestPermissions(this, "必要的权限", 0, perm);

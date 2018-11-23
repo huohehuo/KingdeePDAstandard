@@ -60,12 +60,14 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -301,14 +303,15 @@ public class SoldOutActivity extends BaseActivity {
     public void initData() {
         method = CommonMethod.getMethod(mContext);
         //获取当前时间值
-        if (share.getSOUTOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setSOUTOrderCode(ordercode);
-        } else {
-            ordercode = share.getSOUTOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getSOUTOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setSOUTOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getSOUTOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode = CommonUtil.createOrderCode(this);
         //初始化各种spinner
         LoadBasicData();
     }
@@ -640,7 +643,7 @@ public class SoldOutActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
 
@@ -829,7 +832,7 @@ public class SoldOutActivity extends BaseActivity {
                         if(dBean.InstorageNum!=null){
                             for (int i = 0; i < dBean.InstorageNum.size(); i++) {
                                 if (dBean.InstorageNum.get(i).FQty != null
-                                        && Double.parseDouble(dBean.InstorageNum.get(i).FQty) > 0) {
+                                        && MathUtil.toD(dBean.InstorageNum.get(i).FQty) > 0) {
                                     Log.e(TAG,"有库存的批次："+dBean.InstorageNum.get(i).toString());
                                     container.add(dBean.InstorageNum.get(i));
                                 }
@@ -856,7 +859,7 @@ public class SoldOutActivity extends BaseActivity {
         edCode.setText(product.FNumber);
         tvModel.setText(product.FModel);
         wavehouseAutoString=product.FSPID;
-        edPricesingle.setText(df.format(Double.parseDouble(product.FSalePrice)));
+        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
         tvGoodName.setText(product.FName);
         fBatchManager = (product.FBatchManager) != null && (product.FBatchManager).equals("1");
         if (wavehouseID == null) {
@@ -944,7 +947,7 @@ public class SoldOutActivity extends BaseActivity {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     Log.e(TAG,"库存返回："+cBean.returnJson);
-                    storenum = Double.parseDouble(cBean.returnJson);
+                    storenum = MathUtil.toD(cBean.returnJson);
 //                    tvNuminstorage.setText((storenum / unitrate) + "");
                     tvNuminstorage.setText(dealStoreNumForOut(storenum/unitrate+"") + "");
 
@@ -972,7 +975,7 @@ public class SoldOutActivity extends BaseActivity {
             Log.e("SoldOutActivity", storage.FItemID);
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
-                storenum = Double.parseDouble(list1.get(0).FQty);
+                storenum = MathUtil.toD(list1.get(0).FQty);
                 Log.e("qty", storenum + "");
                 if (storenum != null) {
                     tvNuminstorage.setText((storenum / unitrate) + "");
@@ -1013,10 +1016,10 @@ public class SoldOutActivity extends BaseActivity {
         if (list1.size() > 0) {
             double qty=0;
             for (int i = 0; i < list1.size(); i++) {
-                qty+=Double.parseDouble(list1.get(i).FQuantity);
+                qty+=MathUtil.toD(list1.get(i).FQuantity);
             }
             Lg.e("本地：FQty:"+qty);
-            return Double.parseDouble(num) - qty + "";
+            return MathUtil.toD(num) - qty + "";
         } else {
             return num;
         }
@@ -1085,7 +1088,7 @@ public class SoldOutActivity extends BaseActivity {
                 blue.setBackgroundColor(Color.WHITE);
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setSOUTOrderCode(ordercode);
+                share.setOrderCode(SoldOutActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
@@ -1100,9 +1103,10 @@ public class SoldOutActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         } else if (requestCode == Info.SEARCHFORRESULTCLIRNT) {
             if (resultCode == Info.SEARCHFORRESULTCLIRNT) {
@@ -1157,8 +1161,8 @@ public class SoldOutActivity extends BaseActivity {
 
         //是否开启库存管理 true，开启允许负库存
         if (!checkStorage && !isRed) {
-//            if ((storenum / unitrate) < Double.parseDouble(num)) {
-            if (Double.parseDouble(tvNuminstorage.getText().toString().trim())<Double.parseDouble(num)) {
+//            if ((storenum / unitrate) < MathUtil.toD(num)) {
+            if (MathUtil.toD(tvNuminstorage.getText().toString().trim())<MathUtil.toD(num)) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟，库存不够了");
                 return;
@@ -1179,7 +1183,7 @@ public class SoldOutActivity extends BaseActivity {
             ).build().list();
             if (detailhebing.size() > 0) {
                 for (int i = 0; i < detailhebing.size(); i++) {
-                    num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                    num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                     t_detailDao.delete(detailhebing.get(i));
                 }
             }
@@ -1252,8 +1256,8 @@ public class SoldOutActivity extends BaseActivity {
                 ).build().list();
                 Toast.showText(mContext, "添加成功");
                 MediaPlayer.getInstance(mContext).ok();
-//                Log.e("qty_insert", Double.parseDouble(innum.get(0).FQty) + "");
-//                Log.e("qty_insert", (Double.parseDouble(edNum.getText().toString()) * unitrate) + "");
+//                Log.e("qty_insert", MathUtil.toD(innum.get(0).FQty) + "");
+//                Log.e("qty_insert", (MathUtil.toD(edNum.getText().toString()) * unitrate) + "");
 //                Log.e("qty_insert", (unitrate) + "");
                 if (isRed) {
                     if (innum.size() == 0) {
@@ -1262,14 +1266,14 @@ public class SoldOutActivity extends BaseActivity {
                         inStorageNum.FBatchNo = pihao == null ? "" : pihao;
                         inStorageNum.FStockPlaceID = wavehouseID;
                         inStorageNum.FStockID = storageId;
-                        inStorageNum.FQty = (Double.parseDouble(edNum.getText().toString()) * unitrate) + "";
+                        inStorageNum.FQty = (MathUtil.toD(edNum.getText().toString()) * unitrate) + "";
                         inStorageNumDao.insert(inStorageNum);
                     } else {
-                        innum.get(0).FQty = String.valueOf(((Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) * unitrate))));
+                        innum.get(0).FQty = String.valueOf(((MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) * unitrate))));
                     }
 
                 } else {
-                    innum.get(0).FQty = String.valueOf(((Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(edNum.getText().toString()) * unitrate))));
+                    innum.get(0).FQty = String.valueOf(((MathUtil.toD(innum.get(0).FQty) - (MathUtil.toD(edNum.getText().toString()) * unitrate))));
                 }
                 if (innum.size()!=0){
                     inStorageNumDao.update(innum.get(0));

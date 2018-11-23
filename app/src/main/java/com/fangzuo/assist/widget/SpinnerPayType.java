@@ -44,7 +44,7 @@ public class SpinnerPayType extends RelativeLayout {
     private BasicShareUtil share;
     private ArrayList<PayType> container;
     private PayTypeSpAdapter adapter;
-    private String autoString;//用于联网时，再次去自动设置值
+    private String autoString="";//用于联网时，再次去自动设置值
     private String saveKeyString="";//用于保存数据的key
     private String Id="";
     private String Name="";
@@ -80,15 +80,15 @@ public class SpinnerPayType extends RelativeLayout {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-                    container.addAll(dBean.payTypes);
                     PayTypeDao payTypeDao = daoSession.getPayTypeDao();
                     payTypeDao.deleteAll();
                     payTypeDao.insertOrReplaceInTx(dBean.payTypes);
                     payTypeDao.detachAll();
-                    if (autoString != null) {
+                    if (container.size()<=0){
+                        container.addAll(dBean.payTypes);
+                        adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
                     }
-                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -96,16 +96,17 @@ public class SpinnerPayType extends RelativeLayout {
 //                    Toast.showText(context, Msg);
                 }
             });
-        } else {
+        }
+//        else {
             PayTypeDao employeeDao = daoSession.getPayTypeDao();
             List<PayType> employees = employeeDao.loadAll();
             container.addAll(employees);
             adapter.notifyDataSetChanged();
-            if (autoString != null) {
+//            if (autoString != null) {
                 setAutoSelection(saveKeyString,autoString);
-            }
-            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
-        }
+//            }
+//            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
+//        }
 
 
         mSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

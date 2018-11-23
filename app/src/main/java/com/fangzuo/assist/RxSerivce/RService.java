@@ -101,7 +101,10 @@ public class RService {
         toSubscribe(request.getClassification(getParams(json)), mySubscribe);
     }
 
-
+    //执行接口
+    public void doIOAction(String io, String data,MySubscribe<CommonResponse> mySubscribe) {
+        toSubscribe(request.actionIO(io, getParams(data)), mySubscribe);
+    }
 
 
 
@@ -224,26 +227,26 @@ public class RService {
                 .subscribe(s);
     }
 
-    public static OkHttpClient getOkHttpClient() {
-        return OkHttpClientHolder.client;
-    }
-
-    private static class OkHttpClientHolder {
-        private static final OkHttpClient client;
-
-        static {
-            OkHttpClient.Builder builder = new OkHttpClient.Builder();
-            if (BuildConfig.DEBUG) {
-                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                builder.addInterceptor(interceptor);
-            }
-            client = builder.addNetworkInterceptor(new HttpLoggingInterceptor())
-                    .connectTimeout(5, TimeUnit.SECONDS)
-                    .build();
-        }
-
-    }
+//    public static OkHttpClient getOkHttpClient() {
+//        return OkHttpClientHolder.client;
+//    }
+//
+//    private static class OkHttpClientHolder {
+//        private static final OkHttpClient client;
+//
+//        static {
+//            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+//            if (BuildConfig.DEBUG) {
+//                HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+//                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+//                builder.addInterceptor(interceptor);
+//            }
+//            client = builder.addNetworkInterceptor(new HttpLoggingInterceptor())
+//                    .connectTimeout(5, TimeUnit.SECONDS)
+//                    .build();
+//        }
+//
+//    }
 
     private static Map<String,String> getParams(String json){
         BasicShareUtil share = BasicShareUtil.getInstance(App.getContext());

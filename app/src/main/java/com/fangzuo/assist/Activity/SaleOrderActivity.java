@@ -50,11 +50,13 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -255,14 +257,15 @@ public class SaleOrderActivity extends BaseActivity {
     @Override
     public void initData() {
         method = CommonMethod.getMethod(mContext);
-        if (share.getSOOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setSOOrderCode(ordercode);
-        } else {
-            ordercode = share.getSOOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getSOOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setSOOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getSOOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode = CommonUtil.createOrderCode(this);
         loadBasicData();
     }
 
@@ -488,7 +491,7 @@ public class SaleOrderActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
 
@@ -666,9 +669,10 @@ public class SaleOrderActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         } else if (requestCode == Info.SEARCHFORRESULTCLIRNT) {
             if (resultCode == Info.SEARCHFORRESULTCLIRNT) {
@@ -684,7 +688,7 @@ public class SaleOrderActivity extends BaseActivity {
     private void tvorisAuto(Product product){
         edCode.setText(product.FNumber);
         tvModel.setText(product.FModel);
-        edPricesingle.setText(df.format(Double.parseDouble(product.FSalePrice)));
+        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
         tvGoodName.setText(product.FName);
 
         spUnit.setAuto(mContext,product.FUnitGroupID,default_unitID,SpinnerUnit.Id);
@@ -853,7 +857,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setSOOrderCode(ordercode);
+                share.setOrderCode(SaleOrderActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
@@ -870,7 +874,7 @@ public class SaleOrderActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setSOOrderCode(ordercode);
+                share.setOrderCode(SaleOrderActivity.this,ordercode);
                 finish();
             }
         });
@@ -911,7 +915,7 @@ public class SaleOrderActivity extends BaseActivity {
                         T_DetailDao.Properties.FDiscount.eq(discount)).build().list();
                 if (detailhebing.size() > 0) {
                     for (int i = 0; i < detailhebing.size(); i++) {
-                        num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                        num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                         t_detailDao.delete(detailhebing.get(i));
                     }
                 }

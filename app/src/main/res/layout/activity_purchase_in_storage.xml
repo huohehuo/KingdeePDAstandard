@@ -145,7 +145,7 @@
                         android:orientation="horizontal">
 
 
-                        <Spinner
+                        <com.fangzuo.assist.widget.SpinnerStorage
                             android:id="@+id/sp_which_storage"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"

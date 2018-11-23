@@ -42,7 +42,7 @@ public class SpinnerPurchaseScope extends RelativeLayout {
     private BasicShareUtil share;
     private ArrayList<PurchaseMethod> container;
     private PurchaseScopeSpAdapter adapter;
-    private String autoString;//用于联网时，再次去自动设置值
+    private String autoString="";//用于联网时，再次去自动设置值
     private String saveKeyString="";//用于保存数据的key
     private String Id="";
     private String Name="";
@@ -78,21 +78,21 @@ public class SpinnerPurchaseScope extends RelativeLayout {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-                    //过滤指定参数
-                    for (int i=0;i<dBean.purchaseMethod.size();i++){
-                        if (dBean.purchaseMethod.get(i).FTypeID.contains("997")){
-                            container.add(dBean.purchaseMethod.get(i));
-                        }
-                    }
 //                    container.addAll(dBean.purchaseMethod);
                     PurchaseMethodDao yuandanTypeDao = daoSession.getPurchaseMethodDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.purchaseMethod);
                     yuandanTypeDao.detachAll();
-                    if (autoString != null) {
+                    if (container.size()<=0){
+                        //过滤指定参数
+                        for (int i=0;i<dBean.purchaseMethod.size();i++){
+                            if (dBean.purchaseMethod.get(i).FTypeID.contains("997")){
+                                container.add(dBean.purchaseMethod.get(i));
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
                     }
-                    adapter.notifyDataSetChanged();
                 }
 
                 @Override
@@ -100,7 +100,8 @@ public class SpinnerPurchaseScope extends RelativeLayout {
 //                    Toast.showText(context, Msg);
                 }
             });
-        } else {
+        }
+//        else {
             PurchaseMethodDao employeeDao = daoSession.getPurchaseMethodDao();
             List<PurchaseMethod> purchaseMethods = employeeDao.queryBuilder().
                     where(PurchaseMethodDao.Properties.FTypeID.eq("997"))
@@ -108,11 +109,11 @@ public class SpinnerPurchaseScope extends RelativeLayout {
                     .build().list();
             container.addAll(purchaseMethods);
             adapter.notifyDataSetChanged();
-            if (autoString != null) {
+//            if (autoString != null) {
                 setAutoSelection(saveKeyString,autoString);
-            }
-            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
-        }
+//            }
+//            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
+//        }
 
 
         mSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

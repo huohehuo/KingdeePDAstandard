@@ -26,7 +26,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
     private static final boolean DEBUG = true;
     //文件路径
-    private static final String PATH = Environment.getExternalStorageDirectory().getPath() + File.separator+ "crash";
+    private static final String PATH = "C:\\Program Files\\Apache Software Foundation\\Tomcat 8.5\\webapps\\PdaLog";
     private static final String FILE_NAME = "crash";
     private static final String FILE_NAME_SUFEIX = ".txt";
     private static Thread.UncaughtExceptionHandler mDefaultCrashHandler;

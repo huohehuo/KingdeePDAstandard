@@ -14,6 +14,7 @@ import com.fangzuo.assist.Adapter.PurchaseMethodSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Dao.PurchaseMethod;
+import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
@@ -23,6 +24,7 @@ import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.PurchaseMethodDao;
+import com.fangzuo.greendao.gen.UnitDao;
 import com.loopj.android.http.AsyncHttpClient;
 import com.orhanobut.hawk.Hawk;
 
@@ -41,7 +43,7 @@ public class SpinnerSaleScope extends RelativeLayout {
     private BasicShareUtil share;
     private ArrayList<PurchaseMethod> container;
     private PurchaseMethodSpAdapter adapter;
-    private String autoString;//用于联网时，再次去自动设置值
+    private String autoString="";//用于联网时，再次去自动设置值
     private String saveKeyString="";//用于保存数据的key
     private String Id="";
     private String Name="";
@@ -77,21 +79,23 @@ public class SpinnerSaleScope extends RelativeLayout {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-                    //过滤指定参数
-                    for (int i=0;i<dBean.purchaseMethod.size();i++){
-                        if (dBean.purchaseMethod.get(i).FTypeID.contains("997")){
-                            container.add(dBean.purchaseMethod.get(i));
-                        }
-                    }
+
 //                    container.addAll(dBean.purchaseMethod);
                     PurchaseMethodDao yuandanTypeDao = daoSession.getPurchaseMethodDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.purchaseMethod);
                     yuandanTypeDao.detachAll();
-                    if (autoString != null) {
+                    if (container.size()<=0){
+                        //过滤指定参数
+                        for (int i=0;i<dBean.purchaseMethod.size();i++){
+                            if (dBean.purchaseMethod.get(i).FTypeID.contains("997")){
+                                container.add(dBean.purchaseMethod.get(i));
+                            }
+                        }
+                        adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
                     }
-                    adapter.notifyDataSetChanged();
+
                 }
 
                 @Override
@@ -99,7 +103,8 @@ public class SpinnerSaleScope extends RelativeLayout {
 //                    Toast.showText(context, Msg);
                 }
             });
-        } else {
+        }
+//        else {
             PurchaseMethodDao employeeDao = daoSession.getPurchaseMethodDao();
             List<PurchaseMethod> purchaseMethods = employeeDao.queryBuilder().
                     where(PurchaseMethodDao.Properties.FTypeID.eq("997"))
@@ -107,11 +112,11 @@ public class SpinnerSaleScope extends RelativeLayout {
                     .build().list();
             container.addAll(purchaseMethods);
             adapter.notifyDataSetChanged();
-            if (autoString != null) {
+//            if (autoString != null) {
                 setAutoSelection(saveKeyString,autoString);
-            }
-            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
-        }
+//            }
+//            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
+//        }
 
 
         mSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -130,6 +135,18 @@ public class SpinnerSaleScope extends RelativeLayout {
 
             }
         });
+
+    }
+
+    private List<PurchaseMethod> getLocData(){
+        PurchaseMethodDao employeeDao = daoSession.getPurchaseMethodDao();
+        return employeeDao.queryBuilder().
+                where(PurchaseMethodDao.Properties.FTypeID.eq("997"))
+                .orderAsc(PurchaseMethodDao.Properties.FNumber)
+                .build().list();
+    }
+
+    private void dealAuto(List<Unit> listData, String unitGroupID,final String type,boolean check){
 
     }
 

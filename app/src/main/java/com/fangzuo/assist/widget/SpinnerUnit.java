@@ -121,18 +121,23 @@ public class SpinnerUnit extends RelativeLayout {
 
     //自动设置保存的值
     //type: 根据什么字段定位：number，id，name
-    public void setAuto(final Context context, final String UnitGroupID, String autoStr, final String type) {
+    public void setAuto(final Context context, final String unitGroupIDTemp, String autoStr, final String type) {
         unitId = "";
         unitName = "";
+        final String UnitGroupID;
         Lg.e(TGP+"setAuto:" + autoStr);
-        if (null==UnitGroupID || "".equals(UnitGroupID)){
+        if (null==unitGroupIDTemp || "".equals(unitGroupIDTemp)){
+            UnitGroupID = "";
             Lg.e("单位组不存在");
-            return;
+        }else{
+            UnitGroupID=unitGroupIDTemp;
         }
 //        LoadingUtil.dismiss();
 //        LoadingUtil.show(context,"正在调整单位...");
         autoString = autoStr;
-        list.clear();
+        final List<Unit> listTemp =getLocData(UnitGroupID);
+        dealAuto(listTemp,UnitGroupID,type,false);
+
         if (share.getIsOL()) {
             ArrayList<Integer> choose = new ArrayList<>();
             choose.add(7);
@@ -154,51 +159,12 @@ public class SpinnerUnit extends RelativeLayout {
                     if (dBean != null && dBean.units != null && dBean.units.size() > 0) {
                         UnitDao unitDao = daoSession.getUnitDao();
                         unitDao.deleteAll();
-                        for (int i = 0; i < dBean.units.size(); i++) {
-                            if (dBean.units.get(i).FUnitGroupID.equals(UnitGroupID)){
-                                list.add(dBean.units.get(i));
-                            }
-                        }
-                        adapter.notifyDataSetChanged();
                         unitDao.insertOrReplaceInTx(dBean.units);
                         unitDao.detachAll();
-
-                        if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
-                            adapter.notifyDataSetChanged();
-                        } else {
-                            if (Number.equals(type)) {
-                                for (int j = 0; j < adapter.getCount(); j++) {
-                                    if (((Unit) adapter.getItem(j)).FNumber.equals(autoString)) {
-                                        Lg.e("单位定位（自定义控件：" + autoString);
-                                        unitId = autoString;
-                                        unitName = ((Unit) adapter.getItem(j)).FName;
-                                        mSp.setSelection(j);
-                                        break;
-                                    }
-                                }
-                            } else if (Name.equals(type)) {
-                                for (int j = 0; j < adapter.getCount(); j++) {
-                                    if (((Unit) adapter.getItem(j)).FName.equals(autoString)) {
-                                        Lg.e("单位定位（自定义控件：" + autoString);
-                                        unitId = autoString;
-                                        unitName = ((Unit) adapter.getItem(j)).FName;
-                                        mSp.setSelection(j);
-                                        break;
-                                    }
-                                }
-                            } else if (Id.equals(type)) {
-                                for (int j = 0; j < adapter.getCount(); j++) {
-                                    if (((Unit) adapter.getItem(j)).FMeasureUnitID.equals(autoString)) {
-                                        Lg.e("单位定位（自定义控件：" + autoString);
-                                        unitId = autoString;
-                                        unitName = ((Unit) adapter.getItem(j)).FName;
-                                        mSp.setSelection(j);
-                                        break;
-                                    }
-                                }
-                            }
-                            adapter.notifyDataSetChanged();
+                        if (list.size()<=0){
+                            dealAuto(dBean.units,UnitGroupID,type,true);
                         }
+
                     }
 //                    LoadingUtil.dismiss();
                 }
@@ -207,59 +173,118 @@ public class SpinnerUnit extends RelativeLayout {
                 public void onFailed(String Msg, AsyncHttpClient client) {
 
 //                    LoadingUtil.dismiss();
-                    adapter.notifyDataSetChanged();
-                    Toast.showText(context, Msg);
+//                    adapter.notifyDataSetChanged();
+//                    Toast.showText(context, Msg);
                 }
             });
-        } else {
-//            Log.e("CommonMethod:","getWaveHouseAdapter-不-联网");
-            UnitDao unitDao = daoSession.getUnitDao();
-            List<Unit> units = unitDao.queryBuilder().where(
-                    UnitDao.Properties.FUnitGroupID.eq(UnitGroupID)
-            ).build().list();
+        }
+// else {
+////            Log.e("CommonMethod:","getWaveHouseAdapter-不-联网");
+//            UnitDao unitDao = daoSession.getUnitDao();
+//            List<Unit> units = unitDao.queryBuilder().where(
+//                    UnitDao.Properties.FUnitGroupID.eq(UnitGroupID)
+//            ).build().list();
+//
+//            if (units.size() > 0) {
+//                list.addAll(units);
+////                Log.e("CommonMethod:","获取到本地数据waveHouse:"+waveHouseList.toString());
+//                adapter.notifyDataSetChanged();
+//                if (Number.equals(type)) {
+//                    for (int j = 0; j < adapter.getCount(); j++) {
+//                        if (((Unit) adapter.getItem(j)).FNumber.equals(autoString)) {
+//                            Lg.e("单位定位（自定义控件：" + autoString);
+//                            unitId = autoString;
+//                            unitName = ((Unit) adapter.getItem(j)).FName;
+//                            mSp.setSelection(j);
+//                            break;
+//                        }
+//                    }
+//                } else if (Name.equals(type)) {
+//                    for (int j = 0; j < adapter.getCount(); j++) {
+//                        if (((Unit) adapter.getItem(j)).FName.equals(autoString)) {
+//                            Lg.e("单位定位（自定义控件：" + autoString);
+//                            unitId = autoString;
+//                            unitName = ((Unit) adapter.getItem(j)).FName;
+//                            mSp.setSelection(j);
+//                            break;
+//                        }
+//                    }
+//                } else if (Id.equals(type)) {
+//                    for (int j = 0; j < adapter.getCount(); j++) {
+//                        if (((Unit) adapter.getItem(j)).FMeasureUnitID.equals(autoString)) {
+//                            Lg.e("单位定位（自定义控件：" + autoString);
+//                            unitId = autoString;
+//                            unitName = ((Unit) adapter.getItem(j)).FName;
+//                            mSp.setSelection(j);
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//            } else {
+//                adapter.notifyDataSetChanged();
+////                Log.e("CommonMethod:","无数据：waveHouse:");
+//            }
+//        }
 
-            if (units.size() > 0) {
-                list.addAll(units);
-//                Log.e("CommonMethod:","获取到本地数据waveHouse:"+waveHouseList.toString());
-                adapter.notifyDataSetChanged();
-                if (Number.equals(type)) {
-                    for (int j = 0; j < adapter.getCount(); j++) {
-                        if (((Unit) adapter.getItem(j)).FNumber.equals(autoString)) {
-                            Lg.e("单位定位（自定义控件：" + autoString);
-                            unitId = autoString;
-                            unitName = ((Unit) adapter.getItem(j)).FName;
-                            mSp.setSelection(j);
-                            break;
-                        }
-                    }
-                } else if (Name.equals(type)) {
-                    for (int j = 0; j < adapter.getCount(); j++) {
-                        if (((Unit) adapter.getItem(j)).FName.equals(autoString)) {
-                            Lg.e("单位定位（自定义控件：" + autoString);
-                            unitId = autoString;
-                            unitName = ((Unit) adapter.getItem(j)).FName;
-                            mSp.setSelection(j);
-                            break;
-                        }
-                    }
-                } else if (Id.equals(type)) {
-                    for (int j = 0; j < adapter.getCount(); j++) {
-                        if (((Unit) adapter.getItem(j)).FMeasureUnitID.equals(autoString)) {
-                            Lg.e("单位定位（自定义控件：" + autoString);
-                            unitId = autoString;
-                            unitName = ((Unit) adapter.getItem(j)).FName;
-                            mSp.setSelection(j);
-                            break;
-                        }
+    }
+
+
+    private List<Unit> getLocData(String unitGroupID){
+        UnitDao unitDao = daoSession.getUnitDao();
+        return unitDao.queryBuilder().where(
+                UnitDao.Properties.FUnitGroupID.eq(unitGroupID)
+        ).build().list();
+    }
+
+    private void dealAuto(List<Unit> listData, String unitGroupID,final String type,boolean check){
+        list.clear();
+        if (check){
+            for (int i = 0; i < listData.size(); i++) {
+                if (listData.get(i).FUnitGroupID.equals(unitGroupID)){
+                    list.add(listData.get(i));
+                }
+            }
+        }else{
+            list.addAll(listData);
+        }
+        if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
+            adapter.notifyDataSetChanged();
+        } else {
+            if (Number.equals(type)) {
+                for (int j = 0; j < adapter.getCount(); j++) {
+                    if (((Unit) adapter.getItem(j)).FNumber.equals(autoString)) {
+                        Lg.e("单位定位（自定义控件：" + autoString);
+                        unitId = autoString;
+                        unitName = ((Unit) adapter.getItem(j)).FName;
+                        mSp.setSelection(j);
+                        break;
                     }
                 }
-
-            } else {
-                adapter.notifyDataSetChanged();
-//                Log.e("CommonMethod:","无数据：waveHouse:");
+            } else if (Name.equals(type)) {
+                for (int j = 0; j < adapter.getCount(); j++) {
+                    if (((Unit) adapter.getItem(j)).FName.equals(autoString)) {
+                        Lg.e("单位定位（自定义控件：" + autoString);
+                        unitId = autoString;
+                        unitName = ((Unit) adapter.getItem(j)).FName;
+                        mSp.setSelection(j);
+                        break;
+                    }
+                }
+            } else if (Id.equals(type)) {
+                for (int j = 0; j < adapter.getCount(); j++) {
+                    if (((Unit) adapter.getItem(j)).FMeasureUnitID.equals(autoString)) {
+                        Lg.e("单位定位（自定义控件：" + autoString);
+                        Lg.e("单位定位（自定义控件：" + ((Unit) adapter.getItem(j)).toString());
+                        unitId = autoString;
+                        unitName = ((Unit) adapter.getItem(j)).FName;
+                        mSp.setSelection(j);
+                        break;
+                    }
+                }
             }
+            adapter.notifyDataSetChanged();
         }
-
     }
 
 }

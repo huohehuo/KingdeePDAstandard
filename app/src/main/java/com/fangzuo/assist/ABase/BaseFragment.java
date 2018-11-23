@@ -72,7 +72,18 @@ public abstract class BaseFragment extends Fragment {
             }
         }
     };
-
+    //  M60
+    private static final String ACTION_M60 = "com.mobilead.tools.action.scan_result";
+    private BroadcastReceiver mScanDataReceiverForM60 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_M60)) {
+                String str = intent.getStringExtra("decode_rslt");
+                OnReceive(str);
+            }
+        }
+    };
 
 
 //    //UBX
@@ -210,6 +221,11 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                 filter.addAction("scan.rcv.message");
                 filter.addAction("com.android.scanservice.scancontext");
                 getActivity().registerReceiver(mScanDataReceiverFor5000, filter);
+            }else if (App.PDA_Choose==4){
+                //M60
+                IntentFilter scanDataIntentFilter = new IntentFilter();
+                scanDataIntentFilter.addAction(ACTION_M60);
+                getActivity().registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
             }
         }
     }
@@ -254,6 +270,8 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                     getActivity().unregisterReceiver(mScanDataReceiver);
                 }else if (App.PDA_Choose == 3){
                     getActivity().unregisterReceiver(mScanDataReceiverFor5000);
+                }else if (App.PDA_Choose == 4){
+                    getActivity().unregisterReceiver(mScanDataReceiverForM60);
                 }
             }
         }

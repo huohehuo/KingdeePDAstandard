@@ -46,6 +46,7 @@ import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.DoubleUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -104,7 +105,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
     Button btnCheckorder;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
-    private DaoSession daoSession;
     boolean isAuto = true;
     private CommonMethod method;
     private StorageSpAdapter storageSpinner;
@@ -148,8 +148,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
         setContentView(R.layout.activity_out_check_goods);
         mContext = this;
         ButterKnife.bind(this);
-        daoSession = GreenDaoManager.getmInstance(mContext).getDaoSession();
-
         isAutoAdd.setChecked(isAuto);
         method = CommonMethod.getMethod(mContext);
 
@@ -256,7 +254,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     Log.e(TAG,"获取到Unit："+unit.toString());
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("取得单位unitId：", unitId + "");
                     Log.e("取得单位unitName：", unitName + "");
                     Log.e("取得单位unitrate：", unitrate + "");
@@ -327,7 +325,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 UnitDao.Properties.FMeasureUnitID.eq(pushDownSub.FUnitID)
         ).build().list();
         if (units.size()>0){
-            unitrateSub=Double.parseDouble(units.get(0).FCoefficient);
+            unitrateSub=MathUtil.toD(units.get(0).FCoefficient);
             Lg.e("获得明细换算率："+unitrateSub);
         }else{
             unitrateSub=1;
@@ -447,7 +445,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
             for (int j = 0; j < pushDownSubListAdapter.getCount(); j++) {
                 PushDownSub pushDownSub1 = (PushDownSub) pushDownSubListAdapter.getItem(j);
                 if (product.FItemID.equals(pushDownSub1.FItemID)) {
-                    if (Double.parseDouble(pushDownSub1.FAuxQty) == Double.parseDouble(pushDownSub1.FQtying)) {
+                    if (MathUtil.toD(pushDownSub1.FAuxQty) == MathUtil.toD(pushDownSub1.FQtying)) {
                         flag = true;
                         continue;
                     } else {
@@ -547,7 +545,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 Toast.showText(mContext, "请选择单据");
                 return;
             }
-            if (Double.parseDouble(pushDownSub.FAuxQty) < ((Double.parseDouble(num) * unitrate)/unitrateSub + Double.parseDouble(pushDownSub.FQtying))) {
+            if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate)/unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
                 return;
@@ -566,7 +564,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     ).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
-                            num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                             t_detailDao.delete(detailhebing.get(i));
                         }
                     }
@@ -601,8 +599,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
                 if (insert > 0) {
                     //更新订单详情的已验收数量
-                    pushDownSub.FQtying = DoubleUtil.sum(Double.parseDouble(pushDownSub.FQtying) ,
-                            (Double.parseDouble(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
+                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying) ,
+                            (MathUtil.toD(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
                     pushDownSubDao.update(pushDownSub);
                     Toast.showText(mContext, "添加成功");
 //                    MediaPlayer.getInstance(mContext).ok();
@@ -638,7 +636,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                     PushDownSubDao.Properties.FInterID.eq(list1.get(i).FInterID)
             ).build().list();
             for (int k = 0; k < list.size(); k++) {
-                if (Double.parseDouble(list.get(k).FQtying) != Double.parseDouble(list.get(k).FAuxQty)) {
+                if (MathUtil.toD(list.get(k).FQtying) != MathUtil.toD(list.get(k).FAuxQty)) {
                     flag = false;
                 }
             }

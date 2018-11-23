@@ -52,12 +52,14 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -239,14 +241,15 @@ public class ProductInStorageActivity extends BaseActivity {
     @Override
     public void initData() {
         method = CommonMethod.getMethod(mContext);
-        if (share.getPROISOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setPROISOrderCode(ordercode);
-        } else {
-            ordercode = share.getPROISOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getPROISOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setPROISOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getPROISOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode = CommonUtil.createOrderCode(this);
         LoadBasicData();
     }
 
@@ -416,7 +419,7 @@ public class ProductInStorageActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
 
@@ -636,7 +639,7 @@ public class ProductInStorageActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPROISOrderCode(ordercode);
+                share.setOrderCode(ProductInStorageActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
@@ -659,9 +662,10 @@ public class ProductInStorageActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         } else if(requestCode==Info.SEARCHJH){
             if (resultCode == Info.SEARCHFORRESULTJH) {
@@ -682,7 +686,7 @@ public class ProductInStorageActivity extends BaseActivity {
         edCode.setText(product.FNumber);
         tvModel.setText(product.FModel);
         wavehouseAutoString=product.FSPID;
-        edPricesingle.setText(df.format(Double.parseDouble(product.FSalePrice)));
+        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
         tvGoodName.setText(product.FName);
         if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
             fBatchManager = true;
@@ -891,7 +895,7 @@ public class ProductInStorageActivity extends BaseActivity {
          Asynchttp.post(mContext, getBaseUrl() + WebApi.GETINSTORENUM, json, new Asynchttp.Response() {
              @Override
              public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                 double num = Double.parseDouble(cBean.returnJson);
+                 double num = MathUtil.toD(cBean.returnJson);
                  tvNuminstorage.setText((num / unitrate) + "");
              }
 
@@ -907,7 +911,7 @@ public class ProductInStorageActivity extends BaseActivity {
                          InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID), InStorageNumDao.Properties.FBatchNo.eq(pihao)).build().list();
          if (list1.size() > 0) {
              Log.e("FQty", list1.get(0).FQty);
-             Double qty = Double.parseDouble(list1.get(0).FQty);
+             Double qty = MathUtil.toD(list1.get(0).FQty);
              Log.e("qty", qty + "");
              if (qty != null) {
                  tvNuminstorage.setText((qty / unitrate) + "");
@@ -954,7 +958,7 @@ public class ProductInStorageActivity extends BaseActivity {
                 ).build().list();
                 if (detailhebing.size() > 0) {
                     for (int i = 0; i < detailhebing.size(); i++) {
-                        num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                        num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                         t_detailDao.delete(detailhebing.get(i));
                     }
                 }
@@ -1030,7 +1034,7 @@ public class ProductInStorageActivity extends BaseActivity {
                             InStorageNumDao.Properties.FItemID.eq(product.FItemID)
                     ).build().list();
                     if (innum.size() > 0) {
-                        innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) * unitrate)) + "";
+                        innum.get(0).FQty = (MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) * unitrate)) + "";
                         Log.e("QTY",innum.get(0).FQty);
                         Log.e("QTY",unitrate+"");
                         Log.e("QTY",num+"");
@@ -1077,7 +1081,7 @@ public class ProductInStorageActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPISOrderCode(ordercode);
+                share.setOrderCode(ProductInStorageActivity.this,ordercode);
                 finish();
             }
         });

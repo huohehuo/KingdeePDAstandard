@@ -44,7 +44,7 @@ public class SpinnerWlkm extends RelativeLayout {
     private BasicShareUtil share;
     private ArrayList<Wanglaikemu> container;
     private WLKMSpAdapter adapter;
-    private String autoString;//用于联网时，再次去自动设置值
+    private String autoString="";//用于联网时，再次去自动设置值
     private String saveKeyString="";//用于保存数据的key
     private String Id="";
     private String Name="";
@@ -96,15 +96,16 @@ public class SpinnerWlkm extends RelativeLayout {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-                    container.addAll(dBean.wanglaikemu);
                     WanglaikemuDao yuandanTypeDao = daoSession.getWanglaikemuDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.wanglaikemu);
                     yuandanTypeDao.detachAll();
-                    if (autoString != null) {
+                    if (container.size()<=0){
+                        container.addAll(dBean.wanglaikemu);
+                        adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
                     }
-                    adapter.notifyDataSetChanged();
+
                 }
 
                 @Override
@@ -112,16 +113,16 @@ public class SpinnerWlkm extends RelativeLayout {
 //                    Toast.showText(context, Msg);
                 }
             });
-        } else {
+        }
+//        else {
             WanglaikemuDao employeeDao = daoSession.getWanglaikemuDao();
             List<Wanglaikemu> employees = employeeDao.loadAll();
             container.addAll(employees);
             adapter.notifyDataSetChanged();
-            if (autoString != null) {
-                setAutoSelection(saveKeyString,autoString);
-            }
-            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
-        }
+            setAutoSelection(saveKeyString,autoString);
+
+//            Log.e("CommonMethod", "获取到本地数据：\n" + container.toString());
+//        }
 
 
         mSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

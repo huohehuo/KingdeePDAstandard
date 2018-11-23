@@ -57,6 +57,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Synchttp;
@@ -128,7 +129,6 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
     SpinnerPeople spManager;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
-    private DaoSession daosession;
     private CommonMethod method;
     private int year;
     private int month;
@@ -197,8 +197,8 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
 
     private void ScanBarCode(String str) {
         product = null;
-        ProductDao productDao = daosession.getProductDao();
-        BarCodeDao barCodeDao = daosession.getBarCodeDao();
+        ProductDao productDao = daoSession.getProductDao();
+        BarCodeDao barCodeDao = daoSession.getBarCodeDao();
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             Asynchttp.post(mContext, getBaseUrl() + WebApi.SEARCHPRODUCTS, str, new Asynchttp.Response() {
                 @Override
@@ -243,7 +243,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
             for (int j = 0; j < pushDownSubListAdapter.getCount(); j++) {
                 PushDownSub pushDownSub1 = (PushDownSub) pushDownSubListAdapter.getItem(j);
                 if (product.FItemID.equals(pushDownSub1.FItemID)) {
-                    if (Double.parseDouble(pushDownSub1.FAuxQty) == Double.parseDouble(pushDownSub1.FQtying)) {
+                    if (MathUtil.toD(pushDownSub1.FAuxQty) == MathUtil.toD(pushDownSub1.FQtying)) {
                         flag = true;
                         continue;
                     } else {
@@ -292,7 +292,6 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
         mContext = this;
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
-        daosession = GreenDaoManager.getmInstance(mContext).getDaoSession();
         method = CommonMethod.getMethod(mContext);
         year = Calendar.getInstance().get(Calendar.YEAR);
         month = Calendar.getInstance().get(Calendar.MONTH);
@@ -323,8 +322,8 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
 
     private void getList() {
         container.clear();
-        pushDownSubDao = daosession.getPushDownSubDao();
-        pushDownMainDao = daosession.getPushDownMainDao();
+        pushDownSubDao = daoSession.getPushDownSubDao();
+        pushDownMainDao = daoSession.getPushDownMainDao();
         for (int i = 0; i < fidcontainer.size(); i++) {
             QueryBuilder<PushDownSub> qb = pushDownSubDao.queryBuilder();
             list = qb.where(PushDownSubDao.Properties.FInterID.eq(fidcontainer.get(i))).build().list();
@@ -420,7 +419,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
 
@@ -468,7 +467,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 pushDownSub = (PushDownSub) pushDownSubListAdapter.getItem(i);
                 getUnitrateSub(pushDownSub);
-                ProductDao productDao = daosession.getProductDao();
+                ProductDao productDao = daoSession.getProductDao();
                 if (BasicShareUtil.getInstance(mContext).getIsOL()) {
                     Asynchttp.post(mContext, getBaseUrl() + WebApi.PRPDUCTSEARCHWHERE, pushDownSub.FItemID, new Asynchttp.Response() {
                         @Override
@@ -524,12 +523,12 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
     }
     //获取明细里面的单位的换算率
     private void getUnitrateSub(PushDownSub pushDownSub){
-        UnitDao unitDao = daosession.getUnitDao();
+        UnitDao unitDao = daoSession.getUnitDao();
         List<Unit> units = unitDao.queryBuilder().where(
                 UnitDao.Properties.FMeasureUnitID.eq(pushDownSub.FUnitID)
         ).build().list();
         if (units.size()>0){
-            unitrateSub=Double.parseDouble(units.get(0).FCoefficient);
+            unitrateSub=MathUtil.toD(units.get(0).FCoefficient);
             Lg.e("获得明细换算率："+unitrateSub);
         }else{
             unitrateSub=1;
@@ -684,7 +683,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 Toast.showText(mContext, "请选择单据");
                 return;
             }
-            if (Double.parseDouble(pushDownSub.FAuxQty) < ((Double.parseDouble(num) * unitrate)/unitrateSub + Double.parseDouble(pushDownSub.FQtying))) {
+            if (MathUtil.toD(pushDownSub.FAuxQty) < ((MathUtil.toD(num) * unitrate)/unitrateSub + MathUtil.toD(pushDownSub.FQtying))) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
                 return;
@@ -700,7 +699,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                             , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
-                            num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                             List<T_main> t_mainList = t_mainDao.queryBuilder().where(T_mainDao.Properties.FIndex.eq(detailhebing.get(i).FIndex)).build().list();
                             if (t_mainList.size() > 0) {
                                 t_mainDao.delete(t_mainList.get(0));
@@ -767,7 +766,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 long insert = t_detailDao.insert(t_detail);
 
                 if (insert1 > 0 && insert > 0) {
-                    pushDownSub.FQtying = DoubleUtil.sum(Double.parseDouble(pushDownSub.FQtying), (Double.parseDouble(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
+                    pushDownSub.FQtying = DoubleUtil.sum(MathUtil.toD(pushDownSub.FQtying), (MathUtil.toD(edNum.getText().toString()) * unitrate)/unitrateSub) + "";
                     pushDownSubDao.update(pushDownSub);
                     Toast.showText(mContext, "添加成功");
                     MediaPlayer.getInstance(mContext).ok();
@@ -816,7 +815,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                     }
                 });
             } else {
-                InStorageNumDao inStorageNumDao = daosession.getInStorageNumDao();
+                InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
                 List<InStorageNum> inStorageNa = inStorageNumDao.queryBuilder().where(
                         InStorageNumDao.Properties.FStockID.eq(storageID),
                         InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),

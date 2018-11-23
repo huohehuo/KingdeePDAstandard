@@ -3,10 +3,14 @@ package com.fangzuo.assist.Utils;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
+import com.fangzuo.assist.Beans.ConnectResponseBean;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Dao.T_Detail;
 import com.fangzuo.assist.Dao.T_main;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
+import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.loopj.android.http.AsyncHttpClient;
@@ -35,6 +39,22 @@ public class DataModel {
             }
         });
     }
+    //统一回单数据请求
+    public static void upload(String url,String json){
+        App.getRService().doIOAction(url, json, new MySubscribe<CommonResponse>() {
+            @Override
+            public void onNext(CommonResponse commonResponse) {
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_OK,""));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_Error,e.toString()));
+            }
+        });
+    }
+
+
 
 
     //下推时，统一回单数据请求
@@ -89,4 +109,37 @@ public class DataModel {
         }
 
     }
+
+
+    //下载配置的连接
+    public static void SetConnectSQL(String json){
+        App.getRService().connectToSQL(json, new MySubscribe<CommonResponse>() {
+                    @Override
+                    public void onNext(CommonResponse commonResponse) {
+                        super.onNext(commonResponse);
+                        EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Connect_OK,commonResponse));
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Connect_Error,e.toString()));
+                    }
+                });
+    }
+    //下载配置的配置
+    public static void SetProp(String json){
+        App.getRService().SetProp(json, new MySubscribe<CommonResponse>() {
+            @Override
+            public void onNext(CommonResponse commonResponse) {
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Prop_OK,commonResponse));
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Prop_Error,e.toString()));
+            }
+        });
+    }
+
+
 }

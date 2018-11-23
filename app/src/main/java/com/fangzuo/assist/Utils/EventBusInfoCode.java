@@ -13,4 +13,9 @@ public class EventBusInfoCode {
 
     public static final String Upload_OK = "111100";
     public static final String Upload_Error = "111101";
+
+    public static final String Connect_OK = "111102";
+    public static final String Connect_Error = "111103";
+    public static final String Prop_OK = "111104";
+    public static final String Prop_Error = "111105";
 }

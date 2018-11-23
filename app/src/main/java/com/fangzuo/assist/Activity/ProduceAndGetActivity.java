@@ -59,12 +59,14 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonMethod;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
@@ -264,14 +266,15 @@ public class ProduceAndGetActivity extends BaseActivity {
     @Override
     protected void initData() {
         method = CommonMethod.getMethod(mContext);
-        if (share.getPROGOrderCode() == 0) {
-            ordercode = Long.parseLong(getTime(false) + "001");
-            Log.e("ordercode", ordercode + "");
-            share.setPROGOrderCode(ordercode);
-        } else {
-            ordercode = share.getPROGOrderCode();
-            Log.e("ordercode", ordercode + "");
-        }
+//        if (share.getPROGOrderCode() == 0) {
+//            ordercode = Long.parseLong(getTime(false) + "001");
+//            Log.e("ordercode", ordercode + "");
+//            share.setPROGOrderCode(ordercode);
+//        } else {
+//            ordercode = share.getPROGOrderCode();
+//            Log.e("ordercode", ordercode + "");
+//        }
+        ordercode = CommonUtil.createOrderCode(this);
         LoadBasicData();
     }
 
@@ -449,7 +452,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                 if (unit != null) {
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
-                    unitrate = Double.parseDouble(unit.FCoefficient);
+                    unitrate = MathUtil.toD(unit.FCoefficient);
                     Log.e("1111", unitrate + "");
                 }
                 getInstorageNum(product);
@@ -571,7 +574,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                         if(dBean.InstorageNum!=null){
                             for (int i = 0; i < dBean.InstorageNum.size(); i++) {
                                 if (dBean.InstorageNum.get(i).FQty != null
-                                        && Double.parseDouble(dBean.InstorageNum.get(i).FQty) > 0) {
+                                        && MathUtil.toD(dBean.InstorageNum.get(i).FQty) > 0) {
                                     Log.e(TAG,"有库存的批次："+dBean.InstorageNum.get(i).toString());
                                     piciContainer.add(dBean.InstorageNum.get(i));
 
@@ -674,7 +677,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                 blue.setBackgroundColor(Color.WHITE);
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPROGOrderCode(ordercode);
+                share.setOrderCode(ProduceAndGetActivity.this,ordercode);
             }
         });
         ab.setNegativeButton("取消", null);
@@ -687,7 +690,7 @@ public class ProduceAndGetActivity extends BaseActivity {
         edCode.setText(product.FNumber);
         tvModel.setText(product.FModel);
         wavehouseAutoString=product.FSPID;
-        edPricesingle.setText(df.format(Double.parseDouble(product.FSalePrice)));
+        edPricesingle.setText(df.format(MathUtil.toD(product.FSalePrice)));
         tvGoodName.setText(product.FName);
         if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
             fBatchManager = true;
@@ -803,10 +806,10 @@ public class ProduceAndGetActivity extends BaseActivity {
             Asynchttp.post(mContext, getBaseUrl() + WebApi.GETINSTORENUM, json, new Asynchttp.Response() {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                    storenum = Double.parseDouble(cBean.returnJson);
+                    storenum = MathUtil.toD(cBean.returnJson);
 //                    tvNuminstorage.setText((storenum / unitrate) + "");
                     tvNuminstorage.setText(dealStoreNumForOut(storenum/unitrate+"") + "");
-                    storenum = Double.parseDouble(dealStoreNumForOut(storenum+""));
+                    storenum = MathUtil.toD(dealStoreNumForOut(storenum+""));
 
                 }
 
@@ -823,7 +826,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                             InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID), InStorageNumDao.Properties.FBatchNo.eq(pihao)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
-                Double qty = Double.parseDouble(list1.get(0).FQty);
+                Double qty = MathUtil.toD(list1.get(0).FQty);
                 Log.e("qty", qty + "");
                 if (qty != null) {
                     tvNuminstorage.setText((qty / unitrate) + "");
@@ -861,11 +864,11 @@ public class ProduceAndGetActivity extends BaseActivity {
         if (list1.size() > 0) {
             double qty=0;
             for (int i = 0; i < list1.size(); i++) {
-                qty+=Double.parseDouble(list1.get(i).FQuantity);
+                qty+=MathUtil.toD(list1.get(i).FQuantity);
             }
             Lg.e("本地：FQty:"+qty);
-//            double qty = Double.parseDouble(list1.get(0).FQuantity);
-            return Double.parseDouble(num) - qty + "";
+//            double qty = MathUtil.toD(list1.get(0).FQuantity);
+            return MathUtil.toD(num) - qty + "";
         } else {
             return num;
         }
@@ -878,9 +881,10 @@ public class ProduceAndGetActivity extends BaseActivity {
             if (resultCode == RESULT_OK) {
                 Bundle b = data.getExtras();
                 String message = b.getString("result");
-                edCode.setText(message);
-                Toast.showText(mContext, message);
-                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                OnReceive(message);
+//                edCode.setText(message);
+//                Toast.showText(mContext, message);
+//                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
         }
     }
@@ -928,12 +932,12 @@ public class ProduceAndGetActivity extends BaseActivity {
         if (!checkStorage && !isRed) {
             if (!BasicShareUtil.getInstance(mContext).getIsOL()
                     && innum.size() > 0
-                    && (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(edNum.getText().toString()) * unitrate)) < 0) {
+                    && (MathUtil.toD(innum.get(0).FQty) - (MathUtil.toD(edNum.getText().toString()) * unitrate)) < 0) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟，库存不够了");
                 return;
-//            } else if (BasicShareUtil.getInstance(mContext).getIsOL() && Double.parseDouble(edNum.getText().toString()) > storenum) {
-            } else if (BasicShareUtil.getInstance(mContext).getIsOL() && Double.parseDouble(edNum.getText().toString()) > storenum) {
+//            } else if (BasicShareUtil.getInstance(mContext).getIsOL() && MathUtil.toD(edNum.getText().toString()) > storenum) {
+            } else if (BasicShareUtil.getInstance(mContext).getIsOL() && MathUtil.toD(edNum.getText().toString()) > storenum) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "大兄弟，库存不够了");
                 return;
@@ -958,7 +962,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                     ).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
-                            num = (Double.parseDouble(num) + Double.parseDouble(detailhebing.get(i).FQuantity)) + "";
+                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
                             t_detailDao.delete(detailhebing.get(i));
                         }
                     }
@@ -1026,13 +1030,13 @@ public class ProduceAndGetActivity extends BaseActivity {
                     if (insert > 0 && insert1 > 0) {
                         Toast.showText(mContext, "添加成功");
                         MediaPlayer.getInstance(mContext).ok();
-                        Log.e("qty_insert", Double.parseDouble(innum.get(0).FQty) + "");
-                        Log.e("qty_insert", (Double.parseDouble(edNum.getText().toString()) * unitrate) + "");
+                        Log.e("qty_insert", MathUtil.toD(innum.get(0).FQty) + "");
+                        Log.e("qty_insert", (MathUtil.toD(edNum.getText().toString()) * unitrate) + "");
                         Log.e("qty_insert", (unitrate) + "");
 //                        if (isRed) {
-//                            innum.get(0).FQty = String.valueOf(((Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(edNum.getText().toString()) * unitrate))));
+//                            innum.get(0).FQty = String.valueOf(((MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) * unitrate))));
 //                        } else {
-                            innum.get(0).FQty = String.valueOf(((Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(edNum.getText().toString()) * unitrate))));
+                            innum.get(0).FQty = String.valueOf(((MathUtil.toD(innum.get(0).FQty) - (MathUtil.toD(edNum.getText().toString()) * unitrate))));
 //                        }
                         inStorageNumDao.update(innum.get(0));
                         resetAll();
@@ -1284,7 +1288,7 @@ public class ProduceAndGetActivity extends BaseActivity {
             public void onClick(DialogInterface dialogInterface, int i) {
                 ordercode++;
                 Log.e("ordercode", ordercode + "");
-                share.setPROGOrderCode(ordercode);
+                share.setOrderCode(ProduceAndGetActivity.this,ordercode);
                 finish();
             }
         });
