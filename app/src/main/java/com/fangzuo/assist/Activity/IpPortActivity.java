@@ -1,5 +1,7 @@
 package com.fangzuo.assist.Activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,11 +14,14 @@ import android.widget.TextView;
 
 import com.fangzuo.assist.ABase.BaseActivity;
 import com.fangzuo.assist.Activity.Crash.App;
+import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.UseTimeBean;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.Toast;
+import com.fangzuo.assist.Utils.WebApi;
 import com.orhanobut.hawk.Hawk;
 
 import butterknife.BindView;
@@ -74,9 +79,9 @@ public class IpPortActivity extends BaseActivity {
         }, 100);
         if (null != Hawk.get(Config.SaveTime, null)) {
             UseTimeBean bean=Hawk.get(Config.SaveTime);
-            tvEndtime.setText("有效期："+dealTime(bean.endTime));
-        }else{
-            tvEndtime.setText("获取时间失效");
+            tvEndtime.setText("有效期：" + dealTime(bean.endTime) + "   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败"));
+        } else {
+            tvEndtime.setText("获取时间失效" + "   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败"));
         }
     }
 
@@ -127,7 +132,7 @@ public class IpPortActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @OnClick({R.id.btn_save,R.id.btn_back, R.id.tv_title})
+    @OnClick({R.id.btn_save,R.id.btn_back, R.id.tv_title, R.id.btn_loginout})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
@@ -141,6 +146,34 @@ public class IpPortActivity extends BaseActivity {
                     share.setPort(edPort.getText().toString());
                     finish();
                 }
+                break;
+            case R.id.btn_loginout:
+                AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+                ab.setTitle("是否登出");
+                ab.setMessage("登出后，需重新注册才能使用");
+                ab.setPositiveButton("登出", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        App.getRService().doIOAction(WebApi.RegisterDelete, Hawk.get(Config.PDA_IMIE,""), new MySubscribe<CommonResponse>() {
+                            @Override
+                            public void onNext(CommonResponse commonResponse) {
+                                super.onNext(commonResponse);
+                                if (!commonResponse.state)return;
+                                Toast.showText(mContext,"用户已登出");
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+//                        super.onError(e);
+                                Toast.showText(mContext,"用户登出失败");
+                            }
+                        });
+                    }
+                });
+                ab.setNegativeButton("取消", null);
+                final AlertDialog alertDialog = ab.create();
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
                 break;
         }
     }

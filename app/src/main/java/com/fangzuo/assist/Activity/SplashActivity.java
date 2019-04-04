@@ -83,6 +83,7 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
             register_code = MD5.getMD5(getNewMac()) + "fzkj601";
             newRegister = MD5.getMD5(register_code);
             lastRegister = MD5.getMD5(newRegister);
+            Hawk.put(Config.PDA_IMIE, lastRegister);
         } else {
             Toast.showText(mContext, "请链接WIFI");
         }

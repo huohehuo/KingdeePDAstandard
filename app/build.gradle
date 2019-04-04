@@ -17,7 +17,7 @@ android {
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
-            abiFilters "armeabi-v7a", "armeabi", "arm64-v8a", "arm","x86"
+            abiFilters "armeabi-v7a", "armeabi", "arm64-v8a", "arm", "x86"
         }
     }
 //    sourceSets.main {

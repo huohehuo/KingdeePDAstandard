@@ -19,6 +19,7 @@ public class EventBusInfoCode {
     public static final String Prop_OK = "111104";
     public static final String Prop_Error = "111105";
 
+    public static final String Register_Result = "111106";
 
 
 

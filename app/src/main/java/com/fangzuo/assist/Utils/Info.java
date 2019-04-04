@@ -20,4 +20,6 @@ public class Info {
     public static final String Storage="storage";
 
 
+    public static final int RegisterNo = 1;
+
 }
