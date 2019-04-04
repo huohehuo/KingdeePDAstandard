@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.DepartmentSpAdapter;
 import com.fangzuo.assist.Adapter.InStoreTypeSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
@@ -17,6 +18,7 @@ import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Dao.Department;
 import com.fangzuo.assist.Dao.InStoreType;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
@@ -92,15 +94,16 @@ public class SpinnerStoreType extends RelativeLayout {
                     share.getVersion(),
                     choose
             );
-            Asynchttp.post(context, share.getBaseURL() + WebApi.DOWNLOADDATA, json, new Asynchttp.Response() {
+            App.getRService().doIOAction(WebApi.DOWNLOADDATA, json, new MySubscribe<CommonResponse>() {
                 @Override
-                public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                public void onNext(CommonResponse cBean) {
+                    super.onNext(cBean);
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     InStoreTypeDao yuandanTypeDao = daoSession.getInStoreTypeDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.inStorageTypes);
                     yuandanTypeDao.detachAll();
-                    if (container.size()<=0){
+                    if (dBean.inStorageTypes.size()>0 && container.size()<=0){
                         container.addAll(dBean.inStorageTypes);
                         adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
@@ -108,8 +111,8 @@ public class SpinnerStoreType extends RelativeLayout {
                 }
 
                 @Override
-                public void onFailed(String Msg, AsyncHttpClient client) {
-//                    Toast.showText(context, Msg);
+                public void onError(Throwable e) {
+//                    super.onError(e);
                 }
             });
         }

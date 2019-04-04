@@ -182,9 +182,6 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
     private String fprice;
     private PushDownSub pushDownSub;
     private PushDownSubDao pushDownSubDao;
-    private int year;
-    private int month;
-    private int day;
     private String datePay;
     private String date;
     private PushDownMainDao pushDownMainDao;
@@ -225,9 +222,6 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getPDMTisAuto());
         isAuto = share.getPDMTisAuto();
         isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
@@ -393,7 +387,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
         }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = waveHouseID;
+            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
             iBean.FBatchNo = batchNo;
             iBean.FStockID = storageID;
             iBean.FItemID = (product.FItemID);
@@ -417,7 +411,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
             InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().
                     where(InStorageNumDao.Properties.FItemID.eq(product.FItemID), InStorageNumDao.Properties.FStockID.eq(storageID),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID == null ? "0" : waveHouseID), InStorageNumDao.Properties.FBatchNo.eq(batchNo == null ? "" : batchNo)).build().list();
+                            InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()), InStorageNumDao.Properties.FBatchNo.eq(batchNo == null ? "" : batchNo)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
                 qty = MathUtil.toD(list1.get(0).FQty);
@@ -451,9 +445,9 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(waveHouseID)) {
+        if (!"".equals(spWavehouse.getWaveHouseId())) {
             for (T_Detail bean : list) {
-                if (!waveHouseID.equals(bean.FPositionId)) {
+                if (!spWavehouse.getWaveHouseId().equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -553,6 +547,18 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
 //            }
 //        });
 
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -786,20 +792,11 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.btn_add, R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -807,7 +804,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
 
         }
@@ -819,29 +816,6 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
         super.onResume();
         Log.e("resume", "resume");
         getList();
-    }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
     }
 
 
@@ -882,11 +856,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                     }
                 }
 
-                ProgressDialog pg = new ProgressDialog(mContext);
-                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                pg.setMessage("请稍后...");
-                pg.setCancelable(false);
-                pg.show();
+                LoadingUtil.show(mContext,"请稍后...");
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
@@ -895,7 +865,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                             T_DetailDao.Properties.FUnitId.eq(unitId),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(storageID),
-                            T_DetailDao.Properties.FPositionId.eq(waveHouseID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
                             T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
@@ -956,8 +926,8 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -976,12 +946,12 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
                     pushDownSubListAdapter.notifyDataSetChanged();
                     qty = 0.0;
                     resetAll();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 } else {
                     Toast.showText(mContext, "添加失败，请重试");
                     MediaPlayer.getInstance(mContext).error();
                     qty = 0.0;
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 }
 
             } else {
@@ -1007,7 +977,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
         }
         if (fBatchManager) {
             spBatchNo.setEnabled(true);
-            spBatchNo.setAuto(storageID, waveHouseID, productID, "");
+            spBatchNo.setAuto(storageID, spWavehouse.getWaveHouseId(), productID, "");
 
 //            if (BasicShareUtil.getInstance(mContext).getIsOL()) {
 //                final List<InStorageNum> container = new ArrayList<>();
@@ -1147,7 +1117,7 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.SCRWSCLLUpload, gson.toJson(pBean));
+        DataModel.upload(WebApi.SCRWSCLLUpload, gson.toJson(pBean));
 //        postToServer(data);
 
     }
@@ -1240,14 +1210,4 @@ public class ShengchanrenwudanxiatuilingliaoActivity extends BaseActivity {
         startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
 
-
-    //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst = false;
-    private boolean isFirst2 = false;
-    private boolean isFirst3 = false;
-    private boolean isFirst4 = false;
-    private boolean isFirst5 = false;
-    private boolean isFirst6 = false;
-    private boolean isFirst7 = false;
-    private boolean isFirst8 = false;
 }

@@ -120,6 +120,7 @@
 
                             <EditText
                                 android:id="@+id/edghunit"
+                                android:selectAllOnFocus="true"
                                 android:layout_width="0dp"
                                 android:layout_height="40dp"
                                 android:layout_weight="3"
@@ -137,10 +138,10 @@
                             android:layout_height="match_parent"
                             android:background="@color/divider_color" />
 
-                        <Spinner
+                        <com.fangzuo.assist.widget.SpinnerStorage
                             android:id="@+id/sp_which_storage"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textSize="15sp" />
 
@@ -192,6 +193,7 @@
                             android:layout_weight="8"
                             android:background="@android:drawable/edit_text"
                             android:gravity="center_vertical"
+                            android:selectAllOnFocus="true"
                             android:imeOptions="actionNone"
                             android:singleLine="true" />
 

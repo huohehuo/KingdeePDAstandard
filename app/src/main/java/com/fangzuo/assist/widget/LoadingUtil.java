@@ -1,5 +1,6 @@
 package com.fangzuo.assist.widget;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -95,12 +96,17 @@ public class LoadingUtil {
      * 隐藏
      */
     public static void dismiss() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
+        try{
+            if (loadingDialog != null && loadingDialog.isShowing()) {
+                loadingDialog.dismiss();
+            }
+            if (mDialog !=null && mDialog.isShowing()) {
+                mDialog.dismiss();
+            }
+        }catch (Exception e){
+
         }
-        if (mDialog !=null && mDialog.isShowing()) {
-            mDialog.dismiss();
-        }
+
     }
 
 
@@ -191,6 +197,23 @@ public class LoadingUtil {
             loadingDialog.dismiss();
         }
     }
-
+    //弹窗提示
+    public static void showAlter(Context mContext,String title,String msg){
+        new AlertDialog.Builder(mContext)
+                .setTitle(title)
+                .setMessage(msg)
+                .setPositiveButton("确认",null)
+                .create().show();
+    }
+    //弹窗提示,是否可以点击外部取消
+    public static void showAlter(Context mContext,String title,String msg,boolean cancele){
+        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+        ab.setTitle(title);
+        ab.setMessage(msg);
+        ab.setPositiveButton("确认",null);
+        final AlertDialog alertDialog = ab.create();
+        alertDialog.setCanceledOnTouchOutside(cancele);
+        alertDialog.show();
+    }
 
 }

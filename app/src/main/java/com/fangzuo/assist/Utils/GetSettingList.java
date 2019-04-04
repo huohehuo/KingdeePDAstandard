@@ -13,16 +13,6 @@ import java.util.ArrayList;
  */
 
 public class GetSettingList {
-    public static ArrayList<SettingList> getList() {
-        ArrayList<SettingList> items = new ArrayList<>();
-        items.add(new SettingList("下载配置",R.mipmap.download));
-        items.add(new SettingList("wifi连接",R.mipmap.wifi));
-        items.add(new SettingList("声音设置",R.mipmap.sound));
-        items.add(new SettingList("更新版本",R.mipmap.getnewversion));
-        items.add(new SettingList("服务器设置",R.mipmap.tomcat));
-        items.add(new SettingList("网络测试",R.mipmap.test));
-        return items;
-    }
     public static ArrayList<SettingList> getPurchaseList() {
         ArrayList<SettingList> items = new ArrayList<>();
         items.add(new SettingList("采购订单",R.mipmap.purchaseorder));
@@ -75,6 +65,16 @@ public class GetSettingList {
         items.add(new SettingList("销售出库单验货",R.mipmap.pandian));
         items.add(new SettingList("发货通知生成调拨单",R.mipmap.pandian));
 //        items.add(new SettingList("产品入库验货",R.mipmap.pandian));
+        return items;
+    }
+    public static ArrayList<SettingList> getList() {
+        ArrayList<SettingList> items = new ArrayList<>();
+        items.add(new SettingList("下载配置",R.mipmap.download));
+        items.add(new SettingList("wifi连接",R.mipmap.wifi));
+        items.add(new SettingList("声音设置",R.mipmap.sound));
+        items.add(new SettingList("更新版本",R.mipmap.getnewversion));
+        items.add(new SettingList("服务器设置",R.mipmap.tomcat));
+        items.add(new SettingList("网络测试",R.mipmap.test));
         return items;
     }
 }

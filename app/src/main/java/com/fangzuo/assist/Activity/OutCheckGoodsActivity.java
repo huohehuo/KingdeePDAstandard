@@ -199,6 +199,18 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         isAutoAdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -499,20 +511,11 @@ public class OutCheckGoodsActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder})
+    @OnClick({R.id.btn_add, R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -565,7 +568,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                             T_DetailDao.Properties.FUnitId.eq(unitId),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(storageID == null ? "0" : storageID),
-                            T_DetailDao.Properties.FPositionId.eq(waveHouseID == null ? "0" : waveHouseID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
                             T_DetailDao.Properties.FBatch.eq(batchNo == null ? "" : batchNo)
                     ).build().list();
@@ -589,8 +592,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "0" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = ShareUtil.getInstance(mContext).getsetUserID();
                 t_detail.FQuantity = num;

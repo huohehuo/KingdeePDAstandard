@@ -6,6 +6,8 @@ package com.fangzuo.assist.Utils;
 
 public class WebApi {
     public static final String OCUPLOAD = "PushDownOCUpload";
+    public static final String GetUseTime = "GetUseTime";
+    public static final String SetUseTime = "SetUseTime";
 
     public static final String SCRWSCLLUpload = "SCRWSCLLUpload";
     public static final String SCRWDPDSCHBDUPLOAD = "SCRWDPDSCHBDUpload";
@@ -52,5 +54,7 @@ public class WebApi {
     public static final String SUPPLIERSEARCHLIKE = "SupplerSearchLike";
     public static final String CLIENTSEARCHLIKE = "ClientSearchLike";
     public static final String SEARCHJHSEARCHLIKE = "jhSearchLike";
+
+    public static final String DownloadInfoForFile = "DownloadInfoForFile";
 
 }

@@ -134,9 +134,6 @@ public class ProducePushInStoreActivity extends BaseActivity {
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     private CommonMethod method;
-    private int year;
-    private int month;
-    private int day;
     private ArrayList<PushDownSub> container;
     private ArrayList<String> fidcontainer;
     private StorageSpAdapter storageSpinner;
@@ -205,9 +202,6 @@ public class ProducePushInStoreActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = this;
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getSLTZisAuto());
         isAuto = share.getSLTZisAuto();
         edPihao.setEnabled(false);
@@ -279,6 +273,18 @@ public class ProducePushInStoreActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -634,20 +640,11 @@ public class ProducePushInStoreActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date,})
+    @OnClick({R.id.btn_add,R.id.btn_checkorder, R.id.tv_date,})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -655,7 +652,7 @@ public class ProducePushInStoreActivity extends BaseActivity {
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
         }
     }
@@ -789,7 +786,7 @@ public class ProducePushInStoreActivity extends BaseActivity {
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID == null ? "0" : waveHouseID),
+                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
@@ -852,8 +849,8 @@ public class ProducePushInStoreActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "0" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -984,7 +981,7 @@ public class ProducePushInStoreActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.PUSHDOWNPPISUPLOAD, gson.toJson(pBean));
+        DataModel.upload(WebApi.PUSHDOWNPPISUPLOAD, gson.toJson(pBean));
 //        postToServer(data);
 
     }
@@ -1076,60 +1073,4 @@ public class ProducePushInStoreActivity extends BaseActivity {
         b.putInt("123", tag);
         startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, month, day);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
-    }
-
-    private void getPaydate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                datePay = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                Toast.showText(mContext, datePay);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
-    }
-
-    //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst = false;
-    private boolean isFirst2 = false;
-    private boolean isFirst3 = false;
-    private boolean isFirst4 = false;
-    private boolean isFirst5 = false;
-    private boolean isFirst6 = false;
-    private boolean isFirst7 = false;
-    private boolean isFirst8 = false;
 }

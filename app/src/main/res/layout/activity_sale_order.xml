@@ -163,6 +163,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
+                            android:selectAllOnFocus="true"
                             android:background="@android:drawable/edit_text"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"

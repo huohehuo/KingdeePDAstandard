@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.fangzuo.assist.ABase.BaseActivity;
@@ -59,6 +60,8 @@ public class ProductSearchActivity extends BaseActivity {
     TextView model;
     @BindView(R.id.name)
     TextView name;
+    @BindView(R.id.pg)
+    ProgressBar pg;
     private String searchString;
     private ProductSearchActivity mContext;
     private SearchAdapter ada;
@@ -109,9 +112,10 @@ public class ProductSearchActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.PRODUCTSEARCHLIKE, searchString, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                        pg.setVisibility(View.GONE);
                         DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
                         items = dBean.products;
-                        Log.e("getProduct:",items.toString());
+                        Log.e("getProduct:", items.toString());
                         itemAll = new ArrayList<>();
                         itemAll.addAll(items);
                         if (itemAll.size() > 0) {
@@ -141,6 +145,7 @@ public class ProductSearchActivity extends BaseActivity {
                         orderAsc(ProductDao.Properties.FNumber).limit(50).orderAsc(ProductDao.Properties.FNumber).build().list();
                 itemAll = new ArrayList<>();
                 itemAll.addAll(items);
+                pg.setVisibility(View.GONE);
                 if (itemAll.size() > 0) {
                     ada = new SearchAdapter(mContext, itemAll);
                     lvResult.setAdapter(ada);
@@ -160,6 +165,7 @@ public class ProductSearchActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.SUPPLIERSEARCHLIKE, searchString, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                        pg.setVisibility(View.GONE);
                         DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
                         suppliersList = dBean.suppliers;
                         itemAllSupplier = new ArrayList<>();
@@ -180,7 +186,7 @@ public class ProductSearchActivity extends BaseActivity {
                         Toast.showText(mContext, Msg);
                     }
                 });
-            }else{
+            } else {
                 SuppliersDao suppliersDao = GreenDaoManager.getmInstance(mContext).getDaoSession().getSuppliersDao();
                 List<Suppliers> list = suppliersDao.queryBuilder().whereOr(
                         SuppliersDao.Properties.FName.like("%" + searchString + "%"),
@@ -188,6 +194,7 @@ public class ProductSearchActivity extends BaseActivity {
                 ).orderAsc(SuppliersDao.Properties.FItemID).limit(50).build().list();
                 itemAllSupplier = new ArrayList<>();
                 itemAllSupplier.addAll(list);
+                pg.setVisibility(View.GONE);
                 if (itemAllSupplier.size() > 0) {
                     SearchSupplierAdapter ada1 = new SearchSupplierAdapter(mContext, itemAllSupplier);
                     lvResult.setAdapter(ada1);
@@ -199,7 +206,7 @@ public class ProductSearchActivity extends BaseActivity {
                 }
 
             }
-                //客户
+            //客户
         } else if (where == Info.SEARCHCLIENT) {
             model.setText("编号");
             name.setText("名称");
@@ -207,6 +214,7 @@ public class ProductSearchActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.CLIENTSEARCHLIKE, searchString, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                        pg.setVisibility(View.GONE);
                         DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
                         itemClient = dBean.clients;
                         itemAllClient = new ArrayList<>();
@@ -227,11 +235,12 @@ public class ProductSearchActivity extends BaseActivity {
                         Toast.showText(mContext, Msg);
                     }
                 });
-            }else{
+            } else {
                 ClientDao clientDao = GreenDaoManager.getmInstance(mContext).getDaoSession().getClientDao();
                 List<Client> clients = clientDao.queryBuilder().whereOr(ClientDao.Properties.FName.like("%" + searchString + "%"), ClientDao.Properties.FItemID.like("%" + searchString + "%")).orderAsc(ClientDao.Properties.FItemID).build().list();
                 itemAllClient = new ArrayList<>();
                 itemAllClient.addAll(clients);
+                pg.setVisibility(View.GONE);
                 if (itemAllClient.size() > 0) {
                     SearchClientAdapter ada2 = new SearchClientAdapter(mContext, itemAllClient);
                     lvResult.setAdapter(ada2);
@@ -242,7 +251,7 @@ public class ProductSearchActivity extends BaseActivity {
                     onBackPressed();
                 }
             }
-        //交货单位
+            //交货单位
         } else if (where == Info.SEARCHJH) {
             model.setText("编号");
             name.setText("名称");
@@ -250,6 +259,7 @@ public class ProductSearchActivity extends BaseActivity {
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.SEARCHJHSEARCHLIKE, searchString, new Asynchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                        pg.setVisibility(View.GONE);
                         DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
                         goodsDepartmentList = dBean.getGoodsDepartments;
                         goodsDepartmentAllList = new ArrayList<>();
@@ -270,7 +280,7 @@ public class ProductSearchActivity extends BaseActivity {
                         Toast.showText(mContext, Msg);
                     }
                 });
-            }else{
+            } else {
                 GetGoodsDepartmentDao getGoodsDepartmentDao = GreenDaoManager.getmInstance(mContext).getDaoSession().getGetGoodsDepartmentDao();
                 List<GetGoodsDepartment> list = getGoodsDepartmentDao.queryBuilder().whereOr(
                         GetGoodsDepartmentDao.Properties.FNumber.like("%" + searchString + "%"),
@@ -278,6 +288,7 @@ public class ProductSearchActivity extends BaseActivity {
                 ).build().list();
                 goodsDepartmentList = new ArrayList<>();
                 goodsDepartmentList.addAll(list);
+                pg.setVisibility(View.GONE);
                 if (goodsDepartmentList.size() > 0) {
                     SearchDepartmentAdapter ada3 = new SearchDepartmentAdapter(mContext, goodsDepartmentList);
                     lvResult.setAdapter(ada3);
@@ -302,7 +313,7 @@ public class ProductSearchActivity extends BaseActivity {
                 Intent mIntent = new Intent();
                 Bundle b = new Bundle();
                 if (where == Info.SEARCHPRODUCT) {
-                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.PRODUCTRETURN,itemAll.get(i)));
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.PRODUCTRETURN, itemAll.get(i)));
                     setResult(Info.SEARCHFORRESULT, mIntent);
                     onBackPressed();
                 } else if (where == Info.SEARCHSUPPLIER) {

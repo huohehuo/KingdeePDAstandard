@@ -132,12 +132,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
-
-                        <Spinner
+                        <com.fangzuo.assist.widget.SpinnerStorage
                             android:id="@+id/sp_storage"
                             android:layout_width="0dp"
-                            android:layout_height="40dp"
-                            android:layout_weight="1" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="15sp" />
 
                         <View
                             android:layout_width="1dp"

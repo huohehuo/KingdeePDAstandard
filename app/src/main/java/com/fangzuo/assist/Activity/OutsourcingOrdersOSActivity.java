@@ -131,9 +131,6 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     private CommonMethod method;
-    private int year;
-    private int month;
-    private int day;
     private ArrayList<PushDownSub> container;
     private ArrayList<String> fidcontainer;
     private StorageSpAdapter storageSpinner;
@@ -205,9 +202,6 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
         ButterKnife.bind(this);
         mContext = this;
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getSLTZisAuto());
         isAuto = share.getSLTZisAuto();
         isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
@@ -267,6 +261,18 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         spWeiwaileixing.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -557,52 +563,20 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
         getList();
     }
 
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
-    }
-
-
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.btn_add,R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
                 break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
-                break;
+
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
                 b.putInt("activity", activity);
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
 
         }
@@ -718,7 +692,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
         }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = waveHouseID;
+            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
             iBean.FBatchNo = batchNo;
             iBean.FStockID = storageID;
             iBean.FItemID = product.FItemID;
@@ -746,7 +720,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().
                     where(InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                             InStorageNumDao.Properties.FStockID.eq(storageID),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
+                            InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
                             InStorageNumDao.Properties.FBatchNo.eq(batchNo)
                     ).build().list();
             if (list1.size() > 0) {
@@ -783,9 +757,9 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(waveHouseID)) {
+        if (!"".equals(spWavehouse.getWaveHouseId())) {
             for (T_Detail bean : list) {
-                if (!waveHouseID.equals(bean.FPositionId)) {
+                if (!spWavehouse.getWaveHouseId().equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -831,16 +805,11 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                         return;
                     }
                 }
-                ProgressDialog pg = new ProgressDialog(mContext);
-                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                pg.setMessage("请稍后...");
-                pg.setCancelable(false);
-                pg.show();
-
+                LoadingUtil.show(mContext,"请稍后...");
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID == null ? "0" : waveHouseID),
+                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
@@ -902,8 +871,8 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "0" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -921,11 +890,11 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                     edNum.setText("");
                     pushDownSubListAdapter.notifyDataSetChanged();
                     resetAll();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 } else {
                     Toast.showText(mContext, "添加失败，请重试");
                     MediaPlayer.getInstance(mContext).error();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 }
 
             } else {
@@ -940,7 +909,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
     private void getBatchNo() {
         if (fBatchManager) {
             spBatchNo.setEnabled(true);
-            spBatchNo.setAuto(storageID, waveHouseID, productID, "");
+            spBatchNo.setAuto(storageID, spWavehouse.getWaveHouseId(), productID, "");
 //            if (BasicShareUtil.getInstance(mContext).getIsOL()) {
 //                final List<InStorageNum> container = new ArrayList<>();
 //                GetBatchNoBean gBean = new GetBatchNoBean();
@@ -1096,7 +1065,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.PushDownOCOSUpload, gson.toJson(pBean));
+        DataModel.upload( WebApi.PushDownOCOSUpload, gson.toJson(pBean));
 //        postToServer(data);
 
     }

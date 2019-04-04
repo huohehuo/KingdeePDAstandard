@@ -5,6 +5,7 @@
     android:descendantFocusability="blocksDescendants"
      >
     <CheckBox
+        android:clickable="false"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:id="@+id/cb_ischeck"/>

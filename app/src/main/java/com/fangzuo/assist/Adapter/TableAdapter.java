@@ -14,6 +14,7 @@ import com.fangzuo.assist.Activity.DBActivity;
 import com.fangzuo.assist.Dao.T_Detail;
 import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.T_mainDao;
@@ -71,7 +72,7 @@ public class TableAdapter extends BaseAdapter implements View.OnClickListener {
         T_mainDao t_mainDao = daoSession.getT_mainDao();
         List<T_main> t_mains = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(detail.get(i).FOrderId),T_mainDao.Properties.Activity.eq(detail.get(i).activity)).build().list();
         if(t_mains.size()>0){
-            if(t_mains.get(0).activity== DBActivity.DB){
+            if(t_mains.get(0).activity== Config.DBActivity){
                 viewHolder.llWavehosue.setVisibility(View.VISIBLE);
                 viewHolder.productname.setText("单据编号:" + t_mains.get(0).orderId);
                 viewHolder.productId.setText("物料编码:" + detail.get(i).FProductCode);

@@ -2,12 +2,29 @@ package com.fangzuo.assist.Utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 
 import com.fangzuo.assist.Activity.Crash.App;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
+import com.fangzuo.assist.widget.LoadingUtil;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,11 +45,11 @@ public class CommonUtil {
     public static List<String> ScanBack(String code) {
         List<String> list = new ArrayList<>();
         if (code.contains("/")) {
-            String[] split = code.split("/",3);
-            Log.e("code:",split.length+"");
-            if (split.length==3){
+            String[] split = code.split("/", 3);
+            Log.e("code:", split.length + "");
+            if (split.length == 3) {
                 String fcode = split[0];
-                if (fcode.length()>12){
+                if (fcode.length() > 12) {
                     try {
                         String barcode = fcode.substring(0, 12);
                         list.add(barcode);
@@ -44,15 +61,15 @@ public class CommonUtil {
                         Toast.showText(App.getContext(), "条码有误");
                         return new ArrayList<>();
                     }
-                }else{
+                } else {
                     Toast.showText(App.getContext(), "条码有误");
                     return new ArrayList<>();
                 }
-            }else{
+            } else {
                 Toast.showText(App.getContext(), "条码有误");
                 return new ArrayList<>();
             }
-        }else{
+        } else {
             Toast.showText(App.getContext(), "条码有误");
             return new ArrayList<>();
         }
@@ -90,39 +107,171 @@ public class CommonUtil {
     }
 
 
-
     //生成单据编号
-    public static long createOrderCode(Activity activity){
-        Long ordercode=0l;
-        ShareUtil share =ShareUtil.getInstance(activity.getApplicationContext());
+    public static long createOrderCode(Activity activity) {
+        Long ordercode = 0l;
+        ShareUtil share = ShareUtil.getInstance(activity.getApplicationContext());
         if (share.getOrderCode(activity) == 0) {
             ordercode = Long.parseLong(getTimeLong(false) + "001");
-            share.setOrderCode(activity,ordercode);
+            share.setOrderCode(activity, ordercode);
         } else {
             //当不是当天时，生成新的单据，重新计算
-            if (String.valueOf(share.getOrderCode(activity)).contains(getTime(false))){
-                ordercode =share.getOrderCode(activity);
-            }else{
+            if (String.valueOf(share.getOrderCode(activity)).contains(getTime(false))) {
+                ordercode = share.getOrderCode(activity);
+            } else {
                 ordercode = Long.parseLong(getTimeLong(false) + "001");
-                share.setOrderCode(activity,ordercode);
+                share.setOrderCode(activity, ordercode);
             }
         }
         Log.e("生成新的单据:", ordercode + "");
         return ordercode;
     }
-    public static String getTime(boolean b){
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd":"yyyyMMdd");
+
+    public static String getTime(boolean b) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b ? "yyyy-MM-dd" : "yyyyMMdd");
         Date curDate = new Date();
-        Log.e("date",curDate.toString());
+        Log.e("date", curDate.toString());
         String str = format.format(curDate);
         return str;
     }
-    public static String getTimeLong(boolean b){
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd-HH-mm-ss":"yyyyMMddHHmmss");
+
+    public static String getTimeLong(boolean b) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b ? "yyyy-MM-dd-HH-mm-ss" : "yyyyMMddHHmmss");
         Date curDate = new Date();
-        Log.e("date",curDate.toString());
+        Log.e("date", curDate.toString());
         String str = format.format(curDate);
         return str;
+    }
+
+    //获取条码中的年份和周数确定日期
+    public static String getDateFromScan(String strDate) {
+        if (strDate.length() == 4) {
+            String year = "20" + strDate.substring(0, 2);
+            String week = strDate.substring(2, 4);
+            int day = (Integer.parseInt(week) - 1) * 7 + 3;
+            Lg.e("year：" + year);
+            Lg.e("week：" + week);
+            Lg.e("天数：" + day);
+            Calendar cld = Calendar.getInstance();
+            cld.set(Calendar.YEAR, Integer.parseInt(year));
+            cld.set(Calendar.MONTH, 0);
+            cld.set(Calendar.DATE, 0);
+            //调用Calendar类中的add()，增加时间量
+            cld.add(Calendar.DATE, day);
+            Date date = cld.getTime();
+            SimpleDateFormat format = new SimpleDateFormat(true ? "yyyy-MM-dd" : "yyyyMMdd");
+            Log.e("date", date.toString());
+            String str = format.format(date);
+            Lg.e("date:" + str);
+            return str;
+        }
+
+/*//           System.out.println("增加100天的日期为："+cld.get(Calendar.YEAR)+"年"+cld.get(Calendar.MONTH)+"月"+cld.get(Calendar.DATE)+"日");
+  //知道年份，第几周，周几，计算日期
+Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.YEAR, 2018); // 2016年
+        cal.set(Calendar.WEEK_OF_YEAR, 53); // 设置为2016年的第10周
+        cal.set(Calendar.DAY_OF_WEEK, 4); // 1表示周日，2表示周一，7表示周六
+        Date date = cal.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(true ? "yyyy-MM-dd" : "yyyyMMdd");
+        Log.e("date", date.toString());
+        String str = format.format(date);//确定2019年第二周的周一的日期
+        Lg.e("date:"+str);*/
+
+        return getTime(true);
+    }
+
+    //读取本地下载好的txt数据包，解析
+    public static String getString(String txtName) {
+        String lineTxt = null;
+        StringBuilder builder = new StringBuilder();
+        try {
+
+            File file = new File(txtName);
+            if (file.isFile() && file.exists()) {
+//                InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "UTF-8");
+                InputStreamReader isr = new InputStreamReader(new FileInputStream(file), "GBK");
+                BufferedReader br = new BufferedReader(isr);
+                while ((lineTxt = br.readLine()) != null) {
+                    lineTxt+=br.readLine();
+                    Lg.e("读取txt:"+lineTxt);
+                    if (!"".equals(lineTxt)){
+                        builder.append(lineTxt);
+//                        Lg.e("读取txt2:"+builder.toString());
+                    }
+                }
+                br.close();
+                return builder.toString().substring(1,builder.toString().length()-4);
+            } else {
+                System.out.println("文件不存在!");
+            }
+
+//            File f = new File(txtName);
+//            //以防有中文名路径，中文路径里面的空格会被"%20"代替
+//            txtName = java.net.URLDecoder.decode(txtName, "utf-8");
+//
+//            FileInputStream redis = new FileInputStream(f);
+////            br = new BufferedReader(new InputStreamReader(redis));
+//
+//            InputStream inputStream = App.getContext().getResources().getAssets().open(txtName);
+//            byte[] arrayOfByte = new byte[inputStream.available()];
+//            inputStream.read(arrayOfByte);
+//            inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lineTxt;
+    }
+
+
+    public static void  DownLoadJson(String downLoadURL) {
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            final String target = Environment.getExternalStorageDirectory()
+                    + "/checkforuser"+getTimeLong(false)+".txt";
+            App.JsonFile = target;
+            HttpUtils utils = new HttpUtils();
+            utils.download(downLoadURL, target, new RequestCallBack<File>() {
+                @Override
+                public void onLoading(long total, long current,
+                                      boolean isUploading) {
+                    super.onLoading(total, current, isUploading);
+//                    System.out.println("下载进度:" + current + "/" + total);
+//                    pDialog.setProgress((int) (current*100/total));
+                }
+
+                @Override
+                public void onSuccess(ResponseInfo<File> arg0) {
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Down_json_file,"OK"));
+                }
+
+                @Override
+                public void onFailure(com.lidroid.xutils.exception.HttpException arg0, String arg1) {
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Down_json_file,""));
+                }
+
+
+            });
+        } else {
+
+        }
+    }
+    //解密加密的时间
+    public static String dealTime(String timemd){
+//        Lg.e("加密的日期："+timemd);
+        StringBuffer buffer = new StringBuffer()
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(0)+"")+1))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(1)+"")+2))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(2)+"")+3))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(3)+"")+4))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(4)+"")+5))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(5)+"")+6))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(6)+"")+7))
+                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(7)+"")+8));
+//        Lg.e("解析日期："+buffer.toString());
+        return buffer.toString();
     }
 }
 

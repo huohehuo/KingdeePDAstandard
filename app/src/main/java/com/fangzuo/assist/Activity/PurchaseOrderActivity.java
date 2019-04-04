@@ -184,9 +184,6 @@ public class PurchaseOrderActivity extends BaseActivity {
 //    private String ManagerId;
 //    private String ManagerName;
     private long ordercode;
-    private int year;
-    private int month;
-    private int day;
     private String date;
     private String supplierid;
     private String supplierName;
@@ -196,25 +193,15 @@ public class PurchaseOrderActivity extends BaseActivity {
     private UnitSpAdapter unitAdapter;
     private String dateArrive;
     private String datePay;
-    private boolean isHebing = true;
-    private String unitId;
-    private String unitName;
+//    private String unitId;
+//    private String unitName;
+//    private double unitrate;
     private String default_unitID;
-    private double unitrate;
     private boolean isAuto;
     private Product product;
     private ProductselectAdapter productselectAdapter;
     private ProductselectAdapter1 productselectAdapter1;
     private int activity = Config.PurchaseOrderActivity;
-
-    private boolean isFirst = false;
-    private boolean isFirst2 = false;
-    private boolean isFirst3 = false;
-    private boolean isFirst4 = false;
-    private boolean isFirst5 = false;
-    private boolean isFirst6 = false;
-    private boolean isFirst7 = false;
-
     @Override
     public void initView() {
         setContentView(R.layout.activity_purchase_order);
@@ -223,10 +210,7 @@ public class PurchaseOrderActivity extends BaseActivity {
         share = ShareUtil.getInstance(mContext);
         initDrawer(mDrawer);
         df = new DecimalFormat("######0.00");
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-        cbHebing.setChecked(isHebing);
+        cbHebing.setChecked(true);
         edOnsale.setText("0");
         autoAdd.setChecked(share.getPOisAuto());
         isAuto = share.getPOisAuto();
@@ -268,46 +252,15 @@ public class PurchaseOrderActivity extends BaseActivity {
     @Override
     public void initData() {
         method = CommonMethod.getMethod(mContext);
-//        if (share.getPOOrderCode() == 0) {
-//            ordercode = Long.parseLong(getTime(false) + "001");
-//            Log.e("ordercode", ordercode + "");
-//            share.setPOOrderCode(ordercode);
-//        } else {
-//            ordercode = share.getPOOrderCode();
-//            Log.e("ordercode", ordercode + "");
-//        }
         ordercode = CommonUtil.createOrderCode(this);
-
         loadBasicData();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                loadBasicData();
-//            }
-//        }, 1000);
-//        spDepartment.setSelection(share.getPODepartment());
-//        spPurchaseMethod.setSelection(share.getPOPurchaseMethod());
-//        spPurchaseScope.setSelection(share.getPOPurchaseRange());
-//        spYuandan.setSelection(share.getPOYuandan());
-//        spPayMethod.setSelection(share.getPOPayMethod());
-//        spEmployee.setSelection(share.getPOEmployee());
-//        spManager.setSelection(share.getPOManager());
     }
 
     private void loadBasicData() {
         tvDateArrive.setText(getTime(true));
         tvDate.setText(share.getPOdate());
         tvDatePay.setText(share.getPOpaydate());
-
-//        purchaseScopeAdapter = method.getPurchaseScope(spPurchaseScope);
-//        purchaseMethodSpAdapter = method.getPurchaseMethodSpinner(spPurchaseMethod);
-//        yuandanSpAdapter = method.getyuandanSp(spYuandan);
-//        payTypeSpAdapter = method.getpayType(spPayMethod);
-//        departMentAdapter = method.getDepartMentAdapter(spDepartment);
-//        employeeAdapter = method.getEmployeeAdapter(spEmployee);
-//        managerAdapter=method.getEmployeeAdapter(spManager);
         method.updateSupplier();
-
         //第一个参数用于保存上一个值，第二个为自动跳转到该默认值
         spEmployee.setAutoSelection(getString(R.string.spEmployee_po), "");
         spManager.setAutoSelection(getString(R.string.spManager_po), "");
@@ -320,11 +273,16 @@ public class PurchaseOrderActivity extends BaseActivity {
 
     @Override
     public void initListener() {
-
-        cbHebing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isHebing = b;
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
             }
         });
         autoAdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -508,24 +466,24 @@ public class PurchaseOrderActivity extends BaseActivity {
 //            }
 //        });
 
-        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-                if (unit != null) {
-                    unitId = unit.FMeasureUnitID;
-                    unitName = unit.FName;
-                    unitrate = MathUtil.toD(unit.FCoefficient);
-                    Log.e("选取单位：", unit.toString() + "");
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
+//                if (unit != null) {
+//                    unitId = unit.FMeasureUnitID;
+//                    unitName = unit.FName;
+//                    unitrate = MathUtil.toD(unit.FCoefficient);
+//                    Log.e("选取单位：", unit.toString() + "");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -535,14 +493,14 @@ public class PurchaseOrderActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.search_supplier, R.id.tv_date_arrive, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
+    @OnClick({R.id.search_supplier, R.id.tv_date_arrive, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.search_supplier:
                 SearchSupplier();
                 break;
             case R.id.tv_date_arrive:
-                getArrivedate();
+                datePicker(tvDateArrive);
                 break;
             case R.id.scanbyCamera:
                 Intent in = new Intent(mContext, CaptureActivity.class);
@@ -561,26 +519,16 @@ public class PurchaseOrderActivity extends BaseActivity {
             case R.id.btn_finishorder:
                 finishOrder();
                 break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
-
-                break;
             case R.id.btn_checkorder:
                 Bundle b1 = new Bundle();
                 b1.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b1);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
             case R.id.tv_date_pay:
-                getPaydate();
+                datePicker(tvDatePay);
                 break;
         }
     }
@@ -673,7 +621,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                             View v = LayoutInflater.from(mContext).inflate(R.layout.pd_alert, null);
                             ListView lv = v.findViewById(R.id.lv_alert);
                             productselectAdapter1 = new ProductselectAdapter1(mContext, dBean.products);
-                            lv.setAdapter(productselectAdapter);
+                            lv.setAdapter(productselectAdapter1);
                             ab.setView(v);
                             final AlertDialog alertDialog = ab.create();
                             alertDialog.show();
@@ -695,8 +643,9 @@ public class PurchaseOrderActivity extends BaseActivity {
             } else {
                 final ProductDao productDao = daoSession.getProductDao();
                 BarCodeDao barCodeDao = daoSession.getBarCodeDao();
-                final List<BarCode> barCodes = barCodeDao.queryBuilder().where(BarCodeDao.Properties.FBarCode.eq(fnumber)).build().list();
-
+                final List<BarCode> barCodes = barCodeDao.queryBuilder().where(
+                        BarCodeDao.Properties.FBarCode.eq(fnumber)
+                ).build().list();
                 if (barCodes.size() > 0) {
                     if (barCodes.size() == 1) {
                         default_unitID = barCodes.get(0).FUnitID;
@@ -799,10 +748,10 @@ public class PurchaseOrderActivity extends BaseActivity {
                     Toast.showText(mContext, "请输入供应商");
                 }
             } else {
-                if (isHebing) {
+                if (cbHebing.isChecked()) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
                             T_DetailDao.Properties.Activity.eq(activity),
-                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
                             T_DetailDao.Properties.FOrderId.eq(ordercode),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
@@ -828,7 +777,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                 t_main.FPaymentDate = tvDatePay.getText().toString();
                 t_main.orderId = ordercode;
                 t_main.orderDate = tvDate.getText().toString();
-                t_main.FPurchaseUnit = unitName == null ? "" : unitName;
+                t_main.FPurchaseUnit = spUnit.getDataName();
                 t_main.FSalesMan = spEmployee.getEmployeeName();
                 t_main.FSalesManId = spEmployee.getEmployeeId();
                 t_main.FMaker = share.getUserName();
@@ -862,8 +811,8 @@ public class PurchaseOrderActivity extends BaseActivity {
                 t_detail.model = product.FModel;
                 t_detail.FProductName = product.FName;
                 t_detail.FIndex = second;
-                t_detail.FUnitId = unitId == null ? "" : unitId;
-                t_detail.FUnit = unitName == null ? "" : unitName;
+                t_detail.FUnitId = spUnit.getDataId();
+                t_detail.FUnit = spUnit.getDataName();
                 t_detail.FDateDelivery = tvDateArrive.getText().toString();
                 t_detail.FStorage = "";
                 t_detail.FStorageId = "";
@@ -872,7 +821,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
-                t_detail.unitrate = unitrate;
+                t_detail.unitrate = spUnit.getDataUnitrate();
                 t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
                 long insert = t_detailDao.insert(t_detail);
 
@@ -965,7 +914,7 @@ public class PurchaseOrderActivity extends BaseActivity {
 
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.UPLOADPO, gson.toJson(pBean));
+        DataModel.upload(WebApi.UPLOADPO, gson.toJson(pBean));
 //        postToServer(data);
     }
 
@@ -1014,86 +963,5 @@ public class PurchaseOrderActivity extends BaseActivity {
         tvModel.setText("");
         setfocus(edCode);
 
-    }
-
-    private void getArrivedate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                dateArrive = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDateArrive.setText(dateArrive);
-                Toast.showText(mContext, dateArrive);
-                datePickerDialog.dismiss();
-            }
-        });
-    }
-
-    private void getPaydate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                datePay = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDatePay.setText(datePay);
-                Toast.showText(mContext, datePay);
-                datePickerDialog.dismiss();
-            }
-        });
-    }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-            }
-        });
-    }
-
-    public String datePicker() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                date = i + "-" + ((i1 < 10) ? "0" + (i1 + 1) : (i1 + 1)) + "-" + ((i2 < 10) ? "0" + i2 : i2);
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                datePickerDialog.dismiss();
-                Toast.showText(mContext, date);
-            }
-        });
-        return date;
     }
 }

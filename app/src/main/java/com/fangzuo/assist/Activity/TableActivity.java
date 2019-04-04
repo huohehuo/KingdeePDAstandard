@@ -22,6 +22,8 @@ import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.GreenDaoManager;
+import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.InStorageNumDao;
@@ -96,6 +98,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
             }
 
         }
+        Lg.e("列表数据："+list.toString());
         tableAdapter = new TableAdapter(mContext,list, isCheck);
         lvResult.setAdapter(tableAdapter);
         tableAdapter.setInnerListener(this);
@@ -114,7 +117,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
 
 
             for (int i = 0; i < list.size(); i++) {
-                num += Double.parseDouble(list.get(i).FQuantity);
+                num += MathUtil.toD(list.get(i).FQuantity);
             }
             productcategory.setText("物料类别数:" + products.size() + "个");
             productnum.setText("物料总数为:" + num + "");
@@ -157,7 +160,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                     if (activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity) {
                                         innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - ((Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate))) + "";
                                         inStorageNumDao.update(innum.get(0));
-                                    } else if (activity == DBActivity.DB) {
+                                    } else if (activity == Config.DBActivity) {
                                         innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - ((Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate))) + "";
                                         inStorageNumDao.update(innum.get(0));
                                         InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
@@ -233,7 +236,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                             if (activity == Config.OtherInStoreActivity ||activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity) {
                                                 innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                                 inStorageNumDao.update(innum.get(0));
-                                            } else if (activity == DBActivity.DB) {
+                                            } else if (activity == Config.DBActivity) {
                                                 innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                                 inStorageNumDao.update(innum.get(0));
                                                 InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
@@ -300,7 +303,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                 if (activity == Config.OtherInStoreActivity ||activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity || activity == Config.OtherInStoreActivity) {
                                     innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                     inStorageNumDao.update(innum.get(0));
-                                } else if (activity == DBActivity.DB) {
+                                } else if (activity ==Config.DBActivity) {
                                     innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                     inStorageNumDao.update(innum.get(0));
                                     InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
@@ -361,7 +364,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                         Toast.showText(mContext, "修改成功");
                                         t_detail.FQuantity = newnum;
                                         t_detailDao.update(t_detail);
-                                    } else if (activity == DBActivity.DB) {
+                                    } else if (activity == Config.DBActivity) {
                                         List<InStorageNum> outnum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid)
                                                 , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
                                         if (outnum.size() > 0) {

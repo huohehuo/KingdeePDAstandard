@@ -46,6 +46,12 @@
         <attr name="spinner_name_size" format="dimension"/>
     </declare-styleable>
 
+    <declare-styleable name="SpinnerWaveHouse">
+        <attr name="wspinner_name" format="string"/>
+        <attr name="wspinner_focusable" format="boolean"/>
+        <attr name="wspinner_name_size" format="dimension"/>
+    </declare-styleable>
+
 
     <declare-styleable name="Style_Spinner_Unit">
         <attr name="Uspinner_name" format="string"/>
@@ -58,4 +64,10 @@
     </declare-styleable>
         <!--<attr name="T_world_name" format="string"/>-->
         <!--<attr name="T_world_name_size" format="dimension"/>-->
+
+    <declare-styleable name="ClientSpinner">
+        <attr name="clientspinner_name" format="string" />
+        <attr name="clientspinner_size" format="dimension" />
+        <attr name="clientspinner_hint" format="string" />
+    </declare-styleable>
 </resources>

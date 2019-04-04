@@ -63,44 +63,6 @@ public class RService {
     public void downloadData(String json, MySubscribe<CommonResponse> mySubscribe) {
         toSubscribe(request.downloadData(getParams(json)), mySubscribe);
     }
-    public void getProducts(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getProducts(getParams(json)), mySubscribe);
-    }
-    public void getStorage(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getStorage(getParams(json)), mySubscribe);
-    }
-
-    public void getStorageB(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getStorageB(getParams(json)), mySubscribe);
-    }
-
-    public void getStorageC(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getStorageC(getParams(json)), mySubscribe);
-    }
-
-    public void getChangePrice(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getChangePrice(getParams(json)), mySubscribe);
-    }
-
-    public void pushChangePrice(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.pushChangePrice(getParams(json)), mySubscribe);
-    }
-    public void accountCheck(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.accountCheck(getParams(json)), mySubscribe);
-    }
-    public void pushData(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.pushData(getParams(json)), mySubscribe);
-    }
-
-
-    public void getLongProduct(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getLongProduct(getParams(json)), mySubscribe);
-    }
-
-    public void getClassification(String json, MySubscribe<CommonResponse> mySubscribe) {
-        toSubscribe(request.getClassification(getParams(json)), mySubscribe);
-    }
-
     //执行接口
     public void doIOAction(String io, String data,MySubscribe<CommonResponse> mySubscribe) {
         toSubscribe(request.actionIO(io, getParams(data)), mySubscribe);

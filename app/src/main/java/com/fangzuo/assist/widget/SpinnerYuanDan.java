@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.PayTypeSpAdapter;
 import com.fangzuo.assist.Adapter.YuandanSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
@@ -17,6 +18,7 @@ import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Dao.PayType;
 import com.fangzuo.assist.Dao.YuandanType;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
@@ -76,15 +78,16 @@ public class SpinnerYuanDan extends RelativeLayout {
                     share.getVersion(),
                     choose
             );
-            Asynchttp.post(context, share.getBaseURL() + WebApi.DOWNLOADDATA, json, new Asynchttp.Response() {
+            App.getRService().doIOAction(WebApi.DOWNLOADDATA, json, new MySubscribe<CommonResponse>() {
                 @Override
-                public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                public void onNext(CommonResponse cBean) {
+                    super.onNext(cBean);
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     YuandanTypeDao yuandanTypeDao = daoSession.getYuandanTypeDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.yuandanTypes);
                     yuandanTypeDao.detachAll();
-                    if (container.size()<=0){
+                    if (dBean.yuandanTypes.size()>0 && container.size()<=0){
                         container.addAll(dBean.yuandanTypes);
                         adapter.notifyDataSetChanged();
                         setAutoSelection(saveKeyString,autoString);
@@ -92,8 +95,8 @@ public class SpinnerYuanDan extends RelativeLayout {
                 }
 
                 @Override
-                public void onFailed(String Msg, AsyncHttpClient client) {
-//                    Toast.showText(context, Msg);
+                public void onError(Throwable e) {
+//                    super.onError(e);
                 }
             });
         }

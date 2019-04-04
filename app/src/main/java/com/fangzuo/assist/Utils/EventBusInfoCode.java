@@ -18,4 +18,9 @@ public class EventBusInfoCode {
     public static final String Connect_Error = "111103";
     public static final String Prop_OK = "111104";
     public static final String Prop_Error = "111105";
+
+
+
+
+    public static final String Down_json_file = "20000";
 }

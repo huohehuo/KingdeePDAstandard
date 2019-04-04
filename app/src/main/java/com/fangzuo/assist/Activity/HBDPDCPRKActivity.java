@@ -130,9 +130,6 @@ public class HBDPDCPRKActivity extends BaseActivity {
     @BindView(R.id.ed_pihao)
     EditText edPihao;
     private CommonMethod method;
-    private int year;
-    private int month;
-    private int day;
     private List<PushDownSub> container;
     private ArrayList<String> fidcontainer;
     private List<PushDownSub> list;
@@ -300,9 +297,6 @@ public class HBDPDCPRKActivity extends BaseActivity {
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getPDPOisAuto());
         isAuto = share.getPDPOisAuto();
         edPihao.setEnabled(false);
@@ -363,6 +357,18 @@ public class HBDPDCPRKActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         //批号输入监听
         edPihao.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -658,20 +664,11 @@ public class HBDPDCPRKActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.btn_add,R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -679,7 +676,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
         }
     }
@@ -691,30 +688,6 @@ public class HBDPDCPRKActivity extends BaseActivity {
         Log.e("resume", "resume");
         getList();
     }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                String date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
-    }
-
 
     private void Addorder() {
         try {
@@ -744,18 +717,14 @@ public class HBDPDCPRKActivity extends BaseActivity {
                     Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
                     return;
                 }
-                ProgressDialog pg = new ProgressDialog(mContext);
-                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                pg.setMessage("请稍后...");
-                pg.setCancelable(false);
-                pg.show();
+                LoadingUtil.show(mContext,"请稍后...");
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
                             T_DetailDao.Properties.Activity.eq(activity),
                             T_DetailDao.Properties.FInterID.eq(fid),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(storageID),
-                            T_DetailDao.Properties.FPositionId.eq(waveHouseID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FUnitId.eq(unitId),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
                             T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)
@@ -819,8 +788,8 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -837,11 +806,11 @@ public class HBDPDCPRKActivity extends BaseActivity {
                     MediaPlayer.getInstance(mContext).ok();
                     pushDownSubListAdapter.notifyDataSetChanged();
                     resetAll();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 } else {
                     Toast.showText(mContext, "添加失败，请重试");
                     MediaPlayer.getInstance(mContext).error();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 }
 
             } else {
@@ -868,7 +837,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 GetBatchNoBean gBean = new GetBatchNoBean();
                 gBean.ProductID = productID;
                 gBean.StorageID = storageID;
-                gBean.WaveHouseID = waveHouseID;
+                gBean.WaveHouseID = spWavehouse.getWaveHouseId();
                 Synchttp.post(mContext, WebApi.GETPICI, new Gson().toJson(gBean), new Synchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -887,7 +856,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
                 List<InStorageNum> inStorageNa = inStorageNumDao.queryBuilder().where(
                         InStorageNumDao.Properties.FStockID.eq(storageID),
-                        InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
+                        InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
                         InStorageNumDao.Properties.FItemID.eq(productID)
                 ).build().list();
                 if (inStorageNa.size() > 0) {
@@ -989,7 +958,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.HBDPDCPRKUpload, gson.toJson(pBean));
+        DataModel.upload( WebApi.HBDPDCPRKUpload, gson.toJson(pBean));
 //        postToServer(data);
 
     }

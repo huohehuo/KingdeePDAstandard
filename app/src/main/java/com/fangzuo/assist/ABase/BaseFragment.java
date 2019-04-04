@@ -1,8 +1,10 @@
 package com.fangzuo.assist.ABase;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.device.ScanDevice;
@@ -18,9 +20,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
+import android.widget.TextView;
 
 import com.fangzuo.assist.Activity.Crash.App;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.EventBusUtil;
+import com.fangzuo.assist.Utils.Toast;
+
+import java.util.Calendar;
 
 /**
  * Created by NB on 2017/7/28.
@@ -33,6 +41,9 @@ public abstract class BaseFragment extends Fragment {
 
     public void onCreate(Bundle savedInstanceState) {
         FragmentActivity mContext = getActivity();
+        year = Calendar.getInstance().get(Calendar.YEAR);
+        month = Calendar.getInstance().get(Calendar.MONTH);
+        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         super.onCreate(savedInstanceState);
 //        registerBroadCast(mScanDataReceiver);
     }
@@ -56,8 +67,8 @@ public abstract class BaseFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals("com.android.scanservice.scancontext")) {
-                String str = intent.getStringExtra("Scan_context");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("Scan_context");
+                OnReceive(barcodeStr);
             }
         }
     };
@@ -67,8 +78,8 @@ public abstract class BaseFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
-                String str = intent.getStringExtra("decode_data");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("decode_data");
+                OnReceive(barcodeStr);
             }
         }
     };
@@ -79,12 +90,23 @@ public abstract class BaseFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (action.equals(ACTION_M60)) {
-                String str = intent.getStringExtra("decode_rslt");
-                OnReceive(str);
+                barcodeStr = intent.getStringExtra("decode_rslt");
+                OnReceive(barcodeStr);
             }
         }
     };
-
+    //新大陆
+    private static final String ACTION_XDL_SCAN_RESULT = "nlscan.action.SCANNER_RESULT";
+    private BroadcastReceiver mScanDataReceiverForXDL = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_XDL_SCAN_RESULT)) {
+                barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
+                OnReceive(barcodeStr);
+            }
+        }
+    };
 
 //    //UBX
 //    private ScanManager mScanManager;
@@ -203,7 +225,7 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
 //        scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
 //        getActivity().registerReceiver(mScanDataReceiver, scanDataIntentFilter);
 
-        if (App.PDA_Choose!=4){
+//        if (App.PDA_Choose!=4){
             if (App.PDA_Choose == 1) {
                 //G02A
                 IntentFilter scanDataIntentFilter = new IntentFilter();
@@ -226,8 +248,13 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                 IntentFilter scanDataIntentFilter = new IntentFilter();
                 scanDataIntentFilter.addAction(ACTION_M60);
                 getActivity().registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
+            }else if (App.PDA_Choose==5) {
+                //新大陆注册");
+                IntentFilter xdlFilter = new IntentFilter();
+                xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
+                getActivity().registerReceiver(mScanDataReceiverForXDL, xdlFilter);
             }
-        }
+//        }
     }
 
     @Override
@@ -258,22 +285,62 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
         }
         startActivity(mIntent);
     }
+    public int year;
+    public int month;
+    public int day;
+    private String date;
+    public String datePicker(final TextView v) {
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+            }
+        }, year, month, day);
+        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                int year = datePickerDialog.getDatePicker().getYear();
+                int month = datePickerDialog.getDatePicker().getMonth();
+                int day = datePickerDialog.getDatePicker().getDayOfMonth();
+                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
+                Toast.showText(mContext, date);
+                v.setText(date);
+                datePickerDialog.dismiss();
 
+            }
+        });
+        datePickerDialog.show();
+        return date;
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (App.PDA_Choose!=4){
-            if (mScanDataReceiver != null || mScanDataReceiverForG02A != null|| mScanDataReceiverFor5000 != null) {
-                if (App.PDA_Choose == 1) {
-                    getActivity().unregisterReceiver(mScanDataReceiverForG02A);
-                } else if (App.PDA_Choose==2){
-                    getActivity().unregisterReceiver(mScanDataReceiver);
-                }else if (App.PDA_Choose == 3){
-                    getActivity().unregisterReceiver(mScanDataReceiverFor5000);
-                }else if (App.PDA_Choose == 4){
-                    getActivity().unregisterReceiver(mScanDataReceiverForM60);
+        try{
+//            if (App.PDA_Choose!=4){
+                if (mScanDataReceiver != null ||
+                        mScanDataReceiverForG02A != null||
+                        mScanDataReceiverFor5000 != null||
+                        mScanDataReceiverForXDL != null||
+                        mScanDataReceiverForM60 != null) {
+                    if (App.PDA_Choose == 1) {
+                        getActivity().unregisterReceiver(mScanDataReceiverForG02A);
+                    } else if (App.PDA_Choose==2){
+                        getActivity().unregisterReceiver(mScanDataReceiver);
+                    }else if (App.PDA_Choose == 3){
+                        getActivity().unregisterReceiver(mScanDataReceiverFor5000);
+                    }else if (App.PDA_Choose == 4){
+                        getActivity().unregisterReceiver(mScanDataReceiverForM60);
+                    }else if (App.PDA_Choose == 5){
+                        getActivity().unregisterReceiver(mScanDataReceiverForXDL);
+//                Toast.showText(mContext,"关闭H100设备");
+//                if (mReader != null) {
+//                    mReader.close();
+//                }
+                    }
                 }
-            }
+//            }
+        }catch (Exception e){
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
+
     }
 }

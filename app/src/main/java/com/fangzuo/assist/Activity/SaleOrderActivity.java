@@ -157,10 +157,7 @@ public class SaleOrderActivity extends BaseActivity {
     CheckBox autoAdd;
     private SaleOrderActivity mContext;
     private DecimalFormat df;
-    private DaoSession daoSession;
-    private int year;
-    private int month;
-    private int day;
+//    private DaoSession daoSession;
     private CommonMethod method;
     private long ordercode;
     private PayMethodSpAdapter slaesRange;
@@ -179,9 +176,9 @@ public class SaleOrderActivity extends BaseActivity {
     private String date;
     //    private String sendMethodId;
 //    private String sendMethodName;
-    private String unitId;
-    private String unitName;
-    private double unitrate;
+//    private String unitId;
+//    private String unitName;
+//    private double unitrate;
     //    private String departmentId;
 //    private String departmentName;
 //    private String SaleMethodId;
@@ -213,10 +210,6 @@ public class SaleOrderActivity extends BaseActivity {
         share = ShareUtil.getInstance(mContext);
         initDrawer(mDrawer);
         df = new DecimalFormat("######0.00");
-        daoSession = GreenDaoManager.getmInstance(mContext).getDaoSession();
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbHebing.setChecked(isHebing);
         edOnsale.setText("0");
         autoAdd.setChecked(share.getSOisAuto());
@@ -275,6 +268,18 @@ public class SaleOrderActivity extends BaseActivity {
 
     @Override
     public void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsStorage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -488,24 +493,24 @@ public class SaleOrderActivity extends BaseActivity {
 //            }
 //        });
 
-        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-                if (unit != null) {
-                    unitId = unit.FMeasureUnitID;
-                    unitName = unit.FName;
-                    unitrate = MathUtil.toD(unit.FCoefficient);
-                    Log.e("1111", unitrate + "");
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
+//                if (unit != null) {
+//                    unitId = unit.FMeasureUnitID;
+//                    unitName = unit.FName;
+//                    unitrate = MathUtil.toD(unit.FCoefficient);
+//                    Log.e("1111", unitrate + "");
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -514,11 +519,11 @@ public class SaleOrderActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_date_arrive, R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
+    @OnClick({R.id.tv_date_arrive, R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tv_date_arrive:
-                getArrivedate();
+                datePicker(tvDateArrive);
                 break;
             case R.id.search_supplier:
                 Bundle b = new Bundle();
@@ -543,95 +548,18 @@ public class SaleOrderActivity extends BaseActivity {
             case R.id.btn_finishorder:
                 finishOrder();
                 break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
-                break;
             case R.id.btn_checkorder:
                 Bundle b2 = new Bundle();
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
             case R.id.tv_date_pay:
-                getPaydate();
+                datePicker(tvDatePay);
                 break;
         }
-    }
-
-    private void getArrivedate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, month, day);
-        datePickerDialog.show();
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                dateArrive = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDateArrive.setText(dateArrive);
-                Toast.showText(mContext, dateArrive);
-                datePickerDialog.dismiss();
-            }
-        });
-    }
-
-    private void getPaydate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                datePay = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDatePay.setText(datePay);
-                Toast.showText(mContext, datePay);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
-    }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
     }
 
     private void loadBasicData() {
@@ -923,7 +851,7 @@ public class SaleOrderActivity extends BaseActivity {
                             T_DetailDao.Properties.Activity.eq(activity),
                             T_DetailDao.Properties.FOrderId.eq(ordercode),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
-                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
                             T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
                             T_DetailDao.Properties.FDiscount.eq(discount)).build().list();
                     if (detailhebing.size() > 0) {
@@ -959,7 +887,7 @@ public class SaleOrderActivity extends BaseActivity {
                 t_main.FCustody = spSaleScope.getDataName();
                 t_main.FCustodyId = spSaleScope.getDataId();
                 t_main.FAcount = spSendMethod.getDataId();
-                t_main.FAcountID = dateArrive == null ? "" : dateArrive;
+                t_main.FAcountID = tvDateArrive.getText().toString();
                 t_main.Rem = edZhaiyao.getText().toString();
                 t_main.supplier = clientName == null ? "" : clientName;
                 t_main.supplierId = clientId == null ? "" : clientId;
@@ -977,8 +905,8 @@ public class SaleOrderActivity extends BaseActivity {
                 t_detail.model = product.FModel;
                 t_detail.FProductName = product.FName;
                 t_detail.FIndex = second;
-                t_detail.FUnitId = unitId == null ? "" : unitId;
-                t_detail.FUnit = unitName == null ? "" : unitName;
+                t_detail.FUnitId = spUnit.getDataId();
+                t_detail.FUnit = spUnit.getDataName();
                 t_detail.FDateDelivery = tvDateArrive.getText().toString();
                 Log.e("date", tvDateArrive.getText().toString());
                 t_detail.FStorage = "";
@@ -988,7 +916,7 @@ public class SaleOrderActivity extends BaseActivity {
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
-                t_detail.unitrate = unitrate;
+                t_detail.unitrate = spUnit.getDataUnitrate();
                 t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
 
                 long insert = t_detailDao.insert(t_detail);
@@ -1082,7 +1010,7 @@ public class SaleOrderActivity extends BaseActivity {
 
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.UPLOADSO, gson.toJson(pBean));
+        DataModel.upload(WebApi.UPLOADSO, gson.toJson(pBean));
 //        postToServer(data);
     }
 

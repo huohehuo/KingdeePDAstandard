@@ -22,6 +22,7 @@ import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.PushDownSubDao;
@@ -99,7 +100,6 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
             for (int i = 0; i < list.size(); i++) {
                 isCheck.add(false);
             }
-
         }
         double num = 0;
         tableAdapter = new TableAdapter4(mContext, list, isCheck);
@@ -120,11 +120,10 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
             }
 
             for (int i = 0; i < list.size(); i++) {
-                num += Double.parseDouble(list.get(i).FQuantity);
+                num += MathUtil.toD(list.get(i).FQuantity);
             }
             productcategory.setText("物料类别数:" + products.size() + "个");
             productnum.setText("物料总数为:" + num + "");
-
 
         } else {
             productcategory.setText("物料类别数:" + 0 + "个");

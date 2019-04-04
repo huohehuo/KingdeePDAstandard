@@ -32,6 +32,7 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.MD5;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
@@ -78,6 +79,7 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
         getPermisssion();
         if (getNewMac() != null && !getNewMac().equals("")) {
             binding.tvCode.setText("注册码：" + MD5.getMD5(getNewMac()));
+            Lg.e("注册码："+MD5.getMD5(getNewMac()));
             register_code = MD5.getMD5(getNewMac()) + "fzkj601";
             newRegister = MD5.getMD5(register_code);
             lastRegister = MD5.getMD5(newRegister);
@@ -208,18 +210,18 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
                     Hawk.put(Config.PDA,3);
                     App.PDA_Choose =3;
                     Toast.showText(mContext,"选择了5000设备"+App.PDA_Choose);
-                } else if ("手机端".equals(string)) {
-                    Hawk.put(Config.PDA,5);
-                    App.PDA_Choose =5;
-                    Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
                 }else if ("M60".equals(string)){
                     Hawk.put(Config.PDA,4);
                     App.PDA_Choose =4;
-                    Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
-                }else if ("H100".equals(string)){
+                    Toast.showText(mContext,"选择了M60"+App.PDA_Choose);
+                }else if ("新大陆".equals(string)){
+                    Hawk.put(Config.PDA,5);
+                    App.PDA_Choose =5;
+                    Toast.showText(mContext,"选择了新大陆"+App.PDA_Choose);
+                } else if ("手机端".equals(string)) {
                     Hawk.put(Config.PDA,6);
                     App.PDA_Choose =6;
-                    Toast.showText(mContext,"选择了H100"+App.PDA_Choose);
+                    Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
                 }
             }
 

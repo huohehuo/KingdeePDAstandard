@@ -41,7 +41,7 @@ android {
 }
 
 greendao {
-    schemaVersion 2
+    schemaVersion 3
     daoPackage 'com.fangzuo.greendao.gen'
     targetGenDir 'src/main/java'
 }
@@ -82,5 +82,5 @@ dependencies {
     compile 'com.android.support:cardview-v7:26.1.0'
     compile 'com.orhanobut:hawk:2.0.1'
     //    compile 'com.jude:easyrecyclerview:4.4.2'
-    implementation files('libs/DeviceAPIver20160627.jar')
+//    implementation files('libs/DeviceAPIver20160627.jar')
 }

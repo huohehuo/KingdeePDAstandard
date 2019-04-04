@@ -79,7 +79,9 @@ public class TestActivity extends BaseActivity {
                 LoadingUtil.dismiss();
                 long endTime = System.currentTimeMillis();
                 tvResult.setTextColor(green);
-                tvResult.setText("结果:获取150kb数据所需时间" + (endTime - nowtime) + "获取数据:" + commonResponse.returnJson);
+                tvResult.setTextSize(18);
+//                tvResult.setText("结果:获取150kb数据所需时间" + (endTime - nowtime) + "获取数据:" + commonResponse.returnJson);
+                tvResult.setText("结果:连接TomCat服务器成功~ \n获取150kb数据所需时间" + (endTime - nowtime) );
             }
 
             @Override

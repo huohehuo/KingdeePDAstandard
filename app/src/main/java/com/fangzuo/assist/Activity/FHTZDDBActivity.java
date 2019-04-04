@@ -186,9 +186,6 @@ public class FHTZDDBActivity extends BaseActivity {
     public static final String TAG = "activity";
     private PushDownSub pushDownSub;
     private PushDownSubDao pushDownSubDao;
-    private int year;
-    private int month;
-    private int day;
     private String datePay;
     private String date;
     private PushDownMainDao pushDownMainDao;
@@ -238,9 +235,6 @@ public class FHTZDDBActivity extends BaseActivity {
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getPDMTisAuto());
         isAuto = share.getPDMTisAuto();
         isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
@@ -407,7 +401,7 @@ public class FHTZDDBActivity extends BaseActivity {
         }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = outwaveHouseID;
+            iBean.FStockPlaceID = spWavehouseout.getWaveHouseId();
             iBean.FBatchNo = pihao;
             iBean.FStockID = outstorageID;
             iBean.FItemID = (product.FItemID);
@@ -435,7 +429,7 @@ public class FHTZDDBActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().where(
                     InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                     InStorageNumDao.Properties.FStockID.eq(outstorageID),
-                    InStorageNumDao.Properties.FStockPlaceID.eq(outwaveHouseID == null ? "0" : outwaveHouseID),
+                    InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouseout.getWaveHouseId()),
                     InStorageNumDao.Properties.FBatchNo.eq(pihao == null ? "" : pihao)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
@@ -469,9 +463,9 @@ public class FHTZDDBActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(outwaveHouseID)) {
+        if (!"".equals(spWavehouseout.getWaveHouseId())) {
             for (T_Detail bean : list) {
-                if (!outwaveHouseID.equals(bean.FPositionId)) {
+                if (!spWavehouseout.getWaveHouseId().equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -575,6 +569,18 @@ public class FHTZDDBActivity extends BaseActivity {
 //
 //            }
 //        });
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -943,20 +949,11 @@ public class FHTZDDBActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.btn_add,R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -964,7 +961,7 @@ public class FHTZDDBActivity extends BaseActivity {
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
 
         }
@@ -976,30 +973,6 @@ public class FHTZDDBActivity extends BaseActivity {
         super.onResume();
         Log.e("resume", "resume");
         getList();
-    }
-
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
     }
 
 
@@ -1050,7 +1023,7 @@ public class FHTZDDBActivity extends BaseActivity {
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(outstorageID),
 //                                T_DetailDao.Properties.FRemark.eq(etBeizhu.getText().toString()),
-                            T_DetailDao.Properties.FPositionId.eq(outwaveHouseID == null ? "0" : outwaveHouseID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouseout.getWaveHouseId()),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
 //                                T_DetailDao.Properties.FBatch.eq(edBatchNo.getText().toString())
                             T_DetailDao.Properties.FBatch.eq(pihao == null ? "" : pihao)
@@ -1116,8 +1089,8 @@ public class FHTZDDBActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = outstorageName == null ? "" : outstorageName;
                 t_detail.FStorageId = outstorageID == null ? "" : outstorageID;
-                t_detail.FPosition = outwaveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = outwaveHouseID == null ? "0" : outwaveHouseID;
+                t_detail.FPosition = spWavehouseout.getWaveHouse();
+                t_detail.FPositionId = spWavehouseout.getWaveHouseId();
                 t_detail.FoutStorageid = instorageID == null ? "" : instorageID;
                 t_detail.Foutwavehouseid = inwaveHouseID == null ? "" : inwaveHouseID;
                 t_detail.activity = activity;
@@ -1259,7 +1232,7 @@ public class FHTZDDBActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + "PushDownFHDBUpload", gson.toJson(pBean));
+        DataModel.upload("PushDownFHDBUpload", gson.toJson(pBean));
 //        postToServer(data);
 
     }

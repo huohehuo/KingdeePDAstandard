@@ -9,12 +9,15 @@ import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
+import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.Toast;
+import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.BibieDao;
@@ -53,6 +56,7 @@ public class DataService extends IntentService {
     // IntentService can perform, e.g. ACTION_FETCH_NEW_ITEMS
     private static final String ACTION_FOO = "com.fangzuo.assist.Service.action.FOO";
     private static final String ACTION_BAZ = "com.fangzuo.assist.Service.action.BAZ";
+    private static final String UpdateTime = "com.fangzuo.assist.Service.action.UpdateTime";
 
     // TODO: Rename parameters
     private static final String EXTRA_PARAM1 = "com.fangzuo.assist.Service.extra.PARAM1";
@@ -82,7 +86,12 @@ public class DataService extends IntentService {
         intent.setAction(ACTION_FOO);
         context.startService(intent);
     }
-
+    //更新服务器中的当前时间
+    public static void updateTime(Context context) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(UpdateTime);
+        context.startService(intent);
+    }
     /**
      * Starts this service to perform action Baz with the given parameters. If
      * the service is already performing a task this action will be queued.
@@ -115,10 +124,24 @@ public class DataService extends IntentService {
                 final String txtNa = intent.getStringExtra(EXTRA_PARAM1);
                 final String err = intent.getStringExtra(EXTRA_PARAM2);
                 handleActionBaz(txtNa,err);
+            }else if (UpdateTime.equals(action)) {
+                handleActionUpdateTime();
             }
         }
     }
+    private void handleActionUpdateTime(){
+        App.getRService().doIOAction(WebApi.SetUseTime, "更新时间", new MySubscribe<CommonResponse>() {
+            @Override
+            public void onNext(CommonResponse commonResponse) {
+//                super.onNext(commonResponse);
+            }
 
+            @Override
+            public void onError(Throwable e) {
+//                super.onError(e);
+            }
+        });
+    }
     private void handleActionFoo() {
         session.getBibieDao().deleteAll();
         session.getBarCodeDao().deleteAll();
@@ -146,7 +169,6 @@ public class DataService extends IntentService {
         session.getWaveHouseDao().deleteAll();
         session.getYuandanTypeDao().deleteAll();
     }
-
     private void handleActionBaz(String txtN,String param1) {
 
         Asynchttp.post(App.getContext(), Config.Error_Url, Config.Company+"^"+txtN+"^"+param1, new Asynchttp.Response() {

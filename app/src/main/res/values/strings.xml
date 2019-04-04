@@ -42,6 +42,7 @@
 
 
     <!--//自定义控件spinner的自动保存key===========================================================================-->
+    <string name="spStorage_po">spStorage_po</string>
     <string name="spEmployee_po">spEmployee_po</string>
     <string name="spManager_po">spManager_po</string>
     <string name="spDepartment_po">spDepartment_po</string>
@@ -50,6 +51,9 @@
     <string name="spPurchaseMethod_po">spPurchaseMethod_po</string>
     <string name="spPurchaseScope_po">spPurchaseScope_po</string>
 
+    <string name="spStorage_pd">spStorage_pd</string>
+
+    <string name="spStorage_pis">spStorage_pis</string>
     <string name="spEmployee_pis">spEmployee_pis</string>
     <string name="spManager_pis">spManager_pis</string>
     <string name="spDepartment_pis">spDepartment_pis</string>
@@ -61,10 +65,12 @@
     <string name="spSignPerson_pis">spSignPerson_pis</string>
     <string name="spCapturePerson_pis">spCapturePerson_pis</string>
 
+    <string name="spStorage_pris">spStorage_pris</string>
     <string name="spYuandan_pris">spYuandan_pris</string>
     <string name="spYanshou_pris">spYanshou_pris</string>
     <string name="spCapture_pris">spCapture_pris</string>
 
+    <string name="spStorage_so">spStorage_so</string>
     <string name="spYuandan_so">spYuandan_so</string>
     <string name="spPayMethod_so">spPayMethod_so</string>
     <string name="spDepartment_so">spDepartment_so</string>
@@ -74,6 +80,7 @@
     <string name="spSaleMethod_so">spSaleMethod_so</string>
     <string name="spSendMethod_so">spSendMethod_so</string>
 
+    <string name="spStorage_soldo">spStorage_soldo</string>
     <string name="spYuandan_soldo">spYuandan_soldo</string>
     <string name="spManager_soldo">spManager_soldo</string>
     <string name="spEmployee_soldo">spEmployee_soldo</string>
@@ -83,16 +90,19 @@
     <string name="spSaleMethod_soldo">spSaleMethod_soldo</string>
     <string name="spPayMethod_soldo">spPayMethod_soldo</string>
 
+    <string name="spStorage_pag">spStorage_pag</string>
     <string name="spDepartment_pag">spDepartment_pag</string>
     <string name="spGetType_pag">spGetType_pag</string>
     <string name="spGetman_pag">spGetman_pag</string>
     <string name="spSendman_pag">spSendman_pag</string>
 
+    <string name="spStorage_db">spStorage_db</string>
     <string name="spCapturePerson_db">spCapturePerson_db</string>
     <string name="spEmployee_db">spEmployee_db</string>
     <string name="spSignPerson_db">spSignPerson_db</string>
     <string name="spDepartment_db">spDepartment_db</string>
 
+    <string name="spStorage_ois">spStorage_ois</string>
     <string name="spInStoreType_ois">spInStoreType_ois</string>
     <string name="spCapturePerson_ois">spCapturePerson_ois</string>
     <string name="spEmployee_ois">spEmployee_ois</string>
@@ -100,6 +110,7 @@
     <string name="spSignPerson_ois">spSignPerson_ois</string>
     <string name="spDepartment_ois">spDepartment_ois</string>
 
+    <string name="spStorage_oos">spStorage_oos</string>
     <string name="spCapturePerson_oos">spCapturePerson_oos</string>
     <string name="spDepartment_oos">spDepartment_oos</string>
     <string name="spInStoreType_oos">spInStoreType_oos</string>
@@ -107,6 +118,11 @@
     <string name="spManager_oos">spManager_oos</string>
     <string name="spEmployee_oos">spEmployee_oos</string>
 
+    <string name="spStorage_pd_schb">spStorage_pd_schb</string>
+
+    <string name="spStorage_pd_ocgs">spStorage_pd_ocgs</string>
+
+    <string name="spStorage_pd_mt">spStorage_pd_mt</string>
     <string name="spSaleScope_pd_mt">spSaleScope_pd_mt</string>
     <string name="spSaleMethod_pd_mt">spSaleMethod_pd_mt</string>
     <string name="spYuandan_pd_mt">spYuandan_pd_mt</string>
@@ -116,6 +132,7 @@
     <string name="spCapture_pd_mt">spCapture_pd_mt</string>
     <string name="spSendman_pd_mt">spSendman_pd_mt</string>
 
+    <string name="spStorage_pd_po">spStorage_pd_po</string>
     <string name="spPurchaseMethod_pd_po">spPurchaseMethod_pd_po</string>
     <string name="spPurchaseScope_pd_po">spPurchaseScope_pd_po</string>
     <string name="spYuandan_pd_po">spYuandan_pd_po</string>
@@ -123,12 +140,14 @@
     <string name="spManager_pd_po">spManager_pd_po</string>
     <string name="spCapture_pd_po">spCapture_pd_po</string>
 
+    <string name="spStorage_pd_sn">spStorage_pd_sn</string>
     <string name="spCapture_pd_sn">spCapture_pd_sn</string>
     <string name="spSendman_pd_sn">spSendman_pd_sn</string>
     <string name="spManager_pd_sn">spManager_pd_sn</string>
     <string name="spSaleMethod_pd_sn">spSaleMethod_pd_sn</string>
     <string name="spPayMethod_pd_sn">spPayMethod_pd_sn</string>
 
+    <string name="spStorage_pd_sltz">spStorage_pd_sltz</string>
     <string name="spPurchaseMethod_pd_sltz">spPurchaseMethod_pd_sltz</string>
     <string name="spWanglaikemu_pd_sltz">spWanglaikemu_pd_sltz</string>
     <string name="spSignPerson_pd_sltz">spSignPerson_pd_sltz</string>
@@ -136,12 +155,15 @@
     <string name="spCapture_pd_sltz">spCapture_pd_sltz</string>
     <string name="spCapturePerson_pd_sltz">spCapturePerson_pd_sltz</string>
 
+    <string name="spStorage_pd_oois">spStorage_pd_oois</string>
     <string name="spCapturePerson_pd_oois">spCapturePerson_pd_oois</string>
     <string name="spSignPerson_pd_oois">spSignPerson_pd_oois</string>
 
+    <string name="spStorage_pd_ooos">spStorage_pd_ooos</string>
     <string name="spCapturePerson_pd_ooos">spCapturePerson_pd_ooos</string>
     <string name="spSignPerson_pd_ooos">spSignPerson_pd_ooos</string>
 
+    <string name="spStorage_pd_ppis">spStorage_pd_ppis</string>
     <string name="spManager_pd_ppis">spManager_pd_ppis</string>
     <string name="spCapturePerson_pd_ppis">spCapturePerson_pd_ppis</string>
     <string name="spCapture_pd_ppis">spCapture_pd_ppis</string>
@@ -149,21 +171,26 @@
     <string name="spPurchaseMethod_pd_ppis">spPurchaseMethod_pd_ppis</string>
     <string name="spWanglaikemu_pd_ppis">spWanglaikemu_pd_ppis</string>
 
+    <string name="spStorage_pd_scrwdxtll">spStorage_pd_scrwdxtll</string>
     <string name="spGetdepartment_pd_scrwdxtll">spGetdepartment_pd_scrwdxtll</string>
     <string name="spGetType_pd_scrwdxtll">spGetType_pd_scrwdxtll</string>
     <string name="spGetman_pd_scrwdxtll">spGetman_pd_scrwdxtll</string>
     <string name="spSendman_pd_scrwdxtll">spSendman_pd_scrwdxtll</string>
 
+    <string name="spStorage_pd_cgsl">spStorage_pd_cgsl</string>
     <string name="spManager_pd_cgsl">spManager_pd_cgsl</string>
     <string name="spPurchaseMethod_pd_cgsl">spPurchaseMethod_pd_cgsl</string>
 
+    <string name="spStorage_pd_ssfl">spStorage_pd_ssfl</string>
     <string name="spManager_pd_ssfl">spManager_pd_ssfl</string>
     <string name="spCapture_pd_ssfl">spCapture_pd_ssfl</string>
 
+    <string name="spStorage_pd_hbrk">spStorage_pd_hbrk</string>
     <string name="spCapture_pd_hbrk">spCapture_pd_hbrk</string>
     <string name="spYanshou_pd_hbrk">spYanshou_pd_hbrk</string>
     <string name="spManager_pd_hbrk">spManager_pd_hbrk</string>
 
+    <string name="spStorage_pd_fhdb">spStorage_pd_fhdb</string>
     <string name="spCapturePerson_pd_fhdb">spCapturePerson_pd_fhdb</string>
     <string name="spEmployee_pd_fhdb">spEmployee_pd_fhdb</string>
     <string name="spSignPerson_pd_fhdb">spSignPerson_pd_fhdb</string>

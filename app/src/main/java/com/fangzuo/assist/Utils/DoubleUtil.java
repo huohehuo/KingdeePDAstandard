@@ -33,7 +33,14 @@ public class DoubleUtil {
         return d;
     }
 
-
+    //保留4为小数四舍五入,new BigDecimal(String)避免了0.745四舍五入变成0.74，不用new BigDecimal(double)
+    public static double Cut4(String value) {
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(4, BigDecimal.ROUND_HALF_UP);
+        double d = bd.doubleValue();
+        bd = null;
+        return d;
+    }
     /**
      * double 相加
      * @param d1

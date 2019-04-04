@@ -38,18 +38,6 @@ public class StorageFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, v);
         return v;
     }
-
-
-    @Override
-    public void initView() {
-        mContext = getActivity();
-    }
-
-    @Override
-    protected void OnReceive(String barCode) {
-
-    }
-
     @Override
     protected void initData() {
         GridViewAdapter ada= new GridViewAdapter(mContext, GetSettingList.getStorageList());
@@ -57,7 +45,7 @@ public class StorageFragment extends BaseFragment {
         ada.notifyDataSetChanged();
     }
 
-    
+
 
     @Override
     protected void initListener() {
@@ -81,6 +69,18 @@ public class StorageFragment extends BaseFragment {
             }
         });
     }
+
+    @Override
+    public void initView() {
+        mContext = getActivity();
+    }
+
+    @Override
+    protected void OnReceive(String barCode) {
+
+    }
+
+
 
     @Override
     public void onDestroyView() {

@@ -2,17 +2,23 @@ package com.fangzuo.assist.Utils;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.widget.TextView;
 
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.ConnectResponseBean;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
+import com.fangzuo.assist.Beans.InStoreNumBean;
+import com.fangzuo.assist.Dao.InStorageNum;
+import com.fangzuo.assist.Dao.Product;
+import com.fangzuo.assist.Dao.Storage;
 import com.fangzuo.assist.Dao.T_Detail;
 import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
+import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 
 import java.util.ArrayList;
@@ -39,16 +45,21 @@ public class DataModel {
             }
         });
     }
+
     //统一回单数据请求
     public static void upload(String url,String json){
         App.getRService().doIOAction(url, json, new MySubscribe<CommonResponse>() {
             @Override
             public void onNext(CommonResponse commonResponse) {
-                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_OK,""));
+                super.onNext(commonResponse);
+                if (commonResponse.state){
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_OK,""));
+                }
             }
 
             @Override
             public void onError(Throwable e) {
+                super.onError(e);
                 EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_Error,e.toString()));
             }
         });
@@ -139,6 +150,56 @@ public class DataModel {
                 EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Prop_Error,e.toString()));
             }
         });
+    }
+
+    //获取库存
+    public static void getStoreNum(Product product, Storage storage, String wavehouse,String batch, Context mContext, final TextView textView){
+        if (product == null || storage == null){
+            return;
+        }
+        if (BasicShareUtil.getInstance(mContext).getIsOL()) {
+            InStoreNumBean storageNum = new InStoreNumBean(product.FItemID,storage.FItemID,wavehouse,batch);
+            App.getRService().doIOAction(WebApi.GETINSTORENUM, new Gson().toJson(storageNum), new MySubscribe<CommonResponse>() {
+                @Override
+                public void onNext(CommonResponse commonResponse) {
+                    super.onNext(commonResponse);
+                    if (!commonResponse.state)return;
+                    textView.setText(commonResponse.returnJson);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    textView.setText("0");
+                }
+            });
+        }else{
+            List<InStorageNum> container = new ArrayList<>();
+            String con="";
+            if (!"".equals(storage.FItemID)){
+                con+=" and FSTOCK_ID='"+storage.FItemID+"'";
+            }
+            if (!"".equals(product.FItemID)){
+                con+=" and FITEM_ID='"+product.FItemID+"'";
+            }
+            if (!"".equals(batch)){
+                con+=" and FBATCH_NO='"+batch+"'";
+            }
+            String SQL = "SELECT * FROM IN_STORAGE_NUM WHERE 1=1 "+con;
+            Lg.e("库存查询SQL:"+SQL);
+            Cursor cursor = GreenDaoManager.getmInstance(mContext).getDaoSession().getDatabase().rawQuery(SQL, null);
+            while (cursor.moveToNext()) {
+                InStorageNum f = new InStorageNum();
+                f.FQty = cursor.getString(cursor.getColumnIndex("FQTY"));
+                Lg.e("库存查询存在FQty："+f.FQty);
+                container.add(f);
+            }
+            if (container.size() > 0) {
+                textView.setText(container.get(0).FQty);
+            } else {
+                textView.setText("0");
+            }
+        }
     }
 
 

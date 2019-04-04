@@ -38,47 +38,6 @@ interface ServiceRequest {
     @POST("DownloadInfo")
     Observable<CommonResponse> downloadData(@FieldMap Map<String, String> params);
 
-    @FormUrlEncoded
-    @POST("ProductSearchLike")
-    Observable<CommonResponse> getProducts(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("CheckStorageA")
-    Observable<CommonResponse> getStorage(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("CheckStorageB")
-    Observable<CommonResponse> getStorageB(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("CheckStorageC")
-    Observable<CommonResponse> getStorageC(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("ChangePriceShow")
-    Observable<CommonResponse> getChangePrice(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("ChangePriceUpload")
-    Observable<CommonResponse> pushChangePrice(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("AccountCheck")
-    Observable<CommonResponse> accountCheck(@FieldMap Map<String, String> params);
-
-    @FormUrlEncoded
-    @POST("SoldOutUpload")
-    Observable<CommonResponse> pushData(@FieldMap Map<String, String> params);
-
-
-    @FormUrlEncoded
-    @POST("SearchProductByClass")
-    Observable<CommonResponse> getLongProduct(@FieldMap Map<String, String> params);
-
-
-    @FormUrlEncoded
-    @POST("GetClassification")
-    Observable<CommonResponse> getClassification(@FieldMap Map<String, String> params);
 
     @FormUrlEncoded
     @POST("{actionio}")

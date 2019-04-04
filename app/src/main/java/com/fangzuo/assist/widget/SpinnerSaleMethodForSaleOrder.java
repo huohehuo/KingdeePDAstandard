@@ -10,11 +10,13 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.PurchaseMethodSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Dao.PurchaseMethod;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
@@ -73,15 +75,16 @@ public class SpinnerSaleMethodForSaleOrder extends RelativeLayout {
                     share.getVersion(),
                     choose
             );
-            Asynchttp.post(context, share.getBaseURL() + WebApi.DOWNLOADDATA, json, new Asynchttp.Response() {
+            App.getRService().doIOAction(WebApi.DOWNLOADDATA, json, new MySubscribe<CommonResponse>() {
                 @Override
-                public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+                public void onNext(CommonResponse cBean) {
+                    super.onNext(cBean);
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     PurchaseMethodDao yuandanTypeDao = daoSession.getPurchaseMethodDao();
                     yuandanTypeDao.deleteAll();
                     yuandanTypeDao.insertOrReplaceInTx(dBean.purchaseMethod);
                     yuandanTypeDao.detachAll();
-                    if (container.size()<=0){
+                    if (dBean.purchaseMethod.size()>0 && container.size()<=0){
                         //过滤指定参数
                         for (int i=0;i<dBean.purchaseMethod.size();i++){
                             if (dBean.purchaseMethod.get(i).FTypeID.contains("101")
@@ -95,8 +98,8 @@ public class SpinnerSaleMethodForSaleOrder extends RelativeLayout {
                 }
 
                 @Override
-                public void onFailed(String Msg, AsyncHttpClient client) {
-//                    Toast.showText(context, Msg);
+                public void onError(Throwable e) {
+//                    super.onError(e);
                 }
             });
         }

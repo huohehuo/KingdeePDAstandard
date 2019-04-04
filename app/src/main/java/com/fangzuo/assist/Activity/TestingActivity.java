@@ -60,6 +60,9 @@ public class TestingActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         LoadingUtil.dismiss();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            binding.tvResult.setTextColor(getColor(R.color.red));
+                        }
                         binding.tvResult.setText("服务器测试结果:" + e.toString());
                     }
                 });
@@ -78,7 +81,9 @@ public class TestingActivity extends AppCompatActivity {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             binding.tvResult.setTextColor(getColor(R.color.green));
                         }
-                        binding.tvResult.setText("结果:获取150kb数据所需时间" + (endTime - nowtime) + "获取数据:" + commonResponse.returnJson);
+//                        binding.tvResult.setText("结果:获取150kb数据所需时间" + (endTime - nowtime) + "获取数据:" + commonResponse.returnJson);
+                        binding.tvResult.setTextSize(18);
+                        binding.tvResult.setText("      结果:\n\n      连接TomCat服务器成功~\n      获取150kb数据所需时间" + (endTime - nowtime)+"ms");
                     }
 
                     @Override

@@ -27,30 +27,17 @@ public class SaleFragment extends BaseFragment {
     GridView gv;
     Unbinder unbinder;
     private FragmentActivity mContext;
-
     public SaleFragment() {
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_sale, container, false);
         unbinder = ButterKnife.bind(this, v);
+        mContext = getActivity();
         return v;
     }
-
-
-    @Override
-    public void initView() {
-        mContext = getActivity();
-    }
-
-    @Override
-    protected void OnReceive(String barCode) {
-
-    }
-
     @Override
     protected void initData() {
         GridViewAdapter ada = new GridViewAdapter(mContext, GetSettingList.getSaleList());
@@ -79,6 +66,17 @@ public class SaleFragment extends BaseFragment {
             }
         });
     }
+
+    @Override
+    public void initView() {
+    }
+
+    @Override
+    protected void OnReceive(String barCode) {
+
+    }
+
+
 
     @Override
     public void onDestroyView() {

@@ -70,6 +70,7 @@ import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
+import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -80,6 +81,7 @@ import com.fangzuo.greendao.gen.ProductDao;
 import com.fangzuo.greendao.gen.T_DetailDao;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
+import com.orhanobut.hawk.Hawk;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +100,7 @@ public class PDActivity extends BaseActivity {
     @BindView(R.id.sp_pdplan)
     Spinner spPdplan;
     @BindView(R.id.sp_storage)
-    Spinner spStorage;
+    SpinnerStorage spStorage;
     @BindView(R.id.sp_wavehouse)
     MyWaveHouseSpinner spWavehouse;
     @BindView(R.id.scanbyCamera)
@@ -147,12 +149,12 @@ public class PDActivity extends BaseActivity {
     CheckBox cbHebing;
     @BindView(R.id.sp_pihao)
     Spinner spPihao;
-    private Gson gson;
+//    private Gson gson;
     private List<PDMain> mainContainer;
     private List<Boolean> isCheck;
     private PDListAdapter pdListAdapter;
     private ArrayList<String> choice;
-    private DaoSession daoSession;
+//    private DaoSession daoSession;
     private ProgressDialog pg;
     private CommonMethod method;
     private PDMainSpAdapter pdMainSpAdapter;
@@ -160,7 +162,7 @@ public class PDActivity extends BaseActivity {
     private List<Product> products;
     private UnitSpAdapter unitAdapter;
     private String fprocessID;
-    private StorageSpAdapter storageAdapter;
+//    private StorageSpAdapter storageAdapter;
     private PDSub pdsubChoice;
     private Storage storage;
     private String storageId;
@@ -168,9 +170,9 @@ public class PDActivity extends BaseActivity {
     private WaveHouseSpAdapter waveHouseAdapter;
     private String wavehouseID = "0";
     private String wavehouseName;
-    private String unitId;
-    private String unitName;
-    private double unitrate;
+//    private String unitId;
+//    private String unitName;
+//    private double unitrate;
     private PDSubDao pdSubDao;
     private T_DetailDao t_detailDao;
     private ProductselectAdapter productselectAdapter;
@@ -199,8 +201,6 @@ public class PDActivity extends BaseActivity {
         mContext = this;
         ButterKnife.bind(this);
         initDrawer(mDrawer);
-        gson = new Gson();
-        daoSession = GreenDaoManager.getmInstance(mContext).getDaoSession();
         pdSubDao = daoSession.getPDSubDao();
         isAuto = share.getPDisAuto();
     }
@@ -238,12 +238,26 @@ public class PDActivity extends BaseActivity {
     }
 
     private void getBasicData() {
-        storageAdapter = method.getStorageSpinner(spStorage);
+//        storageAdapter = method.getStorageSpinner(spStorage);
+        spStorage.setAutoSelection(getString(R.string.spStorage_pd), "");
+
         pdMainSpAdapter = method.getpdmain(spPdplan);
     }
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbHebing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -308,23 +322,23 @@ public class PDActivity extends BaseActivity {
             }
         });
 
-        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-                unitId = unit.FMeasureUnitID;
-                unitName = unit.FName;
-                unitrate = MathUtil.toD(unit.FCoefficient);
-                Log.e("点击单位", unit.toString());
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
+//                unitId = unit.FMeasureUnitID;
+//                unitName = unit.FName;
+//                unitrate = MathUtil.toD(unit.FCoefficient);
+//                Log.e("点击单位", unit.toString());
+//
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
 
         lvPdlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -376,7 +390,8 @@ public class PDActivity extends BaseActivity {
         spStorage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                storage = (Storage) storageAdapter.getItem(i);
+                storage = (Storage) spStorage.getAdapter().getItem(i);
+                Hawk.put(getString(R.string.spStorage_pd),storage.FName);
                 wavehouseID = "0";
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
                 spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
@@ -553,7 +568,7 @@ public class PDActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_delete, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.btn_downloadall, R.id.btn_downloadchoosen})
+    @OnClick({R.id.btn_delete, R.id.scanbyCamera, R.id.search, R.id.btn_add,R.id.btn_checkorder, R.id.btn_downloadall, R.id.btn_downloadchoosen})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_delete:
@@ -579,7 +594,7 @@ public class PDActivity extends BaseActivity {
                             }
                             method.getpdmain(spPdplan);
                             Toast.showText(mContext, "删除成功");
-                            startNewActivity(MiddleActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, true, null);
+//                            startNewActivity(MiddleActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, true, null);
                         }
                     }).setNegativeButton("取消", null).create().show();
                 }
@@ -598,15 +613,6 @@ public class PDActivity extends BaseActivity {
                 break;
             case R.id.btn_add:
                 AddOrder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b2 = new Bundle();
@@ -647,9 +653,8 @@ public class PDActivity extends BaseActivity {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
                             T_DetailDao.Properties.Activity.eq(activity),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
-//                        T_DetailDao.Properties.FBatch.eq(edPihao.getText().toString() == null ? "" : edPihao.getText().toString()),
                             T_DetailDao.Properties.FBatch.eq(pihao == null ? "" : pihao),
-                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
                             T_DetailDao.Properties.FStorageId.eq(storageId),
                             T_DetailDao.Properties.FPositionId.eq(wavehouseID == null ? "0" : wavehouseID)).build().list();
                     if (detailhebing.size() > 0) {
@@ -660,21 +665,20 @@ public class PDActivity extends BaseActivity {
                     }
                 }
                 T_Detail t_detail = new T_Detail();
-//                t_detail.FBatch = edPihao.getText().toString() == null ? "" : edPihao.getText().toString();
                 t_detail.FBatch = pihao == null ? "" : pihao;
                 t_detail.FProductCode = edCode.getText().toString();
                 t_detail.FProductId = product.FItemID;
                 t_detail.model = product.FModel;
                 t_detail.FProductName = product.FName;
-                t_detail.FUnitId = unitId == null ? "" : unitId;
-                t_detail.FUnit = unitName == null ? "" : unitName;
+                t_detail.FUnitId = spUnit.getDataId();
+                t_detail.FUnit = spUnit.getDataName();
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageId == null ? "" : storageId;
                 t_detail.FInterID = fid == null ? "" : fid;
                 t_detail.FPosition = wavehouseName == null ? "" : wavehouseName;
                 t_detail.FPositionId = wavehouseID == null ? "" : wavehouseID;
                 t_detail.activity = activity;
-                t_detail.unitrate = unitrate;
+                t_detail.unitrate = spUnit.getDataUnitrate();
                 t_detail.FIndex = getTimesecond();
                 t_detail.FIdentity = "0";
                 t_detail.FQuantity = num == null ? "1" : num;
@@ -696,7 +700,6 @@ public class PDActivity extends BaseActivity {
                         pdSub.FCheckQty = edPdnum.getText().toString();
                         pdSub.FItemID = product.FItemID;
                         pdSub.FStockPlaceID = wavehouseID;
-//                    pdSub.FBatchNo = edPihao.getText().toString();
                         pdSub.FBatchNo = pihao;
                         pdSub.FID = fid;
                         pdSub.FStockID = storageId;
@@ -1052,8 +1055,13 @@ public class PDActivity extends BaseActivity {
                 PDsubReturnBean pBean = gson.fromJson(cBean.returnJson, PDsubReturnBean.class);
                 PDSubDao pdSubDao = daoSession.getPDSubDao();
                 for (int i = 0; i < pBean.items.size(); i++) {
-                    List<PDSub> list = pdSubDao.queryBuilder().where(PDSubDao.Properties.FID.eq(pBean.items.get(i).FID), PDSubDao.Properties.FStockPlaceID.eq(pBean.items.get(i).FStockPlaceID),
-                            PDSubDao.Properties.FStockID.eq(pBean.items.get(i).FStockID), PDSubDao.Properties.FBatchNo.eq(pBean.items.get(i).FBatchNo), PDSubDao.Properties.FItemID.eq(pBean.items.get(i).FItemID)).build().list();
+                    List<PDSub> list = pdSubDao.queryBuilder().where(
+                            PDSubDao.Properties.FID.eq(pBean.items.get(i).FID),
+                            PDSubDao.Properties.FStockPlaceID.eq(pBean.items.get(i).FStockPlaceID),
+                            PDSubDao.Properties.FStockID.eq(pBean.items.get(i).FStockID),
+                            PDSubDao.Properties.FBatchNo.eq(pBean.items.get(i).FBatchNo),
+                            PDSubDao.Properties.FItemID.eq(pBean.items.get(i).FItemID)
+                    ).build().list();
                     if (list.size() == 0) {
                         pdSubDao.deleteInTx(list);
                         long insert = pdSubDao.insert(pBean.items.get(i));

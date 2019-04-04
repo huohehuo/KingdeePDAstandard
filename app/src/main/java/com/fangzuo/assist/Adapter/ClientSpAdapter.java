@@ -31,6 +31,15 @@ public class ClientSpAdapter extends BaseAdapter {
         return items.size();
     }
 
+    public void addData(List<Client> clients) {
+        items.clear();
+        items.addAll(clients);
+        notifyDataSetChanged();
+    }
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
     @Override
     public Object getItem(int i) {
         return items.get(i);

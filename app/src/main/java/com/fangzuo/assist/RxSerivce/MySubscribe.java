@@ -4,6 +4,7 @@ import android.widget.Toast;
 
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
+import com.fangzuo.assist.widget.LoadingUtil;
 
 import java.net.ConnectException;
 
@@ -21,6 +22,7 @@ public abstract class MySubscribe<T extends CommonResponse> extends Subscriber<T
     public void onNext(T t) {
         if (!t.state){
             onError(new Throwable(t.returnJson));
+            LoadingUtil.dismiss();
         }
 //        if ("1".equals(t.getErrno())) {
 //            onError(new Throwable(t.getMsg()));

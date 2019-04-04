@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.fangzuo.assist.Dao.Client;
 import com.fangzuo.assist.Dao.Suppliers;
 import com.fangzuo.assist.R;
 
@@ -31,6 +32,15 @@ public class SupplierSpAdapter extends BaseAdapter {
         return items.size();
     }
 
+    public void addData(List<Suppliers> clients) {
+        items.clear();
+        items.addAll(clients);
+        notifyDataSetChanged();
+    }
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
     @Override
     public Object getItem(int i) {
         return items.get(i);

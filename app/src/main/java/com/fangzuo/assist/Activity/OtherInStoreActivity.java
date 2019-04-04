@@ -70,6 +70,7 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
@@ -81,6 +82,7 @@ import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
+import com.orhanobut.hawk.Hawk;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -103,7 +105,7 @@ public class OtherInStoreActivity extends BaseActivity {
     @BindView(R.id.search_supplier)
     RelativeLayout searchSupplier;
     @BindView(R.id.sp_which_storage)
-    Spinner spWhichStorage;
+    SpinnerStorage spWhichStorage;
     @BindView(R.id.sp_wavehouse)
     MyWaveHouseSpinner spWavehouse;
     @BindView(R.id.scanbyCamera)
@@ -163,13 +165,9 @@ public class OtherInStoreActivity extends BaseActivity {
 
 
     private DecimalFormat df;
-    private DaoSession daoSession;
-    private int year;
-    private int month;
-    private int day;
     private long ordercode;
     private EmployeeSpAdapter employeeSpAdapter;
-    private StorageSpAdapter storageSpAdapter;
+//    private StorageSpAdapter storageSpAdapter;
     private DepartmentSpAdapter departMentAdapter;
     private InStoreTypeSpAdapter inStoreType;
     private String supplierid;
@@ -194,9 +192,9 @@ public class OtherInStoreActivity extends BaseActivity {
     private String wavehouseID;
     private String wavehouseName;
     private UnitSpAdapter unitAdapter;
-    private String unitId;
-    private String unitName;
-    private double unitrate;
+//    private String unitId;
+//    private String unitName;
+//    private double unitrate;
     private String date;
     //    private String inStoreTypeId;
 //    private String inStoreTypeName;
@@ -221,12 +219,6 @@ public class OtherInStoreActivity extends BaseActivity {
         df = new DecimalFormat("######0.00");
         initDrawer(drawer);
         edPihao.setEnabled(false);
-        daoSession = GreenDaoManager.getmInstance(mContext).getDaoSession();
-
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
-
         cbHebing.setChecked(isHebing);
         autoAdd.setChecked(share.getOOSisAuto());
         isAuto = share.getOOSisAuto();
@@ -290,6 +282,18 @@ public class OtherInStoreActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsStorage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -492,7 +496,9 @@ public class OtherInStoreActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 isSpStorageDefault = false;
-                storage = (Storage) storageSpAdapter.getItem(i);
+                storage = (Storage) spWhichStorage.getAdapter().getItem(i);
+                Hawk.put(getString(R.string.spStorage_ois),storage.FName);
+
                 wavehouseID = "0";
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
                 spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
@@ -530,12 +536,12 @@ public class OtherInStoreActivity extends BaseActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-                if (unit != null) {
-                    unitId = unit.FMeasureUnitID;
-                    unitName = unit.FName;
-                    unitrate = MathUtil.toD(unit.FCoefficient);
-                    Log.e("1111", unitrate + "");
-                }
+//                if (unit != null) {
+//                    unitId = unit.FMeasureUnitID;
+//                    unitName = unit.FName;
+//                    unitrate = MathUtil.toD(unit.FCoefficient);
+//                    Log.e("1111", unitrate + "");
+//                }
 
                 getInstorageNum(product);
 
@@ -567,7 +573,7 @@ public class OtherInStoreActivity extends BaseActivity {
         if (fBatchManager) {
             spPihao.setEnabled(true);
             if (!BasicShareUtil.getInstance(mContext).getIsOL()) {
-                piciSpAdapter = CommonMethod.getMethod(mContext).getPici(storage, wavehouseID, product, spPihao);
+                piciSpAdapter = CommonMethod.getMethod(mContext).getPici(storage, spWavehouse.getWaveHouseId(), product, spPihao);
             } else {
                 final List<InStorageNum> container = new ArrayList<>();
                 piciSpAdapter = new PiciSpAdapter(mContext, container);
@@ -576,7 +582,7 @@ public class OtherInStoreActivity extends BaseActivity {
                 GetBatchNoBean bean = new GetBatchNoBean();
                 bean.ProductID = product.FItemID;
                 bean.StorageID = storageId;
-                bean.WaveHouseID = wavehouseID;
+                bean.WaveHouseID = spWavehouse.getWaveHouseId();
                 String json = new Gson().toJson(bean);
 
                 Log.e(TAG, "getPici批次提交：" + json);
@@ -642,7 +648,8 @@ public class OtherInStoreActivity extends BaseActivity {
     private void LoadBasicData() {
         tvDate.setText(share.getOISdate());
         CommonMethod.getMethod(mContext).getGoodsDepartmentSpAdapter();
-        storageSpAdapter = CommonMethod.getMethod(mContext).getStorageSpinner(spWhichStorage);
+//        storageSpAdapter = CommonMethod.getMethod(mContext).getStorageSpinner(spWhichStorage);
+        spWhichStorage.setAutoSelection(getString(R.string.spStorage_ois), "");
 
         spInStoreType.setAutoSelection(getString(R.string.spInStoreType_ois), "");
         spCapturePerson.setAutoSelection(getString(R.string.spCapturePerson_ois), "");
@@ -665,7 +672,7 @@ public class OtherInStoreActivity extends BaseActivity {
 //        spInStoreType.setSelection(share.getOISInstoreType());
     }
 
-    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.search_supplier:
@@ -691,48 +698,15 @@ public class OtherInStoreActivity extends BaseActivity {
             case R.id.btn_finishorder:
                 finishOrder();
                 break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
-                break;
             case R.id.btn_checkorder:
                 Bundle b2 = new Bundle();
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
         }
-    }
-
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
     }
 
     @Override
@@ -899,12 +873,14 @@ public class OtherInStoreActivity extends BaseActivity {
                 fBatchManager = false;
             }
             if (isGetDefaultStorage) {
-                for (int j = 0; j < storageSpAdapter.getCount(); j++) {
-                    if (((Storage) storageSpAdapter.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
-                        spWhichStorage.setSelection(j);
-                        break;
-                    }
-                }
+                spWhichStorage.setAutoSelection(getString(R.string.spStorage_ois), product.FDefaultLoc);
+//
+//                for (int j = 0; j < storageSpAdapter.getCount(); j++) {
+//                    if (((Storage) storageSpAdapter.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
+//                        spWhichStorage.setSelection(j);
+//                        break;
+//                    }
+//                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -967,12 +943,12 @@ public class OtherInStoreActivity extends BaseActivity {
         } else {
             pihao = "";
         }
-        if (wavehouseID == null) {
-            wavehouseID = "0";
-        }
+//        if (wavehouseID == null) {
+//            wavehouseID = "0";
+//        }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = wavehouseID;
+            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
             iBean.FBatchNo = pihao;
             iBean.FStockID = storage.FItemID;
             iBean.FItemID = product.FItemID;
@@ -983,7 +959,7 @@ public class OtherInStoreActivity extends BaseActivity {
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                     Log.e(TAG, "库存返回：" + cBean.returnJson);
                     double num = MathUtil.toD(cBean.returnJson);
-                    tvNuminstorage.setText((num * unitrate) + "");
+                    tvNuminstorage.setText((num * spUnit.getDataUnitrate()) + "");
                 }
 
                 @Override
@@ -995,15 +971,17 @@ public class OtherInStoreActivity extends BaseActivity {
             });
         } else {
             InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-            List<InStorageNum> list1 = inStorageNumDao.queryBuilder().
-                    where(InStorageNumDao.Properties.FItemID.eq(product.FItemID), InStorageNumDao.Properties.FStockID.eq(storage.FItemID),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID), InStorageNumDao.Properties.FBatchNo.eq(pihao)).build().list();
+            List<InStorageNum> list1 = inStorageNumDao.queryBuilder().where(
+                    InStorageNumDao.Properties.FItemID.eq(product.FItemID),
+                    InStorageNumDao.Properties.FStockID.eq(storage.FItemID),
+                    InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                    InStorageNumDao.Properties.FBatchNo.eq(pihao)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
                 Double qty = MathUtil.toD(list1.get(0).FQty);
                 Log.e("qty", qty + "");
                 if (qty != null) {
-                    tvNuminstorage.setText((qty / unitrate) + "");
+                    tvNuminstorage.setText((qty / spUnit.getDataUnitrate()) + "");
                 }
 
             } else {
@@ -1017,9 +995,9 @@ public class OtherInStoreActivity extends BaseActivity {
 
     private void Addorder() {
         try {
-            if (wavehouseID == null) {
-                wavehouseID = "0";
-            }
+//            if (wavehouseID == null) {
+//                wavehouseID = "0";
+//            }
             String discount = "0";
             String num = edNum.getText().toString();
             if (edSupplier.getText().toString().equals("")){
@@ -1054,9 +1032,9 @@ public class OtherInStoreActivity extends BaseActivity {
                             T_DetailDao.Properties.FOrderId.eq(ordercode),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FBatch.eq(edPihao.getText().toString()),
-                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
                             T_DetailDao.Properties.FStorageId.eq(storageId),
-                            T_DetailDao.Properties.FPositionId.eq(wavehouseID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
                             T_DetailDao.Properties.FDiscount.eq(discount)
                     ).build().list();
                     if (detailhebing.size() > 0) {
@@ -1076,7 +1054,7 @@ public class OtherInStoreActivity extends BaseActivity {
                 t_main.FPaymentDate = "";
                 t_main.orderId = ordercode;
                 t_main.orderDate = share.getOISdate();
-                t_main.FPurchaseUnit = unitName == null ? "" : unitName;
+                t_main.FPurchaseUnit = spUnit.getDataName();
                 t_main.FSalesMan = spEmployee.getEmployeeName();
                 t_main.FSalesManId = spEmployee.getEmployeeId();
                 t_main.FMaker = share.getUserName();
@@ -1108,16 +1086,16 @@ public class OtherInStoreActivity extends BaseActivity {
                 t_detail.model = product.FModel;
                 t_detail.FProductName = product.FName;
                 t_detail.FIndex = second;
-                t_detail.FUnitId = unitId == null ? "" : unitId;
-                t_detail.FUnit = unitName == null ? "" : unitName;
+                t_detail.FUnitId = spUnit.getDataId();
+                t_detail.FUnit = spUnit.getDataName();
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageId == null ? "" : storageId;
-                t_detail.FPosition = wavehouseName == null ? "" : wavehouseName;
-                t_detail.FPositionId = wavehouseID == null ? "" : wavehouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
-                t_detail.unitrate = unitrate;
+                t_detail.unitrate = spUnit.getDataUnitrate();
                 t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
 
                 long insert = t_detailDao.insert(t_detail);
@@ -1127,18 +1105,22 @@ public class OtherInStoreActivity extends BaseActivity {
                     Toast.showText(mContext, "添加成功");
                     if (!BasicShareUtil.getInstance(mContext).getIsOL()) {
                         InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-                        List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(edPihao.getText().toString()), InStorageNumDao.Properties.FStockID.eq(storageId)
-                                , InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID), InStorageNumDao.Properties.FItemID.eq(product.FItemID)).build().list();
+                        List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
+                                InStorageNumDao.Properties.FBatchNo.eq(edPihao.getText().toString()),
+                                InStorageNumDao.Properties.FStockID.eq(storageId),
+                                InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                                InStorageNumDao.Properties.FItemID.eq(product.FItemID)
+                        ).build().list();
                         if (innum.size() > 0) {
-                            innum.get(0).FQty = (MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) * unitrate)) + "";
+                            innum.get(0).FQty = (MathUtil.toD(innum.get(0).FQty) + (MathUtil.toD(edNum.getText().toString()) * spUnit.getDataUnitrate())) + "";
                             inStorageNumDao.update(innum.get(0));
                         } else {
                             InStorageNum i = new InStorageNum();
-                            i.FQty = (MathUtil.toD(edNum.getText().toString()) * unitrate) + "";
+                            i.FQty = (MathUtil.toD(edNum.getText().toString()) * spUnit.getDataUnitrate()) + "";
                             i.FItemID = product.FItemID;
                             i.FBatchNo = edPihao.getText().toString();
                             i.FStockID = storageId;
-                            i.FStockPlaceID = wavehouseID;
+                            i.FStockPlaceID = spWavehouse.getWaveHouseId();
                             inStorageNumDao.insert(i);
                         }
                     }
@@ -1231,7 +1213,7 @@ public class OtherInStoreActivity extends BaseActivity {
 
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.OTHERINSTORE, gson.toJson(pBean));
+        DataModel.upload(WebApi.OTHERINSTORE, gson.toJson(pBean));
 //        postToServer(data);
     }
 

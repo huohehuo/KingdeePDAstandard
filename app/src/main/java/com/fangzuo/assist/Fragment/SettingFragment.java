@@ -1,16 +1,22 @@
 package com.fangzuo.assist.Fragment;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +33,11 @@ import com.fangzuo.assist.Beans.NewVersionBean;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
+import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
+import com.fangzuo.assist.widget.LoadingUtil;
 import com.google.gson.Gson;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.http.ResponseInfo;
@@ -36,6 +45,8 @@ import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.loopj.android.http.AsyncHttpClient;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,26 +63,29 @@ public class SettingFragment extends BaseFragment {
     private ProgressDialog pDialog;
     public SettingFragment() {
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
         bind = ButterKnife.bind(this, v);
+        mContext = getActivity();
         return v;
     }
 
-
     @Override
     public void initView() {
-        mContext = getActivity();
 
     }
 
     @Override
     protected void OnReceive(String barCode) {
-
+        Lg.e("扫描下载"+barCode);
+        //fangzuokeji^http://148.70.108.65:8080/AppFile/Cloud/app-debug.apk
+        if (barCode.contains("fangzuokeji^")){
+            String url = barCode.replace("fangzuokeji^","");
+            DownLoad(url);
+        }
     }
 
     @Override
@@ -144,35 +158,39 @@ public class SettingFragment extends BaseFragment {
         bind.unbind();
     }
     private void checkNewVersion() {
-        Asynchttp.post(mContext, getBaseUrl() + WebApi.GETNEWVERSION, "", new Asynchttp.Response() {
-            @Override
-            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                final NewVersionBean nBean = new Gson().fromJson(cBean.returnJson,NewVersionBean.class);
-                if(nBean.Version>getVersionCode()){
-                    AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
-                    ab.setTitle("发现新版本");
-                    ab.setMessage(nBean.Rem);
-                    ab.setPositiveButton("更新", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            DownLoad(nBean.downLoadURL);
-                        }
-                    });
-                    ab.setNegativeButton("取消",null);
-                    ab.create().show();
-                }else{
-                    Toast.showText(mContext,"无新版本");
-                }
-            }
+        LoadingUtil.showDialog(mContext,"请扫描二维码进行下载");
+//        DownLoad(Config.Apk_Url);
 
-            @Override
-            public void onFailed(String Msg, AsyncHttpClient client) {
-                Toast.showText(mContext,Msg);
-            }
-        });
+//        Asynchttp.post(mContext, getBaseUrl() + WebApi.GETNEWVERSION, "", new Asynchttp.Response() {
+//            @Override
+//            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+//                final NewVersionBean nBean = new Gson().fromJson(cBean.returnJson,NewVersionBean.class);
+//                if(nBean.Version>getVersionCode()){
+//                    AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+//                    ab.setTitle("发现新版本");
+//                    ab.setMessage(nBean.Rem);
+//                    ab.setPositiveButton("更新", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            DownLoad(nBean.downLoadURL);
+//                        }
+//                    });
+//                    ab.setNegativeButton("取消",null);
+//                    ab.create().show();
+//                }else{
+//                    Toast.showText(mContext,"无新版本");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailed(String Msg, AsyncHttpClient client) {
+//                Toast.showText(mContext,Msg);
+//            }
+//        });
     }
 
     private void DownLoad(String downLoadURL) {
+        LoadingUtil.dismiss();
         if (Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
 
@@ -181,7 +199,7 @@ public class SettingFragment extends BaseFragment {
             pDialog.setTitle("下载中");
             pDialog.show();
             String target = Environment.getExternalStorageDirectory()
-                    + "/ScanAssist.apk";
+                    + "/NewApp"+getTimeLong(false)+"删掉.apk";
             HttpUtils utils = new HttpUtils();
 
             utils.download(downLoadURL, target, new RequestCallBack<File>() {
@@ -198,11 +216,33 @@ public class SettingFragment extends BaseFragment {
                 public void onSuccess(ResponseInfo<File> arg0) {
                     pDialog.dismiss();
                     System.out.println("下载完成");
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.addCategory(Intent.CATEGORY_DEFAULT);
-                    intent.setDataAndType(Uri.fromFile(arg0.result),
-                            "application/vnd.android.package-archive");
-                    startActivityForResult(intent, 0);
+                    try{
+                        installApk(mContext,arg0.result+"");
+//                        Intent intent = new Intent(Intent.ACTION_VIEW);
+//                        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//                        intent.setDataAndType(Uri.fromFile(arg0.result),
+//                                "application/vnd.android.package-archive");
+//                        startActivityForResult(intent, 0);
+                    }catch (Exception e){
+                        try{
+                            StringBuilder builder = new StringBuilder();
+                            builder.append("请先退出本软件\n");
+                            builder.append("进入PDA软件主页\n");
+                            builder.append("选择文件管理器\n");
+                            builder.append("找到文件NewApp\n");
+                            builder.append("长按变色点击右下角重命名\n删去后面的数字\n");
+                            builder.append("变成文件名：NewApp.apk\n");
+                            builder.append("点击安装\n");
+                            AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+                            ab.setTitle("下载成功!\n请按操作重新安装APK");
+                            ab.setMessage(builder.toString());
+                            ab.setPositiveButton("确定", null);
+                            ab.create().show();
+                        }catch (Exception e1){
+
+                        }
+                    }
+
                 }
 
                 @Override
@@ -220,6 +260,46 @@ public class SettingFragment extends BaseFragment {
         }
     }
 
+    public static void installApk(Context context, String apkPath) {
+        if (context == null || TextUtils.isEmpty(apkPath)) {
+            return;
+        }
+        Lg.e("获得文件路径："+apkPath);
+
+        File file = new File(apkPath);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        //判读版本是否在7.0以上
+        if (Build.VERSION.SDK_INT >= 24) {
+            Lg.e(">=24时");
+//            Log.v(TAG,"7.0以上，正在安装apk...");
+            //provider authorities
+            Uri apkUri = FileProvider.getUriForFile(context,
+                    "com.fangzuo.assist.provider",
+//                    BuildConfig.APPLICATION_ID + ".provider",
+                    file);
+//            Uri apkUri = FileProvider.getUriForFile(context, "com.fangzuo.assist.fileprovider", file);
+            //Granting Temporary Permissions to a URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            Lg.e("<24时");
+//            Log.v(TAG,"7.0以下，正在安装apk...");
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
+
+        context.startActivity(intent);
+
+    }
+
+
+    public String getTimeLong(boolean b){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd-HH-mm-ss":"yyyyMMddHHmmss");
+        Date curDate = new Date();
+        Log.e("date",curDate.toString());
+        String str = format.format(curDate);
+        return str;
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

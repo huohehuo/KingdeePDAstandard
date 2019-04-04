@@ -131,9 +131,6 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
     @BindView(R.id.scrollView)
     ScrollView scrollView;
     private CommonMethod method;
-    private int year;
-    private int month;
-    private int day;
     private List<PushDownSub> container;
     private ArrayList<String> fidcontainer;
     private List<PushDownSub> list;
@@ -294,9 +291,6 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
         ButterKnife.bind(this);
         share = ShareUtil.getInstance(mContext);
         method = CommonMethod.getMethod(mContext);
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         cbIsAuto.setChecked(share.getPDPOisAuto());
         isAuto = share.getPDPOisAuto();
         isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
@@ -352,7 +346,18 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
-
+        btnBackorder.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                if (DataModel.checkHasDetail(mContext, activity)) {
+                    btnBackorder.setClickable(false);
+                    LoadingUtil.show(mContext, "正在回单...");
+                    upload();
+                } else {
+                    Toast.showText(mContext, "无单据信息");
+                }
+            }
+        });
         cbIsAuto.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -612,20 +617,11 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_add, R.id.btn_backorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.btn_add,  R.id.btn_checkorder, R.id.tv_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
                 Addorder();
-                break;
-            case R.id.btn_backorder:
-                if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
-                } else {
-                    Toast.showText(mContext, "无单据信息");
-                }
                 break;
             case R.id.btn_checkorder:
                 Bundle b = new Bundle();
@@ -633,7 +629,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 startNewActivity(Table3Activity.class, 0, 0, false, b);
                 break;
             case R.id.tv_date:
-                getdate();
+                datePicker(tvDate);
                 break;
 
         }
@@ -645,29 +641,6 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
         super.onResume();
         Log.e("resume", "resume");
         getList();
-    }
-
-    private void getdate() {
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            }
-        }, year, day, month);
-
-        datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                int year = datePickerDialog.getDatePicker().getYear();
-                int month = datePickerDialog.getDatePicker().getMonth();
-                int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                String date = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                tvDate.setText(date);
-                Toast.showText(mContext, date);
-                datePickerDialog.dismiss();
-
-            }
-        });
-        datePickerDialog.show();
     }
 
 
@@ -692,14 +665,10 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                     Toast.showText(mContext, "大兄弟,您的数量超过我的想象");
                     return;
                 }
-                ProgressDialog pg = new ProgressDialog(mContext);
-                pg.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-                pg.setMessage("请稍后...");
-                pg.setCancelable(false);
-                pg.show();
+                LoadingUtil.show(mContext,"请稍后...");
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID)
+                            , T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId())
                             , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
@@ -758,8 +727,8 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = waveHouseName == null ? "" : waveHouseName;
-                t_detail.FPositionId = waveHouseID == null ? "" : waveHouseID;
+                t_detail.FPosition = spWavehouse.getWaveHouse();
+                t_detail.FPositionId = spWavehouse.getWaveHouseId();
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -776,11 +745,11 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                     MediaPlayer.getInstance(mContext).ok();
                     pushDownSubListAdapter.notifyDataSetChanged();
                     resetAll();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 } else {
                     Toast.showText(mContext, "添加失败，请重试");
                     MediaPlayer.getInstance(mContext).error();
-                    pg.dismiss();
+                    LoadingUtil.dismiss();
                 }
             } else {
                 Toast.showText(mContext, "未选中物料");
@@ -805,7 +774,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 GetBatchNoBean gBean = new GetBatchNoBean();
                 gBean.ProductID = productID;
                 gBean.StorageID = storageID;
-                gBean.WaveHouseID = waveHouseID;
+                gBean.WaveHouseID = spWavehouse.getWaveHouseId();
                 Synchttp.post(mContext, WebApi.GETPICI, new Gson().toJson(gBean), new Synchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -824,7 +793,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
                 List<InStorageNum> inStorageNa = inStorageNumDao.queryBuilder().where(
                         InStorageNumDao.Properties.FStockID.eq(storageID),
-                        InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
+                        InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
                         InStorageNumDao.Properties.FItemID.eq(productID)
                 ).build().list();
                 if (inStorageNa.size() > 0) {
@@ -864,9 +833,16 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                     String detail = "";
                     T_main t_main = mains.get(i);
                     fidc.add(t_main.FDeliveryType);
-                    main = t_main.FMakerId + "|" + t_main.orderDate + "|" + t_main.FPaymentDate + "|" + t_main.supplierId + "|" + t_main.FPaymentTypeId + "|"
-                            + "|" + t_main.FDepartmentId + "|" +
-                            t_main.FSalesManId + "|" + t_main.Rem + "|" + t_main.FDirectorId + "|";
+                    main = t_main.FMakerId + "|" +
+                            t_main.orderDate + "|" +
+                            t_main.FPaymentDate + "|" +
+                            t_main.supplierId + "|" +
+                            t_main.FPaymentTypeId + "|"
+                            + "|" +
+                            t_main.FDepartmentId + "|" +
+                            t_main.FSalesManId + "|" +
+                            t_main.Rem + "|" +
+                            t_main.FDirectorId + "|";
                     puBean.main = main;
                     List<T_Detail> details = t_detailDao.queryBuilder().where(
                             T_DetailDao.Properties.FOrderId.eq(t_main.orderId),
@@ -875,9 +851,16 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                         if (j != 0 && j % 49 == 0) {
                             Log.e("j%49", j % 49 + "");
                             T_Detail t_detail = details.get(j);
-                            detail = detail + t_detail.FProductId + "|" + t_detail.FUnitId + "|" + t_detail.FTaxUnitPrice + "|" +
-                                    t_detail.FQuantity + "|" + t_detail.FStorageId + "|" + t_detail.FPositionId + "|" + t_detail.FEntryID +
-                                    "|" + t_detail.FInterID + "|" + t_detail.FBatch + "|";
+                            detail = detail +
+                                    t_detail.FProductId + "|" +
+                                    t_detail.FUnitId + "|" +
+                                    t_detail.FTaxUnitPrice + "|" +
+                                    t_detail.FQuantity + "|" +
+                                    t_detail.FStorageId + "|" +
+                                    t_detail.FPositionId + "|" +
+                                    t_detail.FEntryID + "|" +
+                                    t_detail.FInterID + "|" +
+                                    t_detail.FBatch + "|";
                             detail = detail.subSequence(0, detail.length() - 1).toString();
                             detailContainer.add(detail);
                             detail = "";
@@ -885,9 +868,16 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                             Log.e("j", j + "");
                             Log.e("details.size()", details.size() + "");
                             T_Detail t_detail = details.get(j);
-                            detail = detail + t_detail.FProductId + "|" + t_detail.FUnitId + "|" + t_detail.FTaxUnitPrice + "|" +
-                                    t_detail.FQuantity + "|" + t_detail.FStorageId + "|" + t_detail.FPositionId + "|" + t_detail.FEntryID +
-                                    "|" + t_detail.FInterID + "|" + t_detail.FBatch + "|";
+                            detail = detail +
+                                    t_detail.FProductId + "|" +
+                                    t_detail.FUnitId + "|" +
+                                    t_detail.FTaxUnitPrice + "|" +
+                                    t_detail.FQuantity + "|" +
+                                    t_detail.FStorageId + "|" +
+                                    t_detail.FPositionId + "|" +
+                                    t_detail.FEntryID + "|" +
+                                    t_detail.FInterID + "|" +
+                                    t_detail.FBatch + "|";
                             Log.e("detail1", detail);
                         }
 
@@ -905,7 +895,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
             }
         }
         pBean.list = data;
-        DataModel.upload(mContext, getBaseUrl() + WebApi.CGDDPDSLTZDUpload, gson.toJson(pBean));
+        DataModel.upload(WebApi.CGDDPDSLTZDUpload, gson.toJson(pBean));
 //        postToServer(data);
 
     }
@@ -998,14 +988,5 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
         startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
 
-    //用于adpater首次更新时，不存入默认值，而是选中之前的选项
-    private boolean isFirst = false;
-    private boolean isFirst2 = false;
-    private boolean isFirst3 = false;
-    private boolean isFirst4 = false;
-    private boolean isFirst5 = false;
-    private boolean isFirst6 = false;
-    private boolean isFirst7 = false;
-    private boolean isFirst8 = false;
 
 }

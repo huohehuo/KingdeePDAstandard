@@ -63,6 +63,8 @@ import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
+import com.fangzuo.assist.widget.SpinnerClient;
+import com.fangzuo.assist.widget.SpinnerSupplier;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.PushDownMainDao;
 import com.fangzuo.greendao.gen.PushDownSubDao;
@@ -88,8 +90,6 @@ import butterknife.Unbinder;
 public class DownLoadPushFragment extends BaseFragment {
 
 
-    @BindView(R.id.sp_wlunit)
-    Spinner spWlunit;           //往来单位
     @BindView(R.id.ed_code)
     EditText edCode;
     @BindView(R.id.start_date)
@@ -107,21 +107,22 @@ public class DownLoadPushFragment extends BaseFragment {
     Unbinder unbinder;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refresh;
+    @BindView(R.id.sp_client)
+    SpinnerClient spClient;
+    @BindView(R.id.sp_supplier)
+    SpinnerSupplier spSupplier;
     private int tag;
     private FragmentActivity mContext;
-    private SupplierSpAdapter supplierAdapter;
-    private ClientSpAdapter clientSpAdapter;
-    private String clientID;
-    private String supplierID;
+//    private SupplierSpAdapter supplierAdapter;
+//    private ClientSpAdapter clientSpAdapter;
+//    private String clientID;
+//    private String supplierID;
     private boolean defaultsp = false;
     private ArrayList<Boolean> isCheck;
     private PushDownListAdapter pushDownListAdapter;
     private ArrayList<PushDownMain> downloadIDs;            //用于listview选择时，添加临时对象
     private PushDownListReturnBean puBean;
     private DaoSession daosession;
-    private int year;
-    private int month;
-    private int day;
     private String enddate;
     private String startdate;
     private ArrayList<PushDownMain> container;
@@ -133,18 +134,18 @@ public class DownLoadPushFragment extends BaseFragment {
     protected void initView() {
         isCheck = new ArrayList<>();
         downloadIDs = new ArrayList<>();
-        year = Calendar.getInstance().get(Calendar.YEAR);
-        month = Calendar.getInstance().get(Calendar.MONTH);
-        day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
 
         daosession = GreenDaoManager.getmInstance(mContext).getDaoSession();
 
         if (tag == 1 || tag == 3) {
             //客户信息绑定
-            clientSpAdapter = CommonMethod.getMethod(mContext).getCilent(spWlunit);
+            spClient.setVisibility(View.VISIBLE);
+            spSupplier.setVisibility(View.GONE);
         } else {
             //供应商信息绑定
-            supplierAdapter = CommonMethod.getMethod(mContext).getSupplier(spWlunit);
+            spClient.setVisibility(View.GONE);
+            spSupplier.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -277,40 +278,6 @@ public class DownLoadPushFragment extends BaseFragment {
             }
         });
 
-        //选择往来单位（供应商或者客户）
-        spWlunit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (!defaultsp) {
-                    clientID = "";
-                    supplierID = "";
-                    defaultsp = true;
-                    Log.e("defaultsp", defaultsp + "");
-                } else {
-                    if (tag == 1 || tag == 3) {
-                        if (clientSpAdapter != null) {
-                            Client client = (Client) clientSpAdapter.getItem(i);
-                            clientID = client.FItemID;
-                        }
-                    } else {
-                        if (supplierAdapter != null) {
-                            Suppliers supplier = (Suppliers) supplierAdapter.getItem(i);
-                            supplierID = supplier.FItemID;
-                        }
-                    }
-                }
-
-                Log.e("client", clientID);
-                Log.e("supplier", supplierID);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         //列表下载的选择处理
         lvPushdownDownload.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -330,52 +297,19 @@ public class DownLoadPushFragment extends BaseFragment {
                 pushDownListAdapter.notifyDataSetChanged();
             }
         });
-        //结束时间
-        endDate.setOnClickListener(new View.OnClickListener() {
+
+        startDate.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                    }
-                }, year, month, day);
-                datePickerDialog.show();
-                datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int year = datePickerDialog.getDatePicker().getYear();
-                        int month = datePickerDialog.getDatePicker().getMonth();
-                        int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                        enddate = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                        endDate.setText(enddate);
-                        Toast.showText(mContext, enddate);
-                        datePickerDialog.dismiss();
-                    }
-                });
+            public boolean onLongClick(View v) {
+                startDate.setText("");
+                return true;
             }
         });
-        //开始时间
-        startDate.setOnClickListener(new View.OnClickListener() {
+        endDate.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View view) {
-                final DatePickerDialog datePickerDialog = new DatePickerDialog(mContext, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                    }
-                }, year, month, day);
-                datePickerDialog.show();
-                datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        int year = datePickerDialog.getDatePicker().getYear();
-                        int month = datePickerDialog.getDatePicker().getMonth();
-                        int day = datePickerDialog.getDatePicker().getDayOfMonth();
-                        startdate = year + "-" + ((month < 10) ? "0" + (month + 1) : (month + 1)) + "-" + ((day < 10) ? "0" + day : day);
-                        startDate.setText(startdate);
-                        Toast.showText(mContext, startdate);
-                        datePickerDialog.dismiss();
-                    }
-                });
+            public boolean onLongClick(View v) {
+                endDate.setText("");
+                return true;
             }
         });
     }
@@ -412,7 +346,7 @@ public class DownLoadPushFragment extends BaseFragment {
 
 
     //点击事件
-    @OnClick({R.id.btn_download, R.id.btn_search})
+    @OnClick({R.id.btn_download, R.id.btn_search,R.id.start_date,R.id.end_date})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_download:
@@ -424,6 +358,12 @@ public class DownLoadPushFragment extends BaseFragment {
                 break;
             case R.id.btn_search:
                 searchList();
+                break;
+            case R.id.start_date:
+                datePicker(startDate);
+                break;
+            case R.id.end_date:
+                datePicker(endDate);
                 break;
         }
     }
@@ -516,9 +456,9 @@ public class DownLoadPushFragment extends BaseFragment {
             pBean.StartTime = startTime;
             pBean.endTime = endtime;
             if (tag == 1 || tag == 3) {
-                pBean.FWLUnitID = clientID;
+                pBean.FWLUnitID = spClient.getDataId();
             } else {
-                pBean.FWLUnitID = supplierID;
+                pBean.FWLUnitID = spSupplier.getDataId();
             }
             String Json = new Gson().toJson(pBean);
             //获取单据信息

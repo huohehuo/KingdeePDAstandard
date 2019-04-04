@@ -3,11 +3,19 @@ package com.fangzuo.assist.Utils;
 public class Config {
     //    public static final String Error_Url = "http://192.168.0.115:8083/Assist/GetLogMessage";
     public static final String Error_Url = "http://148.70.108.65:8080/LogAssist/GetLogMessage";
+//    public static final String Setting_Url = "http://148.70.108.65:8080/LogAssist/GetSettingData";//配置文件地址
+    public static final String Setting_Url = "http://192.168.0.136:8083/Assist/GetSettingData";//配置文件地址
+    public static final String Apk_Url = "http://148.70.108.65:8080/AppFile/Cloud/app-debug.apk";
+    public static final String Json_Url = "http://148.70.108.65:8080/JsonFile/setting.txt";
+    public static final String Data_Url = "DownData/AllData.txt";
     public static String Company="通用版";
+    public static String SaveTime="SaveTime";//用于保存使用截止日期
+    public static String Key="01235679";//用于保存使用截止日期（需要web端的key与之相同,并且不能倒序，只能递增的数字）
+    public static String PDA_IMIE="PDA_IMIE";//用于保存注册码
 
     public static final String DATABASESETTING = "master";
     public static final String PDA = "PDA";
-    public static final String[] PDA_Type = {"请选择设备型号","G02A设备", "8000设备", "5000设备","M60","手机端","H100"};
+    public static final String[] PDA_Type = {"请选择设备型号","G02A设备", "8000设备", "5000设备","M60","新大陆","手机端"};
 
     //用于接口回调的判断------------------------------------------
     public static final String IO_type_Test="IO_type_Test";
@@ -65,5 +73,6 @@ public class Config {
     public static final int PurchaseOrderActivity                   =10022;
     public static final int SaleOrderActivity                       =10023;
     public static final int PDActivity                              =10024;
+    public static final int DBActivity                              =10025;
 
 }

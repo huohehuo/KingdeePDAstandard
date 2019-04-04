@@ -38,6 +38,7 @@ import android.widget.TextView;
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusUtil;
@@ -51,7 +52,6 @@ import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
 import com.nineoldandroids.view.ViewHelper;
 import com.orhanobut.hawk.Hawk;
-import com.zebra.adc.decoder.Barcode2DWithSoft;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -126,24 +126,27 @@ public abstract class BaseActivity extends FragmentActivity {
             }
         }
     };
-
-    public Barcode2DWithSoft.ScanCallback mScanCallback = new Barcode2DWithSoft.ScanCallback() {
+    //新大陆
+    private static final String ACTION_XDL_SCAN_RESULT = "nlscan.action.SCANNER_RESULT";
+    private BroadcastReceiver mScanDataReceiverForXDL = new BroadcastReceiver() {
         @Override
-        public void onScanComplete(int i, int length, byte[] data) {
-
-            Log.i("ErDSoftScanFragment", "onScanComplete() i=" + i);
-//
-//            if (length < 1) {
-//
-//                editText1.append(getString(R.string.yid_msg_scan_fail) + "\n");
-//
-//                return;
-//            }
-            barcodeStr = new String(data);
-            OnReceive(barcodeStr);
-
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (action.equals(ACTION_XDL_SCAN_RESULT)) {
+                barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
+                OnReceive(barcodeStr);
+            }
         }
     };
+
+//    public Barcode2DWithSoft.ScanCallback mScanCallback = new Barcode2DWithSoft.ScanCallback() {
+//        @Override
+//        public void onScanComplete(int i, int length, byte[] data) {
+//            Log.i("ErDSoftScanFragment", "onScanComplete() i=" + i);
+//            barcodeStr = new String(data);
+//            OnReceive(barcodeStr);
+//        }
+//    };
 
 
 //    //UBX
@@ -187,7 +190,7 @@ public abstract class BaseActivity extends FragmentActivity {
 
 
 
-    public Barcode2DWithSoft mReader;
+//    public Barcode2DWithSoft mReader;
     private String date;
     private int year;
     private int month;
@@ -212,11 +215,11 @@ public abstract class BaseActivity extends FragmentActivity {
 //        initScan();
 
         if (App.PDA_Choose==6){
-            try {
-                mReader = Barcode2DWithSoft.getInstance();
-            } catch (Exception ex) {
-                Toast.showText(mContext,"初始化H100设备错误"+ex.toString());
-            }
+//            try {
+//                mReader = Barcode2DWithSoft.getInstance();
+//            } catch (Exception ex) {
+//                Toast.showText(mContext,"初始化H100设备错误"+ex.toString());
+//            }
         }
 
 
@@ -256,19 +259,23 @@ protected void onResume() {
         IntentFilter scanDataIntentFilter = new IntentFilter();
         scanDataIntentFilter.addAction(ACTION_M60);
         registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
-    }else if (App.PDA_Choose==6){
-        if (mReader != null) {
-//            new InitTask().execute();
-            boolean result = mReader.open(mContext);
-            if (result) {
-                mReader.setParameter(324, 1);
-                mReader.setParameter(300, 0); // Snapshot Aiming
-                mReader.setParameter(361, 0); // Image Capture Illumination
-                mReader.setScanCallback(mScanCallback);
-            }else{
-                Toast.showText(mContext,"H100设备启动出错");
-            }
-        }
+    }else if (App.PDA_Choose==5){
+        //新大陆注册");
+        IntentFilter xdlFilter = new IntentFilter();
+        xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
+        registerReceiver(mScanDataReceiverForXDL, xdlFilter);
+//        if (mReader != null) {
+////            new InitTask().execute();
+//            boolean result = mReader.open(mContext);
+//            if (result) {
+//                mReader.setParameter(324, 1);
+//                mReader.setParameter(300, 0); // Snapshot Aiming
+//                mReader.setParameter(361, 0); // Image Capture Illumination
+//                mReader.setScanCallback(mScanCallback);
+//            }else{
+//                Toast.showText(mContext,"H100设备启动出错");
+//            }
+//        }
     }
 //        }
 }
@@ -277,26 +284,33 @@ protected void onResume() {
         super.onPause();
 //        unregisterReceiver(mScanDataReceiver);
         //        if (App.PDA_Choose!=4){
-        if (mScanDataReceiver != null ||
-                mScanDataReceiverForG02A != null||
-                mScanDataReceiverFor5000 != null||
-                mScanDataReceiverForM60 != null
-                ) {
-            if (App.PDA_Choose == 1) {
-                unregisterReceiver(mScanDataReceiverForG02A);
-            } else if (App.PDA_Choose==2){
-                unregisterReceiver(mScanDataReceiver);
-            }else if (App.PDA_Choose == 3){
-                unregisterReceiver(mScanDataReceiverFor5000);
-            }else if (App.PDA_Choose == 4){
-                unregisterReceiver(mScanDataReceiverForM60);
-            }else if (App.PDA_Choose == 6){
+        try{
+            if (mScanDataReceiver != null ||
+                    mScanDataReceiverForG02A != null||
+                    mScanDataReceiverFor5000 != null||
+                    mScanDataReceiverForXDL != null||
+                    mScanDataReceiverForM60 != null
+                    ) {
+                if (App.PDA_Choose == 1) {
+                    unregisterReceiver(mScanDataReceiverForG02A);
+                } else if (App.PDA_Choose==2){
+                    unregisterReceiver(mScanDataReceiver);
+                }else if (App.PDA_Choose == 3){
+                    unregisterReceiver(mScanDataReceiverFor5000);
+                }else if (App.PDA_Choose == 4){
+                    unregisterReceiver(mScanDataReceiverForM60);
+                }else if (App.PDA_Choose == 5){
+                    unregisterReceiver(mScanDataReceiverForXDL);
 //                Toast.showText(mContext,"关闭H100设备");
-                if (mReader != null) {
-                    mReader.close();
+//                if (mReader != null) {
+//                    mReader.close();
+//                }
                 }
             }
+        }catch (Exception e){
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
+
 //        }
     }
 
@@ -305,57 +319,61 @@ protected void onResume() {
      *
      * @author liuruifeng
      */
-    public class InitTask extends AsyncTask<String, Integer, Boolean> {
-        ProgressDialog mypDialog;
 
-        @Override
-        protected Boolean doInBackground(String... params) {
 
-            boolean result = false;
+//    public class InitTask extends AsyncTask<String, Integer, Boolean> {
+//        ProgressDialog mypDialog;
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//
+//            boolean result = false;
+//
+////            if (mReader != null) {
+////                result = mReader.open(mContext);
+////                Lg.e("打开检测："+result);
+////                if (result) {
+////                    mReader.setParameter(324, 1);
+////                    mReader.setParameter(300, 0); // Snapshot Aiming
+////                    mReader.setParameter(361, 0); // Image Capture Illumination
+////                }
+////            }
+//
+//            return result;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//            super.onPostExecute(result);
+//
+//            mypDialog.cancel();
+//
+//            if (!result) {
+//
+//                Toast.showText(mContext, "init fail");
+//            }
+//
+////            if (mReader != null) {
+////
+////                mReader.setScanCallback(mScanCallback);
+////            }
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            // TODO Auto-generated method stub
+//            super.onPreExecute();
+//
+//            mypDialog = new ProgressDialog(mContext);
+//            mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+//            mypDialog.setMessage("init...");
+//            mypDialog.setCanceledOnTouchOutside(false);
+//            mypDialog.show();
+//        }
+//
+//    }
+//
 
-            if (mReader != null) {
-                result = mReader.open(mContext);
-                Lg.e("打开检测："+result);
-                if (result) {
-                    mReader.setParameter(324, 1);
-                    mReader.setParameter(300, 0); // Snapshot Aiming
-                    mReader.setParameter(361, 0); // Image Capture Illumination
-                }
-            }
-
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-
-            mypDialog.cancel();
-
-            if (!result) {
-
-                Toast.showText(mContext, "init fail");
-            }
-
-            if (mReader != null) {
-
-                mReader.setScanCallback(mScanCallback);
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // TODO Auto-generated method stub
-            super.onPreExecute();
-
-            mypDialog = new ProgressDialog(mContext);
-            mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            mypDialog.setMessage("init...");
-            mypDialog.setCanceledOnTouchOutside(false);
-            mypDialog.show();
-        }
-
-    }
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -384,7 +402,7 @@ protected void onResume() {
             @Override
             public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
             }
-        }, year, day, month);
+        }, year, month, day);
         datePickerDialog.setButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -626,23 +644,42 @@ protected void onResume() {
         }
 
     }
+    //防止点击过快的替换类Button
+    public abstract  class NoDoubleClickListener implements View.OnClickListener{
+        public static final int MIN_CLICK_DELAY_TIME = 1500;//间隔多少秒
+        private long lastClickTime = 0;
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == 139) {
-            if (event.getRepeatCount() == 0) {
-                mReader.scan();
+        @Override
+        public void onClick(View v) {
+            long currentTime = Calendar.getInstance().getTimeInMillis();
+            if (currentTime - lastClickTime > MIN_CLICK_DELAY_TIME) {
+                lastClickTime = currentTime;
+                Lg.e("点击OK");
+                onNoDoubleClick(v);
+            }else{
+                Toast.showText(mContext,"别点太快");
+                Lg.e("太快了");
             }
         }
-        return super.onKeyDown(keyCode, event);
+        protected abstract void onNoDoubleClick(View view);
     }
 
-    @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == 139) {
-            mReader.stopScan();
-        }
-
-        return super.onKeyUp(keyCode, event);
-    }
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (keyCode == 139) {
+//            if (event.getRepeatCount() == 0) {
+//                mReader.scan();
+//            }
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+//
+//    @Override
+//    public boolean onKeyUp(int keyCode, KeyEvent event) {
+//        if (keyCode == 139) {
+//            mReader.stopScan();
+//        }
+//
+//        return super.onKeyUp(keyCode, event);
+//    }
 }

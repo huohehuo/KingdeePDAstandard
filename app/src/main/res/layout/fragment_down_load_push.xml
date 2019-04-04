@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment.pushdown.DownLoadPushFragment">
 
 
@@ -13,23 +14,19 @@
         android:id="@+id/rl1"
         android:layout_alignParentBottom="true"
         >
-        <LinearLayout
+        <com.fangzuo.assist.widget.SpinnerClient
+            android:id="@+id/sp_client"
             android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:text="往来单位:"/>
-            <Spinner
-                android:id="@+id/sp_wlunit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
+            app:clientspinner_name="往来单位:"
+            app:clientspinner_size="8sp"
+            android:layout_height="wrap_content"/>
+        <com.fangzuo.assist.widget.SpinnerSupplier
+            android:id="@+id/sp_supplier"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            app:clientspinner_name="往来单位:"
+            app:clientspinner_size="8sp"
+            android:layout_height="wrap_content"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
@@ -58,10 +55,11 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 android:textColor="@color/black"
                 android:text="起始日期:"/>
             <TextView
+                android:hint="长按清空"
                 android:id="@+id/start_date"
                 android:layout_width="0dp"
                 android:layout_weight="2"
@@ -74,10 +72,11 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="12sp"
                 android:textColor="@color/black"
                 android:text="结束日期:"/>
             <TextView
+                android:hint="长按清空"
                 android:id="@+id/end_date"
                 android:layout_width="0dp"
                 android:layout_weight="2"
@@ -96,12 +95,15 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="下载"
+                android:background="@drawable/btn_login"
+                android:layout_marginRight="1dp"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@+id/btn_search"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:text="查找"
+                android:background="@drawable/btn_login"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
@@ -114,7 +116,7 @@
         android:background="@color/sienna"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_above="@id/v1"
+        android:layout_above="@id/rl1"
         android:id="@+id/refresh"
         android:layout_height="match_parent">
         <ListView

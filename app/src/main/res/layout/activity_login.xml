@@ -89,7 +89,7 @@
                 android:text="用户名:"
                 android:textSize="18sp" />
 
-            <Spinner
+            <com.fangzuo.assist.widget.SpinnerUser
                 android:id="@+id/sp_login"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"

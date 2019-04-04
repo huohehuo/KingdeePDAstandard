@@ -5,12 +5,14 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.StorageSpAdapter;
 import com.fangzuo.assist.Adapter.UnitSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
@@ -18,11 +20,13 @@ import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Dao.Storage;
 import com.fangzuo.assist.Dao.Unit;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.JsonCreater;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -46,6 +50,7 @@ public class SpinnerUnit extends RelativeLayout {
     private DaoSession daoSession;
     private String unitId = "";
     private String unitName = "";
+    private double unitrate = 0d;
     public static final String Name = "name";
     public static final String Id = "id";
     public static final String Number = "number";
@@ -82,6 +87,22 @@ public class SpinnerUnit extends RelativeLayout {
         attrArray.recycle();
 
         mSp.setAdapter(adapter);
+        mSp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Unit unit = (Unit) adapter.getItem(i);
+                unitId = unit.FMeasureUnitID;
+                unitName = unit.FName;
+                unitrate = MathUtil.toD(unit.FCoefficient);
+                Lg.e("单位选择：",unit);
+//                    Log.e("unitId", unitId + "");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
     // 为左侧返回按钮添加自定义点击事件
@@ -105,6 +126,9 @@ public class SpinnerUnit extends RelativeLayout {
     public String getDataName() {
         return unitName;
     }
+    public Double getDataUnitrate() {
+        return unitrate;
+    }
 
     public UnitSpAdapter getAdapter() {
         return adapter;
@@ -124,6 +148,7 @@ public class SpinnerUnit extends RelativeLayout {
     public void setAuto(final Context context, final String unitGroupIDTemp, String autoStr, final String type) {
         unitId = "";
         unitName = "";
+        unitrate = 0d;
         final String UnitGroupID;
         Lg.e(TGP+"setAuto:" + autoStr);
         if (null==unitGroupIDTemp || "".equals(unitGroupIDTemp)){
@@ -150,10 +175,10 @@ public class SpinnerUnit extends RelativeLayout {
                     share.getVersion(),
                     choose
             );
-            Asynchttp.post(context, share.getBaseURL() + WebApi.DOWNLOADDATA, json, new Asynchttp.Response() {
+            App.getRService().doIOAction(WebApi.DOWNLOADDATA, json, new MySubscribe<CommonResponse>() {
                 @Override
-                public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-
+                public void onNext(CommonResponse cBean) {
+                    super.onNext(cBean);
                     Log.e("CommonMethod:","getWaveHouseAdapter获得数据：\n"+cBean.returnJson);
                     DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
                     if (dBean != null && dBean.units != null && dBean.units.size() > 0) {
@@ -161,20 +186,16 @@ public class SpinnerUnit extends RelativeLayout {
                         unitDao.deleteAll();
                         unitDao.insertOrReplaceInTx(dBean.units);
                         unitDao.detachAll();
-                        if (list.size()<=0){
+                        if (dBean.units.size()>0 && list.size()<=0){
                             dealAuto(dBean.units,UnitGroupID,type,true);
                         }
 
                     }
-//                    LoadingUtil.dismiss();
                 }
 
                 @Override
-                public void onFailed(String Msg, AsyncHttpClient client) {
-
-//                    LoadingUtil.dismiss();
-//                    adapter.notifyDataSetChanged();
-//                    Toast.showText(context, Msg);
+                public void onError(Throwable e) {
+//                    super.onError(e);
                 }
             });
         }
@@ -248,43 +269,67 @@ public class SpinnerUnit extends RelativeLayout {
         }else{
             list.addAll(listData);
         }
-        if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
-            adapter.notifyDataSetChanged();
-        } else {
-            if (Number.equals(type)) {
-                for (int j = 0; j < adapter.getCount(); j++) {
-                    if (((Unit) adapter.getItem(j)).FNumber.equals(autoString)) {
-                        Lg.e("单位定位（自定义控件：" + autoString);
-                        unitId = autoString;
-                        unitName = ((Unit) adapter.getItem(j)).FName;
-                        mSp.setSelection(j);
-                        break;
+        if (list.size()>0){
+                mSp.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            if (list.size()==1){//当只有一个的时候，重新适配器，为了spinner的监听能响应
+                unitId = list.get(0).FMeasureUnitID;
+                unitName=list.get(0).FName;
+                unitrate= MathUtil.toD(list.get(0).FCoefficient);
+            }else{//过滤设定的值
+                if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
+                    unitId = list.get(0).FMeasureUnitID;
+                    unitName=list.get(0).FName;
+                    unitrate= MathUtil.toD(list.get(0).FCoefficient);
+                } else {
+                    if (Number.equals(type)) {
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j).FNumber.equals(autoString)) {
+                                Lg.e("单位定位（自定义控件：" + autoString);
+                                unitId = list.get(j).FMeasureUnitID;
+                                unitName = list.get(j).FName;
+                                unitrate= MathUtil.toD(list.get(j).FCoefficient);
+                                mSp.setSelection(j);
+                                break;
+                            }
+                        }
+                    } else if (Name.equals(type)) {
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j).FName.equals(autoString)) {
+                                Lg.e("单位定位（自定义控件：" + autoString);
+                                unitId = list.get(j).FMeasureUnitID;
+                                unitName = list.get(j).FName;
+                                unitrate= MathUtil.toD(list.get(j).FCoefficient);
+                                mSp.setSelection(j);
+                                break;
+                            }
+                        }
+                    } else if (Id.equals(type)) {
+                        for (int j = 0; j < list.size(); j++) {
+                            if (list.get(j).FMeasureUnitID.equals(autoString)) {
+                                Lg.e("单位定位（自定义控件：" + autoString);
+                                Lg.e("单位定位（自定义控件：" + list.get(j).toString());
+                                unitId = autoString;
+                                unitName = list.get(j).FName;
+                                unitrate= MathUtil.toD(list.get(j).FCoefficient);
+                                mSp.setSelection(j);
+                                break;
+                            }
+                        }
                     }
-                }
-            } else if (Name.equals(type)) {
-                for (int j = 0; j < adapter.getCount(); j++) {
-                    if (((Unit) adapter.getItem(j)).FName.equals(autoString)) {
-                        Lg.e("单位定位（自定义控件：" + autoString);
-                        unitId = autoString;
-                        unitName = ((Unit) adapter.getItem(j)).FName;
-                        mSp.setSelection(j);
-                        break;
+                    if ("".equals(unitId) && "".equals(unitName)){
+                        unitId = list.get(0).FMeasureUnitID;
+                        unitName=list.get(0).FName;
+                        unitrate= MathUtil.toD(list.get(0).FCoefficient);
                     }
-                }
-            } else if (Id.equals(type)) {
-                for (int j = 0; j < adapter.getCount(); j++) {
-                    if (((Unit) adapter.getItem(j)).FMeasureUnitID.equals(autoString)) {
-                        Lg.e("单位定位（自定义控件：" + autoString);
-                        Lg.e("单位定位（自定义控件：" + ((Unit) adapter.getItem(j)).toString());
-                        unitId = autoString;
-                        unitName = ((Unit) adapter.getItem(j)).FName;
-                        mSp.setSelection(j);
-                        break;
-                    }
+                    adapter.notifyDataSetChanged();
                 }
             }
+
+        }else{
             adapter.notifyDataSetChanged();
         }
+
     }
 
 }

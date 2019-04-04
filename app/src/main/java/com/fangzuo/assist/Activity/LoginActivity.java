@@ -2,9 +2,8 @@ package com.fangzuo.assist.Activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
@@ -23,61 +22,76 @@ import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.LoginSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
-import com.fangzuo.assist.Beans.useBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
+import com.fangzuo.assist.Beans.SettingData;
+import com.fangzuo.assist.Beans.UseTimeBean;
+import com.fangzuo.assist.Dao.Product;
 import com.fangzuo.assist.Dao.User;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
+import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
+import com.fangzuo.assist.Utils.CommonUtil;
+import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.JsonCreater;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MD5;
+import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
+import com.fangzuo.assist.widget.SpinnerUser;
 import com.fangzuo.greendao.gen.DaoSession;
+import com.fangzuo.greendao.gen.T_DetailDao;
+import com.fangzuo.greendao.gen.T_mainDao;
 import com.fangzuo.greendao.gen.UserDao;
 import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.orhanobut.hawk.Hawk;
-
-import org.apache.http.Header;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
+
+import static com.fangzuo.assist.Utils.CommonUtil.dealTime;
 
 public class LoginActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
 
     @BindView(R.id.isRemPass)
     CheckBox isRemPass;
-    private Button mBtnLogin;
-    private Button mBtnSetting;
+    @BindView(R.id.ver)
+    TextView ver;
+    @BindView(R.id.ed_pass)
+    EditText mEtPassword;
+    @BindView(R.id.isOL)
+    CheckBox mCbisOL;
+    @BindView(R.id.btn_login)
+    Button mBtnLogin;
+    @BindView(R.id.btn_setting)
+    Button mBtnSetting;
+//    private Button mBtnLogin;
+//    private Button mBtnSetting;
     private LoginActivity mContext;
-    private CommonListener commonListener;
     @BindView(R.id.sp_login)
-    Spinner spinner;
+    SpinnerUser spinner;
     private DaoSession session;
     private String userName = "";
     private String userID = "";
     private List<User> users;
-    private CheckBox mCbisOL;
     private BasicShareUtil share;
     private boolean isOL;
     private String userPass;
-    private EditText edPass;
-    private EditText mEtPassword;
-    private TextView mTvVersion;
-
+    private UserDao userDao;
     @Override
     public void initView() {
         setContentView(R.layout.activity_login);
@@ -85,87 +99,114 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         mContext = this;
         initBar();
         share = BasicShareUtil.getInstance(mContext);
-        mEtPassword = findViewById(R.id.ed_pass);
-        mBtnLogin = findViewById(R.id.btn_login);
-        mBtnSetting = findViewById(R.id.btn_setting);
-        mCbisOL = findViewById(R.id.isOL);
-        mTvVersion = findViewById(R.id.ver);
+        session = GreenDaoManager.getmInstance(mContext).getDaoSession();
+        userDao = session.getUserDao();
         getPermisssion();
-        Log.e("123", ShareUtil.getInstance(mContext).getPISpayMethod() + "");
-        mTvVersion.setText("标准版 Ver:" + getVersionName());
+        ver.setText("标准版 Ver:" + getVersionName());
         Lg.e("PDA：" + App.PDA_Choose);
-        isRemPass.setChecked(Hawk.get(Info.IsRemanber,false));
-        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        isRemPass.setChecked(Hawk.get(Info.IsRemanber, false));
+        TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint({"HardwareIds", "MissingPermission"}) String deviceId = tm.getDeviceId();
-        Log.e("IMIE",deviceId);
+        Log.e("IMIE", deviceId);
         share.setIMIE(deviceId);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        getListUser();
-
+        spinner.LoadUser();
+        DataService.updateTime(mContext);
+        DownLoadUseTime();
     }
+    //获取配置文件中的时间数据
+    private void DownLoadUseTime(){
+            App.getRService().doIOAction(WebApi.GetUseTime, "获取时间", new MySubscribe<CommonResponse>() {
+                @Override
+                public void onNext(CommonResponse commonResponse) {
+                    super.onNext(commonResponse);
+                    LoadingUtil.dismiss();
+                    if (!commonResponse.state)return;
+                    UseTimeBean bean = gson.fromJson(commonResponse.returnJson, UseTimeBean.class);
+                    if (Integer.parseInt(getTime(false))<Integer.parseInt(bean.nowTime)){
+                        Toast.showText(mContext,"PDA本地时间与服务器时间有误，请调整好时间");
+                        Hawk.put(Config.SaveTime,bean);
+                        return;
+                    }else{
+                        if (Integer.parseInt(getTime(false))>Integer.parseInt(dealTime(bean.endTime))){
+                            Toast.showText(mContext,"软件已过期，请联系供应商提供服务");
+                            Hawk.put(Config.SaveTime,bean);
+                            return;
+                        }else{
+                            Lg.e("获取起止时间："+commonResponse.returnJson);
+                            Hawk.put(Config.SaveTime,bean);
+                        }
+                    }
+                }
+                @Override
+                public void onError(Throwable e) {
+                    super.onError(e);
+                    LoadingUtil.dismiss();
+//                    Hawk.put(Config.SaveTime,null);
+                    Toast.showText(mContext,e.toString());
+                    Lg.e("错误："+e.toString());
+                }
+            });
 
-    //获取用户数据
-    private void getListUser() {
-        Lg.e("getListUser");
-        final Gson gson = new Gson();
-        ArrayList<Integer> chooseAll = new ArrayList<>();
-        chooseAll.add(12);
-        LoadingUtil.show(mContext, "正在预加载...请稍后...", true);
-        String json = JsonCreater.DownLoadData(share.getDatabaseIp(),
-                share.getDatabasePort(), share.getDataBaseUser(), share.getDataBasePass(),
-                share.getDataBase(), share.getVersion(), chooseAll);
-        Asynchttp.post(mContext, getBaseUrl() + WebApi.DOWNLOADDATA, json, new Asynchttp.Response() {
-            @Override
-            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                Log.e(TAG, "获取用户数据：" + cBean.returnJson);
-                DownloadReturnBean dBean = gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-                UserDao userDao = session.getUserDao();
-                userDao.deleteAll();
-                userDao.detachAll();
-                userDao.insertInTx(dBean.User);
-                LoadingUtil.dismiss();
-                getUserInfo();
-            }
 
-            @Override
-            public void onFailed(String Msg, AsyncHttpClient client) {
-                LoadingUtil.dismiss();
+//        Lg.e("本地配置数据；",Hawk.get(Config.SettingData,new DownloadReturnBean().new SetFile()));
+//
+//        Asynchttp.post(mContext,Config.Setting_Url, "sdfa", new Asynchttp.Response() {
+//            @Override
+//            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+//                Lg.e("配置数据：",cBean);
+//                Lg.e("配置数据：",cBean.returnJson);
+//                DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
+//                Lg.e("配置解析：",dBean);
+//                Lg.e("配置解析：",dBean.serverTime);
+//                for (int i = 0; i < dBean.setFiles.size(); i++) {
+//                    if (getApplication().getPackageName().equals(dBean.setFiles.get(i).AppID)){
+//                        Lg.e("存在App：",dBean.setFiles.get(i));
+//                        Hawk.put(Config.SettingData,dBean.setFiles.get(i));
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailed(String Msg, AsyncHttpClient client) {
+//                Lg.e("配置解析错误："+Msg);
+//            }
+//        });
+    }
+    //检测是否符合时间要求
+    private boolean checkTime(){
+        if (null==Hawk.get(Config.SaveTime,null)){
+            LoadingUtil.showDialog(mContext,"正在获取配置信息...");
+            DownLoadUseTime();
+            return false;
+        }else{
+            UseTimeBean bean=Hawk.get(Config.SaveTime);
+            if (Integer.parseInt(getTime(false))<Integer.parseInt(bean.nowTime)){
+                Toast.showText(mContext,"PDA本地时间与服务器时间有误，请调整好时间");
+                return false;
+            }else{
+                if (Integer.parseInt(getTime(false))>Integer.parseInt(dealTime(bean.endTime))){
+                    Toast.showText(mContext,"软件已过期，请联系供应商提供服务");
+                    return false;
+                }else{
+                    return true;
+                }
             }
-        });
+        }
     }
 
 
     @Override
     public void initData() {
-        commonListener = new CommonListener();
-        getUserInfo();
+//        getUserInfo();
         mCbisOL.setChecked(BasicShareUtil.getInstance(mContext).getIsOL());
-
-    }
-
-    private void getUserInfo() {
-        session = GreenDaoManager.getmInstance(mContext).getDaoSession();
-        UserDao userDao = session.getUserDao();
-        users = userDao.loadAll();
-        LoginSpAdapter ada = new LoginSpAdapter(mContext, users);
-        spinner.setAdapter(ada);
-        ada.notifyDataSetChanged();
-        if (users.size() > 0) {
-            userName = users.get(0).FName;
-            userID = users.get(0).FUserID;
-            ShareUtil.getInstance(mContext).setUserName(userName);
-            ShareUtil.getInstance(mContext).setUserID(userID);
-        }
         //自动设置上次的用户
-        for (int i = 0; i < ada.getCount(); i++) {
-            if (((User)ada.getItem(i)).FName.equals(Hawk.get(Info.AutoLogin,""))){
-                spinner.setSelection(i);
-            }
-        }
+        spinner.setAutoSelection(Info.AutoLogin,"");
+
 
     }
 
@@ -174,7 +215,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         isRemPass.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Hawk.put(Info.IsRemanber,b);
+                Hawk.put(Info.IsRemanber, b);
             }
         });
         mCbisOL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -182,27 +223,27 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 isOL = b;
                 BasicShareUtil.getInstance(mContext).setIsOL(b);
-                session = GreenDaoManager.getmInstance(mContext).getDaoSession();
-                UserDao userDao = session.getUserDao();
-                users = userDao.loadAll();
-                LoginSpAdapter ada = new LoginSpAdapter(mContext, users);
-                spinner.setAdapter(ada);
-                ada.notifyDataSetChanged();
+//                users = userDao.loadAll();
+//                LoginSpAdapter ada = new LoginSpAdapter(mContext, users);
+//                spinner.setAdapter(ada);
+//                ada.notifyDataSetChanged();
             }
         });
-        mBtnLogin.setOnClickListener(commonListener);
-        mBtnSetting.setOnClickListener(commonListener);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Lg.e("选中用户："+users.get(i).toString());
-                userName = users.get(i).FName;
-                userID = users.get(i).FUserID;
-                userPass = users.get(i).FPassWord;
+//                Lg.e("选中用户：" + users.get(i).toString());
+                User user = (User) spinner.getAdapter().getItem(i);
+                Lg.e("用户：",user);
+                userName = user.FName;
+                userID = user.FUserID;
+                userPass = user.FPassWord;
                 //设置下次默认选择的用户
-                Hawk.put(Info.AutoLogin,userName);
+                Hawk.put(Info.AutoLogin, userName);
                 //设置该用户密码
                 mEtPassword.setText(Hawk.get(userName, ""));
+                ShareUtil.getInstance(mContext).setUserName(userName);
+                ShareUtil.getInstance(mContext).setUserID(userID);
             }
 
             @Override
@@ -214,36 +255,39 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     @Override
     protected void OnReceive(String code) {
-        Toast.showText(mContext,"测试扫码:"+code);
+        Toast.showText(mContext, "测试扫码:" + code);
         Log.e("CODE", code + ":获得的code");
     }
-    private class CommonListener implements View.OnClickListener {
 
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.btn_login:
-                    Login();
-                    break;
-                case R.id.btn_setting:
-                    Bundle b = new Bundle();
-                    b.putInt("flag", 0);
-                    startNewActivity(SettingMenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, false, null);
-                    break;
-            }
+    @OnClick({R.id.btn_login, R.id.btn_setting})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_login:
+                Login();
+                break;
+            case R.id.btn_setting:
+                Bundle b = new Bundle();
+                b.putInt("flag", 0);
+                startNewActivity(SettingMenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, false, null);
+                break;
         }
     }
 
     private void Login() {
+        if (!checkTime()){
+            DownLoadUseTime();
+//            Toast.showText(mContext,"验证信息失败");
+            return;
+        }
         if (!userID.equals("") && !userName.equals("")) {
             if (mEtPassword.getText().toString().equals(userPass)) {
                 ShareUtil.getInstance(mContext).setUserName(userName);
                 ShareUtil.getInstance(mContext).setUserID(userID);
-                if (isRemPass.isChecked()){
+                if (isRemPass.isChecked()) {
                     //保存该用户的密码
-                    Hawk.put(userName,mEtPassword.getText().toString());
-                }else{
-                    Hawk.put(userName,"");
+                    Hawk.put(userName, mEtPassword.getText().toString());
+                } else {
+                    Hawk.put(userName, "");
                 }
                 startNewActivity(MenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, false, null);
             } else {
@@ -255,6 +299,31 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         }
     }
 
+
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg) {
+            case EventBusInfoCode.Down_json_file://下载配置文件结果
+                String str = (String) event.postEvent;
+                if ("OK".equals(str)){
+                    String string =CommonUtil.getString(App.JsonFile);
+                    Lg.e("数据："+string);
+                    DownloadReturnBean dBean = new Gson().fromJson(string, DownloadReturnBean.class);
+                    Lg.e("解析：",dBean);
+
+                }else{
+                    Toast.showText(mContext,"下载失败");
+                }
+
+                break;
+
+        }
+    }
 
     //权限获取-------------------------------------------------------------
     private void getPermisssion() {

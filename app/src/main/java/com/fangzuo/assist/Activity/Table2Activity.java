@@ -19,6 +19,7 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.PDSubDao;
 import com.fangzuo.greendao.gen.T_DetailDao;
@@ -88,7 +89,7 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
 
 
             for (int i = 0; i < list.size(); i++) {
-                num += Double.parseDouble(list.get(i).FQuantity);
+                num += MathUtil.toD(list.get(i).FQuantity);
             }
             productcategory.setText("物料类别数:" + products.size() + "个");
             productnum.setText("物料总数为:" + num + "");
@@ -139,7 +140,12 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
                     public void onClick(DialogInterface dialogInterface, int i) {
                         for (int j = 0; j < isCheck.size(); j++) {
                             if (isCheck.get(j)) {
-                                List<PDSub> list2 = pdSubDao.queryBuilder().where(PDSubDao.Properties.FID.eq(list.get(j).FInterID), PDSubDao.Properties.FBatchNo.eq(list.get(j).FBatch), PDSubDao.Properties.FStockID.eq(list.get(j).FStorageId), PDSubDao.Properties.FStockPlaceID.eq(list.get(j).FPositionId==null?"":list.get(j).FPositionId)).build().list();
+                                List<PDSub> list2 = pdSubDao.queryBuilder().where(
+                                        PDSubDao.Properties.FID.eq(list.get(j).FInterID),
+                                        PDSubDao.Properties.FBatchNo.eq(list.get(j).FBatch),
+                                        PDSubDao.Properties.FStockID.eq(list.get(j).FStorageId),
+                                        PDSubDao.Properties.FStockPlaceID.eq(list.get(j).FPositionId==null?"":list.get(j).FPositionId)
+                                ).build().list();
                                 if (list2.size() > 0) {
                                     list2.get(0).FCheckQty = (Double.parseDouble(list2.get(0).FCheckQty) - Double.parseDouble(list.get(j).FQuantity)) + "";
                                     pdSubDao.update(list2.get(0));
@@ -170,10 +176,12 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.e("list2",list.get(position).FInterID+"  "+list.get(position).FBatch+"  "+list.get(position).FStorageId+"  "+list.get(position).FPositionId);
-                        List<PDSub> list2 = pdSubDao.queryBuilder().where(PDSubDao.Properties.FID.eq(list.get(position).FInterID),
+                        List<PDSub> list2 = pdSubDao.queryBuilder().where(
+                                PDSubDao.Properties.FID.eq(list.get(position).FInterID),
                                 PDSubDao.Properties.FBatchNo.eq(list.get(position).FBatch==null?"":list.get(position).FBatch),
-                                PDSubDao.Properties.FStockID.eq(list.get(position).FStorageId), PDSubDao.Properties.FStockPlaceID.
-                                        eq(list.get(position).FPositionId==null?"":list.get(position).FPositionId)).build().list();
+                                PDSubDao.Properties.FStockID.eq(list.get(position).FStorageId),
+                                PDSubDao.Properties.FStockPlaceID.eq(list.get(position).FPositionId==null?"":list.get(position).FPositionId)
+                        ).build().list();
                         if (list2.size() > 0) {
                             list2.get(0).FCheckQty = (Double.parseDouble(list2.get(0).FCheckQty) - Double.parseDouble(list.get(position).FQuantity)) + "";
                             list2.get(0).FAdjQty = (Double.parseDouble(list2.get(0).FAdjQty) - Double.parseDouble(list.get(position).FIdentity)) + "";

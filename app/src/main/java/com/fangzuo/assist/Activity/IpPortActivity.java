@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.fangzuo.assist.ABase.BaseActivity;
 import com.fangzuo.assist.Activity.Crash.App;
+import com.fangzuo.assist.Beans.UseTimeBean;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
@@ -21,6 +22,8 @@ import com.orhanobut.hawk.Hawk;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.fangzuo.assist.Utils.CommonUtil.dealTime;
 
 public class IpPortActivity extends BaseActivity {
 
@@ -37,6 +40,8 @@ public class IpPortActivity extends BaseActivity {
     RelativeLayout btnBack;
     @BindView(R.id.tv_title)
     TextView tvTitle;
+    @BindView(R.id.tv_endtime)
+    TextView tvEndtime;
     private BasicShareUtil share;
     ArrayAdapter<String> adapter;
     private String string;
@@ -67,7 +72,12 @@ public class IpPortActivity extends BaseActivity {
                 spPda.setSelection(App.PDA_Choose);
             }
         }, 100);
-
+        if (null != Hawk.get(Config.SaveTime, null)) {
+            UseTimeBean bean=Hawk.get(Config.SaveTime);
+            tvEndtime.setText("有效期："+dealTime(bean.endTime));
+        }else{
+            tvEndtime.setText("获取时间失效");
+        }
     }
 
     @Override
@@ -86,8 +96,14 @@ public class IpPortActivity extends BaseActivity {
                 } else if ("5000设备".equals(string)) {
                     Hawk.put(Config.PDA, 3);
                     Toast.showText(mContext, "选择了5000设备" + App.PDA_Choose);
-                } else if ("手机端".equals(string)) {
+                } else if ("M60".equals(string)) {
                     Hawk.put(Config.PDA, 4);
+                    Toast.showText(mContext, "选择了M60" + App.PDA_Choose);
+                } else if ("新大陆".equals(string)) {
+                    Hawk.put(Config.PDA, 5);
+                    Toast.showText(mContext, "选择了新大陆" + App.PDA_Choose);
+                } else if ("手机端".equals(string)) {
+                    Hawk.put(Config.PDA, 6);
                     Toast.showText(mContext, "选择了手机端" + App.PDA_Choose);
                 }
             }

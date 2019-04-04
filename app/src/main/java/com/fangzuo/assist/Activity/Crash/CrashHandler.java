@@ -122,7 +122,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
             @Override
             public void onFailed(String Msg, com.loopj.android.http.AsyncHttpClient client) {
             }
-        });
+        });//------------------------------------
         pw.close();
 
     }
