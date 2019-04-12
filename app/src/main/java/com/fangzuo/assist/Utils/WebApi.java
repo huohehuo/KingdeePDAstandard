@@ -62,4 +62,5 @@ public class WebApi {
     public static final String RegisterNumber = "RegisterNumber";
     public static final String RegisterDelete = "RegisterDelete";
     public static final String RegisterCode = "RegisterCode";
+    public static final String RegisterGetNum = "RegisterGetNum";
 }

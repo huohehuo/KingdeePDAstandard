@@ -149,11 +149,19 @@
             android:indeterminateDrawable="@drawable/dialog_loading"
             android:indeterminateOnly="true" />
         <TextView
-            android:visibility="gone"
             android:gravity="center"
             android:id="@+id/tv_try"
             android:text="点击重试"
             android:textColor="#aaaaaa"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <TextView
+            android:gravity="bottom|center_horizontal"
+            android:layout_margin="20dp"
+            android:id="@+id/tv_mac"
+            android:text="点击重试"
+            android:textSize="10sp"
+            android:textColor="#4d302e2e"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </RelativeLayout>

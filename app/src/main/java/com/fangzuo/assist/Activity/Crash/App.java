@@ -73,7 +73,7 @@ public class App extends MultiDexApplication {
         mContext = this;
 
         Hawk.init(mContext).build();
-        PDA_Choose=Hawk.get(Config.PDA,2);
+        PDA_Choose=Hawk.get(Config.PDA,1);
         NowUrl = BasicShareUtil.getInstance(mContext).getBaseURL();
         //retrofit的基本初始化相关
         gson = new Gson();

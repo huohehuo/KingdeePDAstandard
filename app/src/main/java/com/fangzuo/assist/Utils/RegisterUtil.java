@@ -46,6 +46,24 @@ public class RegisterUtil {
         return "";
     }
 
+    //获取服务器最大注册数
+    public static void getRegiterMaxNum(final String lastRegister){
+        App.getRService().doIOAction(WebApi.RegisterGetNum, "", new MySubscribe<CommonResponse>() {
+            @Override
+            public void onNext(CommonResponse commonResponse) {
+                super.onNext(commonResponse);
+                if (!commonResponse.state)return;
+                Hawk.put(Config.PDA_RegisterMaxNum,commonResponse.returnJson);
+                doRegisterCheck(lastRegister);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"获取软件使用数量失败"));
+            }
+        });
+    }
     //执行注册逻辑
     //1:检查是否超过用户数
     //2：检查是否存在用户
@@ -58,7 +76,7 @@ public class RegisterUtil {
                 super.onNext(commonResponse);
                 if (!commonResponse.state) return;
                 Lg.e("注册信息数量：", commonResponse.returnJson);
-                if (Integer.parseInt(commonResponse.returnJson) <= Info.RegisterNo) {
+                if (Integer.parseInt(commonResponse.returnJson) <=  Integer.parseInt(Hawk.get(Config.PDA_RegisterMaxNum,"1"))) {
                     Lg.e("符合用户注册最低数量");
                     App.getRService().doIOAction(WebApi.RegisterCheck, lastRegister, new MySubscribe<CommonResponse>() {
                         @Override
@@ -98,7 +116,7 @@ public class RegisterUtil {
                     });
 
                 } else {
-                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件使用数量已达上限"));
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件使用数量已达上限："+Hawk.get(Config.PDA_RegisterMaxNum,"1")));
 //                    LoadingUtil.showAlter(WelcomeActivity.this, "提示", "软件使用数量已达上限");
                 }
             }

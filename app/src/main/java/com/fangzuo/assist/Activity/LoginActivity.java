@@ -335,7 +335,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
                     ab.setPositiveButton("注册", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            RegisterUtil.doRegisterCheck(Hawk.get(Config.PDA_IMIE, ""));
+                            RegisterUtil.getRegiterMaxNum(Hawk.get(Config.PDA_IMIE, ""));
 
                         }
                     });

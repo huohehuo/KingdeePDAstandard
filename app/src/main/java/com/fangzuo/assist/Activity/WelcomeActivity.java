@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +24,6 @@ import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.EventBusUtil;
-import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.MD5;
 import com.fangzuo.assist.Utils.RegisterUtil;
@@ -47,6 +46,8 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
     ProgressBar pg;
     @BindView(R.id.tv_try)
     TextView tvTry;
+    @BindView(R.id.tv_mac)
+    TextView tvMac;
     private String lastRegister = "";
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -102,6 +103,8 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
                 String newRegister = MD5.getMD5(register_code);
                 lastRegister = MD5.getMD5(newRegister);
                 Hawk.put(Config.PDA_IMIE, lastRegister);
+                Hawk.put(Config.PDA_RegisterCode, MD5.getMD5(mac));
+                tvMac.setText("用户码:"+lastRegister);
                 checkDlg();
             } else {
                 Toast.showText(App.getContext(), "请链接WIFI");
@@ -126,13 +129,8 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
         View v = LayoutInflater.from(WelcomeActivity.this).inflate(R.layout.ipport, null);
         final EditText mEdIp = v.findViewById(R.id.ed_ip);
         final EditText mEdPort = v.findViewById(R.id.ed_port);
-        if (Info.DATABASESETTING.equals("K3DBConfigerRY")) {
-            mEdIp.setText("47.106.179.214");
-            mEdPort.setText("8080");
-        } else {
-            mEdIp.setText("192.168.0.19");
-            mEdPort.setText("8080");
-        }
+        mEdIp.setText(BasicShareUtil.getInstance(App.getContext()).getIP().equals("") ? "192.168.0.19" : BasicShareUtil.getInstance(App.getContext()).getIP());
+        mEdPort.setText(BasicShareUtil.getInstance(App.getContext()).getPort().equals("") ? "8080" : BasicShareUtil.getInstance(App.getContext()).getPort());
 
         ab.setView(v);
         ab.setPositiveButton("保存", new DialogInterface.OnClickListener() {
@@ -141,7 +139,7 @@ public class WelcomeActivity extends AppCompatActivity implements EasyPermission
                 if (!(mEdIp.getText().toString()).equals("") && !(mEdPort.getText().toString()).equals("")) {
                     BasicShareUtil.getInstance(App.getContext()).setIP(mEdIp.getText().toString());
                     BasicShareUtil.getInstance(App.getContext()).setPort(mEdPort.getText().toString());
-                    RegisterUtil.doRegisterCheck(lastRegister);
+                    RegisterUtil.getRegiterMaxNum(lastRegister);
 //                        checkRegister();
                 } else {
                     System.exit(0);
