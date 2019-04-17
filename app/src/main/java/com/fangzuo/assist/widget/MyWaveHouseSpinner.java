@@ -53,7 +53,6 @@ public class MyWaveHouseSpinner extends RelativeLayout {
       private Spinner mSp;
       // 标题Tv
       private TextView mTitleTv;
-    private SpinnerAdapter adapter;
     private static BasicShareUtil share;
     private String autoString;//用于联网时，再次去自动设置值
     private String waveHouseId="0";//用于联网时，再次去自动设置值
@@ -166,9 +165,9 @@ public class MyWaveHouseSpinner extends RelativeLayout {
     public void setOnItemSelectedListener(AdapterView.OnItemSelectedListener listener) {
         mSp.setOnItemSelectedListener(listener);
     }
-    public void setAdapter(SpinnerAdapter adapter){
+    public void setAdapter(WaveHouseSpAdapter adapter){
         mSp.setAdapter(adapter);
-        this.adapter = adapter;
+        this.waveHouseSpAdapter = adapter;
     }
     public WaveHouseSpAdapter getAdapter(){
         return waveHouseSpAdapter;
@@ -258,7 +257,7 @@ public class MyWaveHouseSpinner extends RelativeLayout {
                 waveHouses.clear();
                 Lg.e("过滤仓位");
                 waveHouses.addAll(waveHouseList);
-                mSp.setAdapter(adapter);
+                mSp.setAdapter(waveHouseSpAdapter);
 //                Log.e("CommonMethod:","获取到本地数据waveHouse:"+waveHouseList.toString());
                 waveHouseSpAdapter.notifyDataSetChanged();
                 for (int j = 0; j < waveHouses.size(); j++) {

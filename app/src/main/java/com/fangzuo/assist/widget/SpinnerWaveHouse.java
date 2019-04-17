@@ -44,7 +44,6 @@ public class SpinnerWaveHouse extends RelativeLayout {
     private Spinner mSp;
     // 标题Tv
     private TextView mTitleTv;
-    private SpinnerAdapter adapter;
     private static BasicShareUtil share;
     private String autoString;//用于联网时，再次去自动设置值
     private WaveHouseSpAdapter waveHouseSpAdapter;
@@ -110,9 +109,9 @@ public class SpinnerWaveHouse extends RelativeLayout {
         mSp.setOnItemSelectedListener(listener);
     }
 
-    public void setAdapter(SpinnerAdapter adapter) {
+    public void setAdapter(WaveHouseSpAdapter adapter) {
         mSp.setAdapter(adapter);
-        this.adapter = adapter;
+        this.waveHouseSpAdapter = adapter;
     }
 
     public void setEnabled(boolean b) {
@@ -387,7 +386,7 @@ public class SpinnerWaveHouse extends RelativeLayout {
             waveHouses.addAll(list);
         }
         if (waveHouses.size() > 0) {
-                mSp.setAdapter(adapter);
+                mSp.setAdapter(waveHouseSpAdapter);
                 waveHouseSpAdapter.notifyDataSetChanged();
             if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
                 if (list.size()>0){
