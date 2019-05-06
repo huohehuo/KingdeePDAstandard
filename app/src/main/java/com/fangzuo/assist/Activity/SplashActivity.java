@@ -29,6 +29,7 @@ import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.TimeBean;
 import com.fangzuo.assist.R;
+import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
@@ -94,22 +95,40 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
 
 
     private void RegisterState() {
-        Asynchttp.post(mContext, getBaseUrl() + WebApi.REGISTER, lastRegister, new Asynchttp.Response() {
+        App.getRService().doIOAction(WebApi.REGISTER, lastRegister, new MySubscribe<CommonResponse>() {
             @Override
-            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+            public void onNext(CommonResponse commonResponse) {
+//                super.onNext(commonResponse);
+                if (!commonResponse.state)return;
                 instance.setRegisterState(true);
                 startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
             }
 
             @Override
-            public void onFailed(String Msg, AsyncHttpClient client) {
-                if (Msg.equals("1")) {
+            public void onError(Throwable e) {
+                if (e.getMessage().equals("1")) {
                     instance.setRegisterState(false);
                 } else {
                     startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
                 }
             }
         });
+//        Asynchttp.post(mContext, getBaseUrl() + WebApi.REGISTER, lastRegister, new Asynchttp.Response() {
+//            @Override
+//            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+//                instance.setRegisterState(true);
+//                startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
+//            }
+//
+//            @Override
+//            public void onFailed(String Msg, AsyncHttpClient client) {
+//                if (Msg.equals("1")) {
+//                    instance.setRegisterState(false);
+//                } else {
+//                    startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
+//                }
+//            }
+//        });
     }
 
 
@@ -220,9 +239,13 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
                     Hawk.put(Config.PDA,5);
                     App.PDA_Choose =5;
                     Toast.showText(mContext,"选择了新大陆"+App.PDA_Choose);
-                } else if ("手机端".equals(string)) {
+                } else if ("M36".equals(string)) {
                     Hawk.put(Config.PDA,6);
                     App.PDA_Choose =6;
+                    Toast.showText(mContext,"选择了M36"+App.PDA_Choose);
+                } else if ("手机端".equals(string)) {
+                    Hawk.put(Config.PDA,7);
+                    App.PDA_Choose =7;
                     Toast.showText(mContext,"选择了手机端"+App.PDA_Choose);
                 }
             }
@@ -236,18 +259,34 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
 
 
     private void getServerTime() {
-        Asynchttp.post(mContext, instance.getBaseURL() + "GetServerTime", "", new Asynchttp.Response() {
+        App.getRService().doIOAction("GetServerTime", "", new MySubscribe<CommonResponse>() {
             @Override
-            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-                TimeBean tBean = new Gson().fromJson(cBean.returnJson, TimeBean.class);
+            public void onNext(CommonResponse commonResponse) {
+//                super.onNext(commonResponse);
+                if (!commonResponse.state)return;
+                TimeBean tBean = new Gson().fromJson(commonResponse.returnJson, TimeBean.class);
                 serverTime = tBean.time;
             }
 
             @Override
-            public void onFailed(String Msg, AsyncHttpClient client) {
-                Toast.showText(mContext, Msg);
+            public void onError(Throwable e) {
+//                super.onError(e);
+                Toast.showText(mContext, e.getMessage());
+
             }
         });
+//        Asynchttp.post(mContext, instance.getBaseURL() + "GetServerTime", "", new Asynchttp.Response() {
+//            @Override
+//            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
+//                TimeBean tBean = new Gson().fromJson(cBean.returnJson, TimeBean.class);
+//                serverTime = tBean.time;
+//            }
+//
+//            @Override
+//            public void onFailed(String Msg, AsyncHttpClient client) {
+//                Toast.showText(mContext, Msg);
+//            }
+//        });
     }
 
     private static String getNewMac() {

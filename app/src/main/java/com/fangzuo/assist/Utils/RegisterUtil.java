@@ -151,7 +151,7 @@ public class RegisterUtil {
             @Override
             public void onError(Throwable e) {
 //                super.onError(e);
-                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件未注册,是否重新注册2"));
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询注册信息错误"));
 
             }
         });

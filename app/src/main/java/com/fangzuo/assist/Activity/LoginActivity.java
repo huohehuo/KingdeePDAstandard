@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -44,7 +45,13 @@ import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.UserDao;
 import com.google.gson.Gson;
 import com.orhanobut.hawk.Hawk;
+import com.symbol.scanning.BarcodeManager;
+import com.symbol.scanning.ScanDataCollection;
+import com.symbol.scanning.Scanner;
+import com.symbol.scanning.ScannerException;
+import com.symbol.scanning.ScannerInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -109,7 +116,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         DataService.updateTime(mContext);
         DownLoadUseTime();
         //检查是否存在注册码
-        RegisterUtil.checkHasRegister();
+//        RegisterUtil.checkHasRegister();
     }
 
     //获取配置文件中的时间数据
@@ -384,12 +391,5 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     public void onPermissionsDenied(int requestCode, List<String> perms) {
         Log.i("permisssion", "获取失败的权限" + perms);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
     }
 }

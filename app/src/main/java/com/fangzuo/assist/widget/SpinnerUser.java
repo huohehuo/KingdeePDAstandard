@@ -22,6 +22,7 @@ import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.JsonCreater;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.EmployeeDao;
@@ -84,6 +85,10 @@ public class SpinnerUser extends RelativeLayout {
 //            LoadingUtil.show(mContext,"更新用户数据...");
             ArrayList<Integer> choose = new ArrayList<>();
             choose.add(12);
+            if (share.getDatabaseIp().equals("") || share.getDataBase().equals("")){
+//                Toast.showText(mContext,"不存在服务器数据");
+                return;
+            }
             String json = JsonCreater.DownLoadData(
                     share.getDatabaseIp(),
                     share.getDatabasePort(),
@@ -161,6 +166,10 @@ public class SpinnerUser extends RelativeLayout {
     public void LoadUser(){
             ArrayList<Integer> choose = new ArrayList<>();
             choose.add(12);
+        if (share.getDatabaseIp().equals("") || share.getDataBase().equals("")){
+//            Toast.showText(mContext,"不存在服务器数据");
+            return;
+        }
             String json = JsonCreater.DownLoadData(
                     share.getDatabaseIp(),
                     share.getDatabasePort(),

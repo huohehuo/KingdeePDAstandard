@@ -45,13 +45,13 @@ public class App extends MultiDexApplication {
     public static String JsonFile="";
 
     private static Context mContext;
-    private String mCurDev = "";
-    private boolean isIsDebug =true;
-    static App instance = null;
+//    private String mCurDev = "";
+//    private boolean isIsDebug =true;
+//    static App instance = null;
 
     private static OkHttpClient           okHttpClient;
     private static okhttp3.logging.HttpLoggingInterceptor interceptor;
-    private static Gson gson;
+//    private static Gson gson;
 
     private static Retrofit retrofit;
     public static String NowUrl;
@@ -76,7 +76,7 @@ public class App extends MultiDexApplication {
         PDA_Choose=Hawk.get(Config.PDA,1);
         NowUrl = BasicShareUtil.getInstance(mContext).getBaseURL();
         //retrofit的基本初始化相关
-        gson = new Gson();
+//        gson = new Gson();
 //        OkHttpClient.Builder builder = new OkHttpClient.Builder();
 //        builder.connectTimeout(5000, TimeUnit.SECONDS);
 //        builder.readTimeout(20, TimeUnit.SECONDS);

@@ -41,6 +41,7 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.Service.DataService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
@@ -52,11 +53,17 @@ import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
 import com.nineoldandroids.view.ViewHelper;
 import com.orhanobut.hawk.Hawk;
+import com.symbol.scanning.BarcodeManager;
+import com.symbol.scanning.ScanDataCollection;
+import com.symbol.scanning.Scanner;
+import com.symbol.scanning.ScannerException;
+import com.symbol.scanning.ScannerInfo;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -76,68 +83,86 @@ public abstract class BaseActivity extends FragmentActivity {
     public T_mainDao t_mainDao;
     public T_DetailDao t_detailDao;
     public DaoSession daoSession;
+    public boolean canScan=true;//用于限制pda扫码，BaseActivity时也会初始化为true
+    public void lockScan(int lock){//0:解锁，1：锁住
+        if (lock==0){
+            Lg.e("解锁");
+            canScan=true;
+        }else{
+            Lg.e("锁定");
+            canScan=false;
+        }
+    }
 
     //u8000
     private ScanDevice sm;
-    private BroadcastReceiver mScanDataReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            byte[] barocode = intent.getByteArrayExtra("barocode");
-            int barocodelen = intent.getIntExtra("length", 0);
-            byte temp = intent.getByteExtra("barcodeType", (byte) 0);
-            Log.i("debug", "----codetype--" + temp);
-            barcodeStr = new String(barocode, 0, barocodelen);
-            OnReceive(barcodeStr);
-        }
-    };
+    private BroadcastReceiver mScanDataReceiver;
+//    = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            byte[] barocode = intent.getByteArrayExtra("barocode");
+//            int barocodelen = intent.getIntExtra("length", 0);
+//            byte temp = intent.getByteExtra("barcodeType", (byte) 0);
+//            Log.i("debug", "----codetype--" + temp);
+//            barcodeStr = new String(barocode, 0, barocodelen);
+//            OnReceive(barcodeStr);
+//        }
+//    };
 
     //c5000
-    private BroadcastReceiver mScanDataReceiverFor5000 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals("com.android.scanservice.scancontext")) {
-                barcodeStr = intent.getStringExtra("Scan_context");
-                OnReceive(barcodeStr);
-            }
-        }
-    };
+    private BroadcastReceiver mScanDataReceiverFor5000;
+//    = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equals("com.android.scanservice.scancontext")) {
+//                barcodeStr = intent.getStringExtra("Scan_context");
+//                OnReceive(barcodeStr);
+//            }
+//        }
+//    };
+
     //G02A
     private static final String ACTION_DISPLAY_SCAN_RESULT = "techain.intent.action.DISPLAY_SCAN_RESULT";
-    private BroadcastReceiver mScanDataReceiverForG02A = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
-                barcodeStr = intent.getStringExtra("decode_data");
-                OnReceive(barcodeStr);
-            }
-        }
-    };
+    private BroadcastReceiver mScanDataReceiverForG02A;
+//            = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
+//                barcodeStr = intent.getStringExtra("decode_data");
+//                OnReceive(barcodeStr);
+//            }
+//        }
+//    };
+
     //  M60
     private static final String ACTION_M60 = "com.mobilead.tools.action.scan_result";
-    private BroadcastReceiver mScanDataReceiverForM60 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(ACTION_M60)) {
-                barcodeStr = intent.getStringExtra("decode_rslt");
-                OnReceive(barcodeStr);
-            }
-        }
-    };
+    private BroadcastReceiver mScanDataReceiverForM60;
+//    = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equals(ACTION_M60)) {
+//                barcodeStr = intent.getStringExtra("decode_rslt");
+//                OnReceive(barcodeStr);
+//            }
+//        }
+//    };
+
     //新大陆
     private static final String ACTION_XDL_SCAN_RESULT = "nlscan.action.SCANNER_RESULT";
-    private BroadcastReceiver mScanDataReceiverForXDL = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(ACTION_XDL_SCAN_RESULT)) {
-                barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
-                OnReceive(barcodeStr);
-            }
-        }
-    };
+    private BroadcastReceiver mScanDataReceiverForXDL;
+// = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equals(ACTION_XDL_SCAN_RESULT)) {
+//                barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
+//                OnReceive(barcodeStr);
+//            }
+//        }
+//    };
 
 //    public Barcode2DWithSoft.ScanCallback mScanCallback = new Barcode2DWithSoft.ScanCallback() {
 //        @Override
@@ -189,8 +214,6 @@ public abstract class BaseActivity extends FragmentActivity {
 //    }
 
 
-
-//    public Barcode2DWithSoft mReader;
     private String date;
     private int year;
     private int month;
@@ -214,99 +237,167 @@ public abstract class BaseActivity extends FragmentActivity {
         //UBX
 //        initScan();
 
-        if (App.PDA_Choose==6){
-//            try {
-//                mReader = Barcode2DWithSoft.getInstance();
-//            } catch (Exception ex) {
-//                Toast.showText(mContext,"初始化H100设备错误"+ex.toString());
-//            }
-        }
-
-
-
         initView();
         initData();
         initListener();
     }
-//    public BroadcastReceiver getBroadcastReceiver(){
-//        return mScanDataReceiver;
-//    }
 @Override
 protected void onResume() {
     // TODO Auto-generated method stub
     super.onResume();
-//手机4：不需要注册
-//        if (App.PDA_Choose!=4){
-    if (App.PDA_Choose == 1) {
-        //G02A
-        IntentFilter scanDataIntentFilter = new IntentFilter();
-        scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
-        registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
-    } else if (App.PDA_Choose==2){
-        //u8000
-        sm = new ScanDevice();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("scan.rcv.message");
-        registerReceiver(mScanDataReceiver, filter);
-    }else if (App.PDA_Choose==3){
-        //5000
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("scan.rcv.message");
-        filter.addAction("com.android.scanservice.scancontext");
-        registerReceiver(mScanDataReceiverFor5000, filter);
-    }else if (App.PDA_Choose==4){
-        //M60
-        IntentFilter scanDataIntentFilter = new IntentFilter();
-        scanDataIntentFilter.addAction(ACTION_M60);
-        registerReceiver(mScanDataReceiverForM60, scanDataIntentFilter);
-    }else if (App.PDA_Choose==5){
-        //新大陆注册");
-        IntentFilter xdlFilter = new IntentFilter();
-        xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
-        registerReceiver(mScanDataReceiverForXDL, xdlFilter);
-//        if (mReader != null) {
-////            new InitTask().execute();
-//            boolean result = mReader.open(mContext);
-//            if (result) {
-//                mReader.setParameter(324, 1);
-//                mReader.setParameter(300, 0); // Snapshot Aiming
-//                mReader.setParameter(361, 0); // Image Capture Illumination
-//                mReader.setScanCallback(mScanCallback);
-//            }else{
-//                Toast.showText(mContext,"H100设备启动出错");
-//            }
-//        }
+    switch (App.PDA_Choose){
+        case 1://G02A
+            if (null==mScanDataReceiverForG02A){
+                mScanDataReceiverForG02A = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
+                            barcodeStr = intent.getStringExtra("decode_data");
+                            OnReceive(barcodeStr);
+                        }
+                    }
+                };
+            }
+            IntentFilter scanDataIntentFilter = new IntentFilter();
+            scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
+            registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
+            break;
+        case 2://u8000
+            if (null==mScanDataReceiver){
+                mScanDataReceiver = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        byte[] barocode = intent.getByteArrayExtra("barocode");
+                        int barocodelen = intent.getIntExtra("length", 0);
+                        byte temp = intent.getByteExtra("barcodeType", (byte) 0);
+                        Log.i("debug", "----codetype--" + temp);
+                        barcodeStr = new String(barocode, 0, barocodelen);
+                        OnReceive(barcodeStr);
+                    }
+                };
+            }
+            sm = new ScanDevice();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction("scan.rcv.message");
+            registerReceiver(mScanDataReceiver, filter);
+            break;
+        case 3://5000
+            if (null==mScanDataReceiverFor5000){
+                mScanDataReceiverFor5000 = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals("com.android.scanservice.scancontext")) {
+                            barcodeStr = intent.getStringExtra("Scan_context");
+                            OnReceive(barcodeStr);
+                        }
+                    }
+                };
+            }
+            IntentFilter filter5000 = new IntentFilter();
+            filter5000.addAction("scan.rcv.message");
+            filter5000.addAction("com.android.scanservice.scancontext");
+            registerReceiver(mScanDataReceiverFor5000, filter5000);
+            break;
+        case 4://M60
+            if (null==mScanDataReceiverForM60){
+                mScanDataReceiverForM60 = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(ACTION_M60)) {
+                            barcodeStr = intent.getStringExtra("decode_rslt");
+                            OnReceive(barcodeStr);
+                        }
+                    }
+                };
+            }
+            IntentFilter filter60 = new IntentFilter();
+            filter60.addAction(ACTION_M60);
+            registerReceiver(mScanDataReceiverForM60, filter60);
+            break;
+        case 5://新大陆注册");
+            if (null==mScanDataReceiverForXDL){
+                mScanDataReceiverForXDL = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(ACTION_XDL_SCAN_RESULT)) {
+                            barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
+                            OnReceive(barcodeStr);
+                        }
+                    }
+                };
+            }
+            IntentFilter xdlFilter = new IntentFilter();
+            xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
+            registerReceiver(mScanDataReceiverForXDL, xdlFilter);
+            break;
+        case 6://M36:注意：不能再该设备的Scan Config程序中添加本程序，不然会导致无法识别崩溃
+            if (null== mBarcodeManager)mBarcodeManager = new BarcodeManager();
+            if (null == mInfo)mInfo =new ScannerInfo("se4710_cam_builtin", "DECODER_2D");
+            if (null == mScanner)mScanner = mBarcodeManager.getDevice(mInfo);
+            try
+            {
+                mScanner.enable();
+                setDecodeListener();
+            }
+            catch(ScannerException se)
+            {
+                se.printStackTrace();
+            }
+            break;
+
     }
-//        }
 }
     @Override
     protected void onPause() {
         super.onPause();
-//        unregisterReceiver(mScanDataReceiver);
-        //        if (App.PDA_Choose!=4){
         try{
-            if (mScanDataReceiver != null ||
-                    mScanDataReceiverForG02A != null||
-                    mScanDataReceiverFor5000 != null||
-                    mScanDataReceiverForXDL != null||
-                    mScanDataReceiverForM60 != null
-                    ) {
-                if (App.PDA_Choose == 1) {
-                    unregisterReceiver(mScanDataReceiverForG02A);
-                } else if (App.PDA_Choose==2){
-                    unregisterReceiver(mScanDataReceiver);
-                }else if (App.PDA_Choose == 3){
-                    unregisterReceiver(mScanDataReceiverFor5000);
-                }else if (App.PDA_Choose == 4){
-                    unregisterReceiver(mScanDataReceiverForM60);
-                }else if (App.PDA_Choose == 5){
-                    unregisterReceiver(mScanDataReceiverForXDL);
-//                Toast.showText(mContext,"关闭H100设备");
-//                if (mReader != null) {
-//                    mReader.close();
-//                }
+            if (App.PDA_Choose==6){
+                try
+                {
+                    if(!canDecode){
+                        mScanner.cancelRead();
+                    }
+                    mScanner.disable();
+                }
+                catch(ScannerException se)
+                {
+                    se.printStackTrace();
+                }
+                finally
+                {
+                    mScanner.removeDataListener(mDataListener);
+                    canDecode = true;
                 }
             }
+
+            if (null!=mScanDataReceiverForG02A)unregisterReceiver(mScanDataReceiverForG02A);
+            if (null!=mScanDataReceiver)unregisterReceiver(mScanDataReceiver);
+            if (null!=mScanDataReceiverFor5000)unregisterReceiver(mScanDataReceiverFor5000);
+            if (null!=mScanDataReceiverForM60)unregisterReceiver(mScanDataReceiverForM60);
+            if (null!=mScanDataReceiverForXDL)unregisterReceiver(mScanDataReceiverForXDL);
+//            if (mScanDataReceiver != null ||
+//                    mScanDataReceiverForG02A != null||
+//                    mScanDataReceiverFor5000 != null||
+//                    mScanDataReceiverForXDL != null||
+//                    mScanDataReceiverForM60 != null
+//                    ) {
+//                if (App.PDA_Choose == 1) {
+//                    unregisterReceiver(mScanDataReceiverForG02A);
+//                } else if (App.PDA_Choose==2){
+//                    unregisterReceiver(mScanDataReceiver);
+//                }else if (App.PDA_Choose == 3){
+//                    unregisterReceiver(mScanDataReceiverFor5000);
+//                }else if (App.PDA_Choose == 4){
+//                    unregisterReceiver(mScanDataReceiverForM60);
+//                }else if (App.PDA_Choose == 5){
+//                    unregisterReceiver(mScanDataReceiverForXDL);
+//                }
+//            }
+
         }catch (Exception e){
             DataService.pushError(mContext, this.getClass().getSimpleName(), e);
         }
@@ -314,70 +405,91 @@ protected void onResume() {
 //        }
     }
 
-    /**
-     * 设备上电异步类
-     *
-     * @author liuruifeng
-     */
+    //M36-------------------------------------------------------------------------------------------------------
+    private BarcodeManager mBarcodeManager;
+    private ScannerInfo mInfo;
+    private Scanner mScanner;
+    //    private List<ScannerInfo> scanInfoList = mBarcodeManager.getSupportedDevicesInfo();
+    private Scanner.DataListener mDataListener;
+    private boolean canDecode = true;
+    public void setDecodeListener()
+    {
+        mDataListener =  new Scanner.DataListener()
+        {
+            public void onData(ScanDataCollection scanDataCollection)
+            {
+                String data = "";
+                ArrayList<ScanDataCollection.ScanData> scanDataList = scanDataCollection.getScanData();
+                for(ScanDataCollection.ScanData scanData :scanDataList)
+                {
+                    data = scanData.getData();
+                }
+                final String finalData = data;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        OnReceive(finalData);
+                    }
+                });
+                canDecode = true;
+            }
+        };
 
-
-//    public class InitTask extends AsyncTask<String, Integer, Boolean> {
-//        ProgressDialog mypDialog;
-//
-//        @Override
-//        protected Boolean doInBackground(String... params) {
-//
-//            boolean result = false;
-//
-////            if (mReader != null) {
-////                result = mReader.open(mContext);
-////                Lg.e("打开检测："+result);
-////                if (result) {
-////                    mReader.setParameter(324, 1);
-////                    mReader.setParameter(300, 0); // Snapshot Aiming
-////                    mReader.setParameter(361, 0); // Image Capture Illumination
-////                }
-////            }
-//
-//            return result;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Boolean result) {
-//            super.onPostExecute(result);
-//
-//            mypDialog.cancel();
-//
-//            if (!result) {
-//
-//                Toast.showText(mContext, "init fail");
-//            }
-//
-////            if (mReader != null) {
-////
-////                mReader.setScanCallback(mScanCallback);
-////            }
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            // TODO Auto-generated method stub
-//            super.onPreExecute();
-//
-//            mypDialog = new ProgressDialog(mContext);
-//            mypDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-//            mypDialog.setMessage("init...");
-//            mypDialog.setCanceledOnTouchOutside(false);
-//            mypDialog.show();
-//        }
-//
-//    }
-//
+        mScanner.addDataListener(mDataListener);
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_BUTTON_L1)
+                || (keyCode == KeyEvent.KEYCODE_BUTTON_R1)
+                || (keyCode == KeyEvent.KEYCODE_BUTTON_L2))
+        {
+//            Log.i("ScanApp", "onKeyDown");
+            if((App.PDA_Choose==6 && canDecode && event.getRepeatCount() == 0))
+            {
+                canDecode = false;
+                try
+                {
+                    mScanner.read();
+                }
+                catch (ScannerException se)
+                {
+                    se.printStackTrace();
+                }
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event)
+    {
+        if((keyCode == KeyEvent.KEYCODE_BUTTON_L1)
+                || (keyCode == KeyEvent.KEYCODE_BUTTON_R1)
+                || (keyCode == KeyEvent.KEYCODE_BUTTON_L2))
+        {
+//            Log.i("ScanApp", "onKeyUp");
+            if(App.PDA_Choose==6 && !canDecode)
+            {
+                try
+                {
+                    mScanner.cancelRead();
+                }
+                catch (ScannerException se)
+                {
+                    se.printStackTrace();
+                }
+                canDecode = true;
+                return true;
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+////------------------------------------------------------------------------------------------------
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         if (isRegisterEventBus()) {
             EventBusUtil.unregister(this);
         }
@@ -664,22 +776,4 @@ protected void onResume() {
         protected abstract void onNoDoubleClick(View view);
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (keyCode == 139) {
-//            if (event.getRepeatCount() == 0) {
-//                mReader.scan();
-//            }
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
-//
-//    @Override
-//    public boolean onKeyUp(int keyCode, KeyEvent event) {
-//        if (keyCode == 139) {
-//            mReader.stopScan();
-//        }
-//
-//        return super.onKeyUp(keyCode, event);
-//    }
 }

@@ -94,21 +94,31 @@ public class IpPortActivity extends BaseActivity {
 //                private String[] arr={"G02A设备","8000设备","5000设备"手机端};
                 if ("G02A设备".equals(string)) {
                     Hawk.put(Config.PDA, 1);
+                    App.PDA_Choose =1;
                     Toast.showText(mContext, "选择了G02A设备" + App.PDA_Choose);
                 } else if ("8000设备".equals(string)) {
                     Hawk.put(Config.PDA, 2);
+                    App.PDA_Choose =2;
                     Toast.showText(mContext, "选择了8000设备" + App.PDA_Choose);
                 } else if ("5000设备".equals(string)) {
                     Hawk.put(Config.PDA, 3);
+                    App.PDA_Choose =3;
                     Toast.showText(mContext, "选择了5000设备" + App.PDA_Choose);
                 } else if ("M60".equals(string)) {
                     Hawk.put(Config.PDA, 4);
+                    App.PDA_Choose =4;
                     Toast.showText(mContext, "选择了M60" + App.PDA_Choose);
                 } else if ("新大陆".equals(string)) {
                     Hawk.put(Config.PDA, 5);
+                    App.PDA_Choose =5;
                     Toast.showText(mContext, "选择了新大陆" + App.PDA_Choose);
-                } else if ("手机端".equals(string)) {
+                } else if ("M36".equals(string)) {
                     Hawk.put(Config.PDA, 6);
+                    App.PDA_Choose =6;
+                    Toast.showText(mContext, "选择了M36" + App.PDA_Choose);
+                }else if ("手机端".equals(string)) {
+                    Hawk.put(Config.PDA, 7);
+                    App.PDA_Choose =7;
                     Toast.showText(mContext, "选择了手机端" + App.PDA_Choose);
                 }
             }

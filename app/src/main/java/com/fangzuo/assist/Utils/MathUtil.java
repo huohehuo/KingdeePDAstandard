@@ -34,4 +34,9 @@ public class MathUtil {
         }
         return true;
     }
+
+    //保留两位小数（四舍五入
+    public static double D2save2(Double d){
+        return Double.parseDouble(String.format("%.2f", d));
+    }
 }
