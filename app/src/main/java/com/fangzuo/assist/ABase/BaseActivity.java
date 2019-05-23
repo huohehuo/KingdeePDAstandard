@@ -213,6 +213,15 @@ public abstract class BaseActivity extends FragmentActivity {
 //
 //    }
 
+    //M80s
+    public static final String ACTION_START_DECODE = "com.mobilead.tools.action.scan_start";
+    public static final String SCAN_RESULT_BROADCAST = "com.mobilead.tools.action.scan_result";
+    // extra data
+    public static final String EXTRA_BARCODE_STRING = "decode_rslt";
+    public static final String EXTRA_BARCODE_TYPE = "decode_type";
+    private BroadcastReceiver mScanDataReceiverForM80s;
+
+
 
     private String date;
     private int year;
@@ -348,6 +357,28 @@ protected void onResume() {
                 se.printStackTrace();
             }
             break;
+        case 7://M80s");
+            if (null==mScanDataReceiverForM80s){
+                mScanDataReceiverForM80s = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        String action = intent.getAction();
+                        if (action.equals(SCAN_RESULT_BROADCAST)) {
+                            // Read content of result intent.
+
+                            barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING);
+                            OnReceive(barcodeStr);
+//                            barcodeType = intent.getStringExtra(EXTRA_BARCODE_TYPE);
+
+                        }
+                    }
+                };
+            }
+            IntentFilter FilterM80s = new IntentFilter();
+            FilterM80s.addAction(SCAN_RESULT_BROADCAST);
+            registerReceiver(mScanDataReceiverForM80s, FilterM80s);
+            break;
+
 
     }
 }
@@ -379,6 +410,7 @@ protected void onResume() {
             if (null!=mScanDataReceiverFor5000)unregisterReceiver(mScanDataReceiverFor5000);
             if (null!=mScanDataReceiverForM60)unregisterReceiver(mScanDataReceiverForM60);
             if (null!=mScanDataReceiverForXDL)unregisterReceiver(mScanDataReceiverForXDL);
+            if (null!=mScanDataReceiverForM80s)unregisterReceiver(mScanDataReceiverForM80s);
 //            if (mScanDataReceiver != null ||
 //                    mScanDataReceiverForG02A != null||
 //                    mScanDataReceiverFor5000 != null||

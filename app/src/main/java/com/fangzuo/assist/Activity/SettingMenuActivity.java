@@ -104,6 +104,7 @@ public class SettingMenuActivity extends BaseActivity {
 //                tvVerApp.setText("app:" + Info.TestNo);
 //            }
 //        }
+        tvVerApp.setText("app:" + getVersionName());
         App.getRService().doIOAction(WebApi.ServiceVersion, "", new MySubscribe<CommonResponse>() {
             @Override
             public void onNext(CommonResponse commonResponse) {
@@ -113,7 +114,7 @@ public class SettingMenuActivity extends BaseActivity {
 
             @Override
             public void onError(Throwable e) {
-                tvVerWeb.setText("web service:服务器未响应");
+                tvVerWeb.setText("web service:error");
 //                super.onError(e);
             }
         });

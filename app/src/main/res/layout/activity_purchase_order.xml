@@ -69,6 +69,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:gravity="center_vertical"
+                        android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
 
@@ -87,10 +88,14 @@
                             android:textSize="18sp" />
                     </LinearLayout>
 
+                    <include layout="@layout/line_heng"/>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="10dp"
                         android:orientation="horizontal">
 
@@ -107,7 +112,8 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="5"
-                            android:background="@android:drawable/edit_text"
+                            android:paddingLeft="10dp"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:selectAllOnFocus="true"
                             android:singleLine="true" />
@@ -127,7 +133,7 @@
                         </RelativeLayout>
 
                     </LinearLayout>
-
+                    <include layout="@layout/line_heng"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -166,7 +172,8 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
-                            android:background="@android:drawable/edit_text"
+                            android:paddingLeft="10dp"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
                             android:selectAllOnFocus="true"
@@ -236,10 +243,8 @@
                             android:textSize="15sp" />
 
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -273,10 +278,8 @@
                             android:textColor="@color/white"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <com.fangzuo.assist.widget.SpinnerUnit
                             android:id="@+id/sp_unit"
@@ -306,10 +309,8 @@
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -340,15 +341,14 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:gravity="center"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <EditText
                             android:id="@+id/ed_num"
@@ -356,7 +356,8 @@
                             android:layout_height="40dp"
                             android:layout_marginLeft="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:gravity="center"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />
@@ -370,7 +371,6 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -383,10 +383,8 @@
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -416,14 +414,13 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:gravity="center"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include
+                            layout="@layout/line_shu"/>
 
                         <EditText
                             android:id="@+id/ed_pricesingle"
@@ -431,7 +428,8 @@
                             android:layout_height="40dp"
                             android:layout_marginLeft="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:gravity="center"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />
@@ -468,10 +466,8 @@
                 android:text="添加"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include
+                layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_finishorder"
@@ -482,10 +478,8 @@
                 android:text="完单"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include
+                layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_backorder"
@@ -496,10 +490,8 @@
                 android:text="回单"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include
+                layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_checkorder"
