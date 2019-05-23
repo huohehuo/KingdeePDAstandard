@@ -142,6 +142,7 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
                             if (isCheck.get(j)) {
                                 List<PDSub> list2 = pdSubDao.queryBuilder().where(
                                         PDSubDao.Properties.FID.eq(list.get(j).FInterID),
+                                        PDSubDao.Properties.FItemID.eq(list.get(j).FProductId),
                                         PDSubDao.Properties.FBatchNo.eq(list.get(j).FBatch),
                                         PDSubDao.Properties.FStockID.eq(list.get(j).FStorageId),
                                         PDSubDao.Properties.FStockPlaceID.eq(list.get(j).FPositionId==null?"":list.get(j).FPositionId)
@@ -151,7 +152,6 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
                                     pdSubDao.update(list2.get(0));
                                 }
                                 t_detailDao.delete(list.get(j));
-
                             }
                         }
                         initData();

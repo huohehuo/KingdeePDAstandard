@@ -699,8 +699,8 @@ public class PDActivity extends BaseActivity {
                         pdSub.FAdjQty = "0";
                         pdSub.FCheckQty = edPdnum.getText().toString();
                         pdSub.FItemID = product.FItemID;
-                        pdSub.FStockPlaceID = wavehouseID;
-                        pdSub.FBatchNo = pihao;
+                        pdSub.FStockPlaceID = wavehouseID == null ? "" : wavehouseID;
+                        pdSub.FBatchNo = pihao == null ? "" : pihao;
                         pdSub.FID = fid;
                         pdSub.FStockID = storageId;
                         pdSub.FName = product.FName;
