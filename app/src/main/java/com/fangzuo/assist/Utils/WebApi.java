@@ -8,6 +8,8 @@ public class WebApi {
     public static final String OCUPLOAD = "PushDownOCUpload";
     public static final String GetUseTime = "GetUseTime";
     public static final String SetUseTime = "SetUseTime";
+    public static final String ServiceVersion = "ServiceVersion";//获取服务器版本
+
 
     public static final String SCRWSCLLUpload = "SCRWSCLLUpload";
     public static final String SCRWDPDSCHBDUPLOAD = "SCRWDPDSCHBDUpload";

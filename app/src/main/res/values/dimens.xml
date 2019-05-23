@@ -20,6 +20,7 @@
 
     <dimen name="common_margin_left">@dimen/dp_15</dimen>
     <dimen name="homepage_news_margin_left">@dimen/dp_7</dimen>
+    <dimen name="size_heng_line">0.5dp</dimen><!--横的线-->
 
     <!-- dp and sp values, must be defind in this file! -->
     <!-- view size,you can add if there is no one -->

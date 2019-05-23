@@ -33,6 +33,7 @@ import com.fangzuo.assist.Beans.NewVersionBean;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Utils.Asynchttp;
 import com.fangzuo.assist.Utils.BasicShareUtil;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.Toast;
@@ -217,7 +218,7 @@ public class SettingFragment extends BaseFragment {
                     pDialog.dismiss();
                     System.out.println("下载完成");
                     try{
-                        installApk(mContext,arg0.result+"");
+                        CommonUtil.installApk(mContext,arg0.result+"");
 //                        Intent intent = new Intent(Intent.ACTION_VIEW);
 //                        intent.addCategory(Intent.CATEGORY_DEFAULT);
 //                        intent.setDataAndType(Uri.fromFile(arg0.result),
@@ -259,39 +260,6 @@ public class SettingFragment extends BaseFragment {
 
         }
     }
-
-    public static void installApk(Context context, String apkPath) {
-        if (context == null || TextUtils.isEmpty(apkPath)) {
-            return;
-        }
-        Lg.e("获得文件路径："+apkPath);
-
-        File file = new File(apkPath);
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-
-        //判读版本是否在7.0以上
-        if (Build.VERSION.SDK_INT >= 24) {
-            Lg.e(">=24时");
-//            Log.v(TAG,"7.0以上，正在安装apk...");
-            //provider authorities
-            Uri apkUri = FileProvider.getUriForFile(context,
-                    "com.fangzuo.assist.provider",
-//                    BuildConfig.APPLICATION_ID + ".provider",
-                    file);
-//            Uri apkUri = FileProvider.getUriForFile(context, "com.fangzuo.assist.fileprovider", file);
-            //Granting Temporary Permissions to a URI
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
-        } else {
-            Lg.e("<24时");
-//            Log.v(TAG,"7.0以下，正在安装apk...");
-            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        }
-
-        context.startActivity(intent);
-
-    }
-
 
     public String getTimeLong(boolean b){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat(b?"yyyy-MM-dd-HH-mm-ss":"yyyyMMddHHmmss");

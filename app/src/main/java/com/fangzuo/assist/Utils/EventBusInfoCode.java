@@ -24,4 +24,7 @@ public class EventBusInfoCode {
 
 
     public static final String Down_json_file = "20000";
+
+    public static final String ScanResult = "ScanResult";
+
 }

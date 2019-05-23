@@ -4,9 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.fangzuo.assist.Activity.Crash.App;
@@ -223,6 +227,37 @@ Calendar cal = Calendar.getInstance();
             e.printStackTrace();
         }
         return lineTxt;
+    }
+
+    //更新软件
+    public static void installApk(Context context, String apkPath) {
+        if (context == null || TextUtils.isEmpty(apkPath)) {
+            return;
+        }
+        Lg.e("获得文件路径："+apkPath);
+
+        File file = new File(apkPath);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        //判读版本是否在7.0以上
+        if (Build.VERSION.SDK_INT >= 24) {
+            Lg.e(">=24时");
+//            Log.v(TAG,"7.0以上，正在安装apk...");
+            //provider authorities
+            Uri apkUri = FileProvider.getUriForFile(context,
+                    "com.fangzuo.assist.provider",
+//                    BuildConfig.APPLICATION_ID + ".provider",
+                    file);
+//            Uri apkUri = FileProvider.getUriForFile(context, "com.fangzuo.assist.fileprovider", file);
+            //Granting Temporary Permissions to a URI
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+        } else {
+            Lg.e("<24时");
+//            Log.v(TAG,"7.0以下，正在安装apk...");
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+        }
+        context.startActivity(intent);
     }
 
 
