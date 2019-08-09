@@ -68,7 +68,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.android.support:design:26.1.0'
-    implementation files('libs/core.jar')
+//    implementation files('libs/core.jar')
     implementation files('libs/scanSDK.jar')
     implementation files('libs/platform_sdk_v2.3.706.jar')
     implementation 'com.android.support:multidex:1.0.3'
@@ -84,4 +84,5 @@ dependencies {
     //    compile 'com.jude:easyrecyclerview:4.4.2'
     //    implementation files('libs/DeviceAPIver20160627.jar')
     implementation files('libs/mediatek-android.jar')
+    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
 }

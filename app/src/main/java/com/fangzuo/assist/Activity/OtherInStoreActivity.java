@@ -73,6 +73,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -81,6 +82,8 @@ import com.fangzuo.greendao.gen.ProductDao;
 import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 import com.orhanobut.hawk.Hawk;
 
@@ -209,6 +212,7 @@ public class OtherInStoreActivity extends BaseActivity {
     private PiciSpAdapter piciSpAdapter;
     private String wavehouseAutoString = "";
     private int activity = Config.OtherInStoreActivity;
+    private OtherInStoreActivity mContext;
 
 
     @Override
@@ -234,6 +238,10 @@ public class OtherInStoreActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
             case EventBusInfoCode.PRODUCTRETURN:
                 product = (Product) event.postEvent;
                 setDATA("", true);
@@ -684,8 +692,12 @@ public class OtherInStoreActivity extends BaseActivity {
                 startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULTPRODUCT, b);
                 break;
             case R.id.scanbyCamera:
-                Intent in = new Intent(mContext, CaptureActivity.class);
-                startActivityForResult(in, 0);
+                IntentIntegrator intentIntegrator = new IntentIntegrator(mContext);
+                // 设置自定义扫描Activity
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+//                Intent in = new Intent(mContext, CaptureActivity.class);
+//                startActivityForResult(in, 0);
                 break;
             case R.id.search:
                 Log.e("search", "onclick");

@@ -5,16 +5,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.fangzuo.assist.Activity.PushDownMTActivity">
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <RelativeLayout
+            android:id="@+id/rl_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/cpb_blue"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="销售订单下推"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/lv_pushsub"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <ScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/ll_btn"
-            android:layout_below="@+id/lv_pushsub">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -26,10 +46,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -45,10 +62,7 @@
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -60,10 +74,7 @@
                             android:textSize="15sp" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -76,10 +87,7 @@
                             android:layout_height="40dp"
                             android:layout_weight="1" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <com.fangzuo.assist.widget.MyWaveHouseSpinner
                             android:id="@+id/sp_wavehouse"
@@ -88,10 +96,7 @@
                             android:layout_weight="1" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -107,10 +112,7 @@
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -122,10 +124,7 @@
                             android:textSize="15sp" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -143,10 +142,7 @@
                             android:textColor="@color/white"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <Spinner
                             android:id="@+id/sp_unit"
@@ -156,10 +152,7 @@
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -175,10 +168,7 @@
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -190,10 +180,7 @@
                             android:textSize="15sp" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/divider_color" />
+                    <include layout="@layout/line_heng"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -206,12 +193,13 @@
                             android:layout_height="40dp"
                             android:layout_weight="1" />
 
+                        <include layout="@layout/line_shu"/>
                         <EditText
                             android:id="@+id/ed_num"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
@@ -233,10 +221,7 @@
                             android:textColor="@color/black"
                             android:textSize="15sp" />
 
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="@color/divider_color" />
+                        <include layout="@layout/line_shu"/>
 
                         <TextView
                             android:layout_width="0dp"
@@ -288,27 +273,6 @@
             </android.support.v7.widget.CardView>
 
         </ScrollView>
-        <RelativeLayout
-            android:id="@+id/rl_top"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/cpb_blue"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="销售订单下推"
-                android:textColor="@color/white"
-                android:textSize="20sp" />
-        </RelativeLayout>
-
-        <ListView
-            android:id="@+id/lv_pushsub"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_below="@+id/rl_top" />
 
 
         <LinearLayout
@@ -318,10 +282,6 @@
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
 
             <Button
                 android:id="@+id/btn_add"
@@ -333,10 +293,7 @@
                 android:textColor="@android:color/white" />
 
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_backorder"
@@ -347,10 +304,7 @@
                 android:text="回单"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_checkorder"
@@ -367,7 +321,7 @@
                 android:background="@color/divider_color" />
 
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
     <ScrollView
         android:layout_width="250dp"
         android:layout_height="match_parent"

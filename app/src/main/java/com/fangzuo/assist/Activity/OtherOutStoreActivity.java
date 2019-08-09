@@ -74,6 +74,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -82,6 +83,8 @@ import com.fangzuo.greendao.gen.ProductDao;
 import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 import com.orhanobut.hawk.Hawk;
 
@@ -211,7 +214,43 @@ public class OtherOutStoreActivity extends BaseActivity {
     private boolean checkStorage = false;  // 0不允许负库存false  1允许负库存出库true
     private String wavehouseAutoString = "";
     private int activity = Config.OtherOutStoreActivity;
+    private OtherOutStoreActivity mContext;
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
 
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
+            case EventBusInfoCode.PRODUCTRETURN:
+                product = (Product) event.postEvent;
+                setDATA("", true);
+                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).ok();
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
+        }
+    }
     @Override
     protected void initView() {
         setContentView(R.layout.activity_other_out_store);
@@ -522,39 +561,6 @@ public class OtherOutStoreActivity extends BaseActivity {
     }
 
     @Override
-    protected boolean isRegisterEventBus() {
-        return true;
-    }
-
-    @Override
-    protected void receiveEvent(ClassEvent event) {
-        switch (event.Msg) {
-            case EventBusInfoCode.PRODUCTRETURN:
-                product = (Product) event.postEvent;
-                setDATA("", true);
-                break;
-//            case EventBusInfoCode.Upload_OK://回单成功
-//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
-//                        T_DetailDao.Properties.Activity.eq(activity)
-//                ).build().list());
-//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
-//                        T_mainDao.Properties.Activity.eq(activity)
-//                ).build().list());
-//                btnBackorder.setClickable(true);
-//                LoadingUtil.dismiss();
-//                MediaPlayer.getInstance(mContext).ok();
-//                break;
-//            case EventBusInfoCode.Upload_Error://回单失败
-//                String error = (String) event.postEvent;
-//                Toast.showText(mContext, error);
-//                btnBackorder.setClickable(true);
-//                LoadingUtil.dismiss();
-//                MediaPlayer.getInstance(mContext).error();
-//                break;
-        }
-    }
-
-    @Override
     protected void OnReceive(String code) {
         edCode.setText(code);
         setDATA(code, false);
@@ -597,8 +603,12 @@ public class OtherOutStoreActivity extends BaseActivity {
                 startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULTCLIRNT, b);
                 break;
             case R.id.scanbyCamera:
-                Intent in = new Intent(mContext, CaptureActivity.class);
-                startActivityForResult(in, 0);
+                IntentIntegrator intentIntegrator = new IntentIntegrator(mContext);
+                // 设置自定义扫描Activity
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+//                Intent in = new Intent(mContext, CaptureActivity.class);
+//                startActivityForResult(in, 0);
                 break;
             case R.id.search:
                 Log.e("search", "onclick");
@@ -785,6 +795,7 @@ public class OtherOutStoreActivity extends BaseActivity {
 //    }
 
     private void setDATA(String fnumber, boolean flag) {
+        Lg.e("setDate",fnumber);
         Products = null;
         default_unitID = null;
         if (flag) {
@@ -862,13 +873,13 @@ public class OtherOutStoreActivity extends BaseActivity {
                     MediaPlayer.getInstance(mContext).error();
                     Toast.showText(mContext, "未找到条码");
                 }
-                if (Products != null && Products.size() > 0) {
-//                    product = Products.get(0);
-//                    tvorisAuto(product);
-                } else {
-                    Toast.showText(mContext, "未找到物料");
-                    MediaPlayer.getInstance(mContext).error();
-                }
+//                if (Products != null && Products.size() > 0) {
+////                    product = Products.get(0);
+////                    tvorisAuto(product);
+//                } else {
+//                    Toast.showText(mContext, "未找到物料");
+//                    MediaPlayer.getInstance(mContext).error();
+//                }
             }
         }
 
