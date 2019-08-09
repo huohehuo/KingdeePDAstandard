@@ -98,7 +98,8 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
             }
 
         }
-        Lg.e("列表数据："+list.toString());
+        Lg.e("表头："+list1.size(),list1);
+        Lg.e("明细："+list.size(),list);
         tableAdapter = new TableAdapter(mContext,list, isCheck);
         lvResult.setAdapter(tableAdapter);
         tableAdapter.setInnerListener(this);

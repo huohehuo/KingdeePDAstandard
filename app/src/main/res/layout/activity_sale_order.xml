@@ -103,7 +103,7 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="4"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:selectAllOnFocus="true"
                             android:singleLine="true" />
@@ -164,7 +164,7 @@
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
                             android:selectAllOnFocus="true"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
                             android:singleLine="true" />
@@ -347,7 +347,7 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />
@@ -363,7 +363,7 @@
                             android:layout_height="40dp"
                             android:layout_marginLeft="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />
@@ -427,7 +427,7 @@
                             android:layout_height="40dp"
                             android:layout_marginRight="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true"
                             android:textSize="15sp" />
 
@@ -442,7 +442,7 @@
                             android:layout_height="40dp"
                             android:layout_marginLeft="3dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
                             android:textSize="15sp" />

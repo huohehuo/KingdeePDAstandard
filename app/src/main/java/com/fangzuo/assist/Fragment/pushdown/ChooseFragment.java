@@ -156,7 +156,7 @@ public class ChooseFragment extends BaseFragment {
         if (flag && downloadIDs.size() > 0) {
             Bundle b = new Bundle();
             b.putStringArrayList("fid", container);
-            Log.e("ChooseFragment", "跳转数据：" + container.toString());
+            Lg.e("ChooseFragment跳转数据", container);
             switch (tag) {
                 case 1://销售订单下推销售出库
                     intent = new Intent(mContext, PushDownMTActivity.class);
@@ -291,7 +291,7 @@ public class ChooseFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 PushDownMain pushDownListReturnBean = (PushDownMain) pushDownListAdapter.getItem(i);
                 if (isCheck.get(i)) {
-                    Log.e("choose", "不--选中");
+                    Lg.e("choose", "不--选中");
                     isCheck.set(i, false);
                     for (int j = 0; j < downloadIDs.size(); j++) {
                         if (downloadIDs.get(j).FInterID.equals(pushDownListReturnBean.FInterID)) {
@@ -299,7 +299,7 @@ public class ChooseFragment extends BaseFragment {
                         }
                     }
                 } else {
-                    Log.e("choose", "选中");
+                    Lg.e("choose", "选中");
                     isCheck.set(i, true);
                     downloadIDs.add(pushDownListReturnBean);
                 }

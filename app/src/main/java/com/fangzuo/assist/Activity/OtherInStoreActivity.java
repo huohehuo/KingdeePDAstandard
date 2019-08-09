@@ -238,24 +238,24 @@ public class OtherInStoreActivity extends BaseActivity {
                 product = (Product) event.postEvent;
                 setDATA("", true);
                 break;
-            case EventBusInfoCode.Upload_OK://回单成功
-                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
-                        T_DetailDao.Properties.Activity.eq(activity)
-                ).build().list());
-                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
-                        T_mainDao.Properties.Activity.eq(activity)
-                ).build().list());
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).ok();
-                break;
-            case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String) event.postEvent;
-                Toast.showText(mContext, error);
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).error();
-                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).ok();
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
         }
     }
 
@@ -286,9 +286,10 @@ public class OtherInStoreActivity extends BaseActivity {
             @Override
             protected void onNoDoubleClick(View view) {
                 if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
+//                    btnBackorder.setClickable(false);
+//                    LoadingUtil.show(mContext, "正在回单...");
+//                    upload();
+                    UpLoadActivity.start(mContext,activity);
                 } else {
                     Toast.showText(mContext, "无单据信息");
                 }
@@ -532,6 +533,7 @@ public class OtherInStoreActivity extends BaseActivity {
 
             }
         });
+
         spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -742,7 +744,7 @@ public class OtherInStoreActivity extends BaseActivity {
     private void setDATA(String fnumber, boolean flag) {
         default_unitID = null;
         Products = null;
-        edPihao.setText("");
+//        edPihao.setText("");
         final ProductDao productDao = daoSession.getProductDao();
         BarCodeDao barCodeDao = daoSession.getBarCodeDao();
         if (flag) {
@@ -869,6 +871,8 @@ public class OtherInStoreActivity extends BaseActivity {
                 setfocus(edPihao);
                 edPihao.setEnabled(true);
             } else {
+                pihao = "";
+                edPihao.setText("");
                 edPihao.setEnabled(false);
                 fBatchManager = false;
             }
@@ -1000,8 +1004,8 @@ public class OtherInStoreActivity extends BaseActivity {
 //            }
             String discount = "0";
             String num = edNum.getText().toString();
-            if (edSupplier.getText().toString().equals("")){
-                Toast.showText(mContext, "请输入供应商");
+            if (supplierid==null || edSupplier.getText().toString().equals("")){
+                Toast.showText(mContext, "请选择供应商");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -1015,8 +1019,8 @@ public class OtherInStoreActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if (edCode.getText().toString().equals("")){
-                Toast.showText(mContext, "请输入物料编号");
+            if (product== null || edCode.getText().toString().equals("")){
+                Toast.showText(mContext, "请选择物料编号");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -1261,6 +1265,7 @@ public class OtherInStoreActivity extends BaseActivity {
         piciSpAdapter = new PiciSpAdapter(mContext, container);
         spPihao.setAdapter(piciSpAdapter);
         setfocus(edCode);
+        product=null;
     }
 
     public void finishOrder() {

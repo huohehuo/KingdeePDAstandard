@@ -221,6 +221,11 @@ public abstract class BaseActivity extends FragmentActivity {
     public static final String EXTRA_BARCODE_TYPE = "decode_type";
     private BroadcastReceiver mScanDataReceiverForM80s;
 
+    //肖邦
+    private BroadcastReceiver mScanDataReceiverForXB;
+    public static final String SCN_CUST_EX_SCODE = "scannerdata";
+    public static final String SCN_CUST_ACTION_SCODE = "com.android.server.scannerservice.broadcast";
+
 
 
     private String date;
@@ -254,133 +259,158 @@ public abstract class BaseActivity extends FragmentActivity {
 protected void onResume() {
     // TODO Auto-generated method stub
     super.onResume();
-    switch (App.PDA_Choose){
-        case 1://G02A
-            if (null==mScanDataReceiverForG02A){
-                mScanDataReceiverForG02A = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
-                            barcodeStr = intent.getStringExtra("decode_data");
+    try{
+        switch (App.PDA_Choose){
+            case 1://G02A
+                if (null==mScanDataReceiverForG02A){
+                    mScanDataReceiverForG02A = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String action = intent.getAction();
+                            if (action.equals(ACTION_DISPLAY_SCAN_RESULT)) {
+                                barcodeStr = intent.getStringExtra("decode_data");
+                                OnReceive(barcodeStr);
+                            }
+                        }
+                    };
+                }
+                IntentFilter scanDataIntentFilter = new IntentFilter();
+                scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
+                registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
+                break;
+            case 2://u8000
+                if (null==mScanDataReceiver){
+                    mScanDataReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            byte[] barocode = intent.getByteArrayExtra("barocode");
+                            int barocodelen = intent.getIntExtra("length", 0);
+                            byte temp = intent.getByteExtra("barcodeType", (byte) 0);
+                            Log.i("debug", "----codetype--" + temp);
+                            barcodeStr = new String(barocode, 0, barocodelen);
                             OnReceive(barcodeStr);
                         }
-                    }
-                };
-            }
-            IntentFilter scanDataIntentFilter = new IntentFilter();
-            scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
-            registerReceiver(mScanDataReceiverForG02A, scanDataIntentFilter);
-            break;
-        case 2://u8000
-            if (null==mScanDataReceiver){
-                mScanDataReceiver = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        byte[] barocode = intent.getByteArrayExtra("barocode");
-                        int barocodelen = intent.getIntExtra("length", 0);
-                        byte temp = intent.getByteExtra("barcodeType", (byte) 0);
-                        Log.i("debug", "----codetype--" + temp);
-                        barcodeStr = new String(barocode, 0, barocodelen);
-                        OnReceive(barcodeStr);
-                    }
-                };
-            }
-            sm = new ScanDevice();
-            IntentFilter filter = new IntentFilter();
-            filter.addAction("scan.rcv.message");
-            registerReceiver(mScanDataReceiver, filter);
-            break;
-        case 3://5000
-            if (null==mScanDataReceiverFor5000){
-                mScanDataReceiverFor5000 = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        if (action.equals("com.android.scanservice.scancontext")) {
-                            barcodeStr = intent.getStringExtra("Scan_context");
-                            OnReceive(barcodeStr);
+                    };
+                }
+                sm = new ScanDevice();
+                IntentFilter filter = new IntentFilter();
+                filter.addAction("scan.rcv.message");
+                registerReceiver(mScanDataReceiver, filter);
+                break;
+            case 3://5000
+                if (null==mScanDataReceiverFor5000){
+                    mScanDataReceiverFor5000 = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String action = intent.getAction();
+                            if (action.equals("com.android.scanservice.scancontext")) {
+                                barcodeStr = intent.getStringExtra("Scan_context");
+                                OnReceive(barcodeStr);
+                            }
                         }
-                    }
-                };
-            }
-            IntentFilter filter5000 = new IntentFilter();
-            filter5000.addAction("scan.rcv.message");
-            filter5000.addAction("com.android.scanservice.scancontext");
-            registerReceiver(mScanDataReceiverFor5000, filter5000);
-            break;
-        case 4://M60
-            if (null==mScanDataReceiverForM60){
-                mScanDataReceiverForM60 = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        if (action.equals(ACTION_M60)) {
-                            barcodeStr = intent.getStringExtra("decode_rslt");
-                            OnReceive(barcodeStr);
+                    };
+                }
+                IntentFilter filter5000 = new IntentFilter();
+                filter5000.addAction("scan.rcv.message");
+                filter5000.addAction("com.android.scanservice.scancontext");
+                registerReceiver(mScanDataReceiverFor5000, filter5000);
+                break;
+            case 4://M60
+                if (null==mScanDataReceiverForM60){
+                    mScanDataReceiverForM60 = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String action = intent.getAction();
+                            if (action.equals(ACTION_M60)) {
+                                barcodeStr = intent.getStringExtra("decode_rslt");
+                                OnReceive(barcodeStr);
+                            }
                         }
-                    }
-                };
-            }
-            IntentFilter filter60 = new IntentFilter();
-            filter60.addAction(ACTION_M60);
-            registerReceiver(mScanDataReceiverForM60, filter60);
-            break;
-        case 5://新大陆注册");
-            if (null==mScanDataReceiverForXDL){
-                mScanDataReceiverForXDL = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        if (action.equals(ACTION_XDL_SCAN_RESULT)) {
-                            barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
-                            OnReceive(barcodeStr);
+                    };
+                }
+                IntentFilter filter60 = new IntentFilter();
+                filter60.addAction(ACTION_M60);
+                registerReceiver(mScanDataReceiverForM60, filter60);
+                break;
+            case 5://新大陆注册");
+                if (null==mScanDataReceiverForXDL){
+                    mScanDataReceiverForXDL = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String action = intent.getAction();
+                            if (action.equals(ACTION_XDL_SCAN_RESULT)) {
+                                barcodeStr = intent.getStringExtra("SCAN_BARCODE1");
+                                OnReceive(barcodeStr);
+                            }
                         }
-                    }
-                };
-            }
-            IntentFilter xdlFilter = new IntentFilter();
-            xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
-            registerReceiver(mScanDataReceiverForXDL, xdlFilter);
-            break;
-        case 6://M36:注意：不能再该设备的Scan Config程序中添加本程序，不然会导致无法识别崩溃
-            if (null== mBarcodeManager)mBarcodeManager = new BarcodeManager();
-            if (null == mInfo)mInfo =new ScannerInfo("se4710_cam_builtin", "DECODER_2D");
-            if (null == mScanner)mScanner = mBarcodeManager.getDevice(mInfo);
-            try
-            {
-                mScanner.enable();
-                setDecodeListener();
-            }
-            catch(ScannerException se)
-            {
-                se.printStackTrace();
-            }
-            break;
-        case 7://M80s");
-            if (null==mScanDataReceiverForM80s){
-                mScanDataReceiverForM80s = new BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        String action = intent.getAction();
-                        if (action.equals(SCAN_RESULT_BROADCAST)) {
-                            // Read content of result intent.
-
-                            barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING);
-                            OnReceive(barcodeStr);
+                    };
+                }
+                IntentFilter xdlFilter = new IntentFilter();
+                xdlFilter.addAction(ACTION_XDL_SCAN_RESULT);
+                registerReceiver(mScanDataReceiverForXDL, xdlFilter);
+                break;
+            case 6://M36:注意：不能再该设备的Scan Config程序中添加本程序，不然会导致无法识别崩溃
+                if (null== mBarcodeManager)mBarcodeManager = new BarcodeManager();
+                if (null == mInfo)mInfo =new ScannerInfo("se4710_cam_builtin", "DECODER_2D");
+                if (null == mScanner)mScanner = mBarcodeManager.getDevice(mInfo);
+                try
+                {
+                    mScanner.enable();
+                    setDecodeListener();
+                }
+                catch(ScannerException se)
+                {
+                    se.printStackTrace();
+                }
+                break;
+            case 7://M80s");
+                if (null==mScanDataReceiverForM80s){
+                    mScanDataReceiverForM80s = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String action = intent.getAction();
+                            if (action.equals(SCAN_RESULT_BROADCAST)) {
+                                // Read content of result intent.
+                                barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING);
+                                OnReceive(barcodeStr);
 //                            barcodeType = intent.getStringExtra(EXTRA_BARCODE_TYPE);
 
+                            }
                         }
-                    }
-                };
-            }
-            IntentFilter FilterM80s = new IntentFilter();
-            FilterM80s.addAction(SCAN_RESULT_BROADCAST);
-            registerReceiver(mScanDataReceiverForM80s, FilterM80s);
-            break;
+                    };
+                }
+                IntentFilter FilterM80s = new IntentFilter();
+                FilterM80s.addAction(SCAN_RESULT_BROADCAST);
+                registerReceiver(mScanDataReceiverForM80s, FilterM80s);
+                break;
+            case 8://肖邦");
+                if (null==mScanDataReceiverForXB){
+                    mScanDataReceiverForXB = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent.getAction().equals(SCN_CUST_ACTION_SCODE)) {
+                                try {
+                                    barcodeStr = intent.getStringExtra(SCN_CUST_EX_SCODE).toString();
+                                    OnReceive(barcodeStr);
+                                } catch (Exception e) {
+                                    // TODO: handle exception
+                                    e.printStackTrace();
+                                    Log.e("in", e.toString());
+                                }
+                            }
+                        }
+                    };
+                }
+                IntentFilter FilterXB = new IntentFilter();
+                FilterXB.addAction(SCN_CUST_ACTION_SCODE);
+                registerReceiver(mScanDataReceiverForXB, FilterXB);
+                break;
 
-
+        }
+    }catch (Exception e){
+        DataService.pushError(mContext, this.getClass().getSimpleName(), e);
     }
+
 }
     @Override
     protected void onPause() {
@@ -405,12 +435,13 @@ protected void onResume() {
                 }
             }
 
-            if (null!=mScanDataReceiverForG02A)unregisterReceiver(mScanDataReceiverForG02A);
-            if (null!=mScanDataReceiver)unregisterReceiver(mScanDataReceiver);
-            if (null!=mScanDataReceiverFor5000)unregisterReceiver(mScanDataReceiverFor5000);
-            if (null!=mScanDataReceiverForM60)unregisterReceiver(mScanDataReceiverForM60);
-            if (null!=mScanDataReceiverForXDL)unregisterReceiver(mScanDataReceiverForXDL);
-            if (null!=mScanDataReceiverForM80s)unregisterReceiver(mScanDataReceiverForM80s);
+            if (App.PDA_Choose==1 && null!=mScanDataReceiverForG02A)unregisterReceiver(mScanDataReceiverForG02A);
+            if (App.PDA_Choose==2 && null!=mScanDataReceiver)unregisterReceiver(mScanDataReceiver);
+            if (App.PDA_Choose==3 && null!=mScanDataReceiverFor5000)unregisterReceiver(mScanDataReceiverFor5000);
+            if (App.PDA_Choose==4 && null!=mScanDataReceiverForM60)unregisterReceiver(mScanDataReceiverForM60);
+            if (App.PDA_Choose==5 && null!=mScanDataReceiverForXDL)unregisterReceiver(mScanDataReceiverForXDL);
+            if (App.PDA_Choose==7 && null!=mScanDataReceiverForM80s)unregisterReceiver(mScanDataReceiverForM80s);
+            if (App.PDA_Choose==8 && null!=mScanDataReceiverForXB)unregisterReceiver(mScanDataReceiverForXB);
 //            if (mScanDataReceiver != null ||
 //                    mScanDataReceiverForG02A != null||
 //                    mScanDataReceiverFor5000 != null||

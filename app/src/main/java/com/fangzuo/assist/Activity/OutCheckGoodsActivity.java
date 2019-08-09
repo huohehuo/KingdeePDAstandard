@@ -188,7 +188,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
             container.addAll(list);
         }
         if (container.size() > 0) {
-            Log.e("OCGA", "getList获取pushSub：" + container.toString());
+            Lg.e("列表明细：" ,container);
             pushDownSubListAdapter = new PushDownSubListAdapter(mContext, container);
             lvPushsub.setAdapter(pushDownSubListAdapter);
             pushDownSubListAdapter.notifyDataSetChanged();
@@ -265,13 +265,10 @@ public class OutCheckGoodsActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Unit unit = (Unit) unitAdapter.getItem(i);
                 if (unit != null) {
-                    Log.e(TAG, "获取到Unit：" + unit.toString());
+                    Lg.e("选中单位：" ,unit);
                     unitId = unit.FMeasureUnitID;
                     unitName = unit.FName;
                     unitrate = MathUtil.toD(unit.FCoefficient);
-                    Log.e("取得单位unitId：", unitId + "");
-                    Log.e("取得单位unitName：", unitName + "");
-                    Log.e("取得单位unitrate：", unitrate + "");
                 }
 
             }
@@ -289,16 +286,16 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 getUnitrateSub(pushDownSub);
                 ProductDao productDao = daoSession.getProductDao();
                 if (BasicShareUtil.getInstance(mContext).getIsOL()) {
-                    Log.e(TAG, "ListView点击事件联网");
                     Asynchttp.post(mContext, getBaseUrl() + WebApi.PRPDUCTSEARCHWHERE, pushDownSub.FItemID, new Asynchttp.Response() {
                         @Override
                         public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                             final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
-                            Log.e("product.size", dBean.products.size() + "");
                             if (dBean.products.size() > 0) {
                                 product = dBean.products.get(0);
-                                Log.e("product.size", product + "");
+                                Lg.e("product.size"+dBean.products.size(), products);
                                 clickList(product);
+                            }else{
+                                Toast.showText(mContext,"未找到列表相关的物料信息");
                             }
                         }
 
@@ -308,7 +305,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
                         }
                     });
                 } else {
-                    Log.e(TAG, "ListView点击事件--不-联网");
                     products = productDao.queryBuilder().where(
                             ProductDao.Properties.FItemID.eq(pushDownSub.FItemID)
                     ).build().list();
@@ -350,7 +346,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     //获取到Product详情
     private void clickList(Product product) {
-        Log.e(TAG, "获取product:\n" + product.toString());
+        Lg.e("获取product:\n",product);
         FstorageID = pushDownSub.FDCStockID;
         FwaveHouseID = pushDownSub.FDCSPID;
         batchNo = pushDownSub.FBatchNo;
@@ -412,7 +408,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
         ProductDao productDao = daoSession.getProductDao();
         BarCodeDao barCodeDao = daoSession.getBarCodeDao();
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
-            Log.e(TAG, "ScanBarCode事件联网");
             Asynchttp.post(mContext, getBaseUrl() + WebApi.SEARCHPRODUCTS, barcode, new Asynchttp.Response() {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -422,6 +417,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
                         default_unitID = dBean.products.get(0).FUnitID;
                         fromScan = true;
                         setProduct(product);
+                    }else{
+                        Toast.showText(mContext,"未找到物料数据");
                     }
                 }
 
@@ -431,7 +428,6 @@ public class OutCheckGoodsActivity extends BaseActivity {
                 }
             });
         } else {
-            Log.e(TAG, "ScanBarCode事件--不-联网");
             final List<BarCode> barCodes = barCodeDao.queryBuilder().where(
                     BarCodeDao.Properties.FBarCode.eq(barcode)
             ).build().list();
@@ -440,7 +436,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
                         ProductDao.Properties.FItemID.eq(barCodes.get(0).FItemID)
                 ).build().list();
                 if (products != null && products.size() > 0) {
-                    Log.e("OCGA", "获取条码对应的product信息：" + products.get(0));
+                    Lg.e("获取条码对应的product信息：",products);
                     product = products.get(0);
                     default_unitID = barCodes.get(0).FUnitID;
                     fromScan = true;
@@ -456,7 +452,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     //扫码后设置product数据
     private void setProduct(Product product) {
-        Log.e("OCGA", "获取setProduct对应的product信息：" + product);
+        Lg.e("获取setProduct对应的product信息：",product);
         if (product != null) {
             boolean flag = true;
             boolean hasUnit = false;
@@ -529,7 +525,7 @@ public class OutCheckGoodsActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("resume", "resume");
+        Lg.e("resume", "resume");
         getList();
     }
 

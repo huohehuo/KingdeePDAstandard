@@ -18,7 +18,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/wgrkxt"
+                android:text="采购订单下推收料通知单"
                 android:textColor="@color/white"
                 android:layout_centerInParent="true"
                 android:textSize="20sp"/>

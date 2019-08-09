@@ -437,7 +437,7 @@ public class PDActivity extends BaseActivity {
                 PDSubDao.Properties.FStockPlaceID.eq(wavehouseID),
                 PDSubDao.Properties.FBatchNo.eq(pihao)
         ).build().list();
-        Lg.e("getSubQty:" + pdSubs.toString());
+        Lg.e("getSubQty:",pdSubs);
         if (pdSubs.size() > 0) {
             pdsubChoice = pdSubs.get(0);
             tvYtnum.setText(pdSubs.get(0).FCheckQty);
@@ -640,6 +640,11 @@ public class PDActivity extends BaseActivity {
 
     private void AddOrder() {
         try {
+            if (product==null) {
+                Toast.showText(mContext, "请选择物料");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
             String num = edPdnum.getText().toString();
             if (edCode.getText().toString().equals("")) {
                 Toast.showText(mContext, "请输入物料编号");
@@ -647,8 +652,7 @@ public class PDActivity extends BaseActivity {
                 Toast.showText(mContext, "请输入盘点数量");
             } else {
                 T_DetailDao t_detailDao = daoSession.getT_DetailDao();
-                Lg.e("AddOrder:" + pdsubChoice.toString());
-                Lg.e("pihao:" + pihao);
+                Lg.e("AddOrder:" ,pdsubChoice);
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
                             T_DetailDao.Properties.Activity.eq(activity),
@@ -683,9 +687,6 @@ public class PDActivity extends BaseActivity {
                 t_detail.FIdentity = "0";
                 t_detail.FQuantity = num == null ? "1" : num;
                 long insert = t_detailDao.insert(t_detail);
-                Log.e("insert", insert + "");
-                Log.e("t_detail", t_detail.toString() + "");
-
 
                 if (insert > 0) {
                     MediaPlayer.getInstance(mContext).ok();
@@ -1129,6 +1130,7 @@ public class PDActivity extends BaseActivity {
         spPihao.setAdapter(piciSpAdapter);
         edCode.setText("");
         edPdnum.setText("");
+        product=null;
     }
 
 

@@ -249,11 +249,10 @@ public class FHTZDDBActivity extends BaseActivity {
         getList();
         List<PushDownMain> list1 = pushDownMainDao.queryBuilder().where(PushDownMainDao.Properties.FInterID.eq(fidcontainer.get(0))).build().list();
         if (list1.size() > 0) {
+            Lg.e("表头",list1);
             fwanglaiUnit = list1.get(0).FSupplyID;
             employeeId = list1.get(0).FEmpID;
             departmentId = list1.get(0).FDeptID;
-            Log.e("employeeId", employeeId == null ? "" : employeeId);
-            Log.e("departmentId", departmentId == null ? "" : departmentId);
             billNo = list1.get(0).FBillNo;
         }
         ordercode = DataModel.findOrderCode(mContext, activity, fidcontainer);
@@ -341,7 +340,7 @@ public class FHTZDDBActivity extends BaseActivity {
 
     //扫码的时候设置product
     private void setProduct(Product product) {
-        Lg.e("setProduct", "获取到：" + product.toString());
+        Lg.e("setProduct", product);
         if (product != null) {
             boolean errorFlag = true;
             boolean hasUnit = true;
@@ -406,7 +405,7 @@ public class FHTZDDBActivity extends BaseActivity {
             iBean.FStockID = outstorageID;
             iBean.FItemID = (product.FItemID);
             String json = new Gson().toJson(iBean);
-            Log.e("请求库存", json);
+            Lg.e("请求库存", json);
             Asynchttp.post(mContext, getBaseUrl() + WebApi.GETINSTORENUM, json, new Asynchttp.Response() {
                 @Override
                 public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -573,9 +572,10 @@ public class FHTZDDBActivity extends BaseActivity {
             @Override
             protected void onNoDoubleClick(View view) {
                 if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
+//                    btnBackorder.setClickable(false);
+//                    LoadingUtil.show(mContext, "正在回单...");
+//                    upload();
+                    UpLoadActivity.start(mContext,tag,activity);
                 } else {
                     Toast.showText(mContext, "无单据信息");
                 }
@@ -723,11 +723,12 @@ public class FHTZDDBActivity extends BaseActivity {
                         @Override
                         public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                             final DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
-                            Log.e("product.size", dBean.products.size() + "");
                             if (dBean.products.size() > 0) {
                                 product = dBean.products.get(0);
-                                Log.e("product.size", product + "");
+                                Lg.e("product.size"+dBean.products.size(), products);
                                 clickList(product);
+                            }else{
+                                Toast.showText(mContext,"列表无法找到相应物料");
                             }
                         }
 
@@ -853,7 +854,7 @@ public class FHTZDDBActivity extends BaseActivity {
 
 
     private void clickList(final Product product) {
-        Lg.e("clickList", product.toString());
+        Lg.e("clickList", product);
         productName.setText(product.FName);
         productID = pushDownSub.FItemID;
         wavehouseAutoString = product.FSPID;
@@ -971,7 +972,7 @@ public class FHTZDDBActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("resume", "resume");
+        Lg.e("resume", "resume");
         getList();
     }
 
@@ -1042,6 +1043,7 @@ public class FHTZDDBActivity extends BaseActivity {
                     }
                 }
 
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
                 String second = getTimesecond();
                 T_main t_main = new T_main();
                 t_main.FDepartment = spDepartment.getDataName();
@@ -1245,34 +1247,34 @@ public class FHTZDDBActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
-            case EventBusInfoCode.Upload_OK://回单成功
-                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
-                        T_DetailDao.Properties.Activity.eq(activity)
-                ).build().list());
-                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
-                        T_mainDao.Properties.Activity.eq(activity)
-                ).build().list());
-                for (int i = 0; i < fidc.size(); i++) {
-                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
-                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
-                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
-                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
-                }
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                Toast.showText(mContext, "上传成功");
-                MediaPlayer.getInstance(mContext).ok();
-                Bundle b = new Bundle();
-                b.putInt("123", tag);
-                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
-                break;
-            case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String) event.postEvent;
-                Toast.showText(mContext, error);
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).error();
-                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                for (int i = 0; i < fidc.size(); i++) {
+//                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
+//                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
+//                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                }
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                Toast.showText(mContext, "上传成功");
+//                MediaPlayer.getInstance(mContext).ok();
+//                Bundle b = new Bundle();
+//                b.putInt("123", tag);
+//                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
         }
     }
 
@@ -1325,13 +1327,6 @@ public class FHTZDDBActivity extends BaseActivity {
         startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
     }
 
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
-        ButterKnife.bind(this);
-    }
 
     //用于adpater首次更新时，不存入默认值，而是选中之前的选项
     private boolean isFirst = false;

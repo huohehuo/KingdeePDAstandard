@@ -76,7 +76,7 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:gravity="center"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:layout_weight="3.5" />
                         <RelativeLayout
                             android:id="@+id/search_supplier"
@@ -211,7 +211,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true" />
 
                         <RelativeLayout
@@ -383,7 +383,7 @@
                             android:inputType="numberDecimal"
                             android:gravity="center"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true" />
                         <View
                             android:layout_width="1dp"
@@ -397,7 +397,7 @@
                             android:layout_height="40dp"
                             android:layout_weight="1"
                             android:gravity="center"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true"
                             android:textSize="15sp" />
                     </LinearLayout>
@@ -465,7 +465,7 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true"
                             android:textSize="19sp" />
                     </LinearLayout>

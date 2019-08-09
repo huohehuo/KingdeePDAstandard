@@ -230,24 +230,24 @@ public class SaleOrderActivity extends BaseActivity {
                 product = (Product) event.postEvent;
                 setDATA("", true);
                 break;
-            case EventBusInfoCode.Upload_OK://回单成功
-                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
-                        T_DetailDao.Properties.Activity.eq(activity)
-                ).build().list());
-                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
-                        T_mainDao.Properties.Activity.eq(activity)
-                ).build().list());
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).ok();
-                break;
-            case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String) event.postEvent;
-                Toast.showText(mContext, error);
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).error();
-                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).ok();
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
         }
     }
 
@@ -272,9 +272,10 @@ public class SaleOrderActivity extends BaseActivity {
             @Override
             protected void onNoDoubleClick(View view) {
                 if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
+//                    btnBackorder.setClickable(false);
+//                    LoadingUtil.show(mContext, "正在回单...");
+//                    upload();
+                    UpLoadActivity.start(mContext,activity);
                 } else {
                     Toast.showText(mContext, "无单据信息");
                 }
@@ -785,6 +786,7 @@ public class SaleOrderActivity extends BaseActivity {
         tvGoodName.setText("");
         tvModel.setText("");
         setfocus(edCode);
+        product=null;
     }
 
     public void finishOrder() {
@@ -826,13 +828,16 @@ public class SaleOrderActivity extends BaseActivity {
         try {
             String discount = edOnsale.getText().toString();
             String num = edNum.getText().toString();
-
+            if (product == null) {
+                Toast.showText(mContext, "请选择物料");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
             if (clientId == null || "".equals(edClient.getText().toString())) {
                 Toast.showText(mContext, "请选择客户");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-
 
             if (edOnsale.getText().toString().equals("") || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
                 MediaPlayer.getInstance(mContext).error();

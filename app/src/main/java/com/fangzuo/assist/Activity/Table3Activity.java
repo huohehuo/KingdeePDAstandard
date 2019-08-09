@@ -92,9 +92,8 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
         list1 = t_mainDao.queryBuilder().where(
                 T_mainDao.Properties.Activity.eq(activity)
         ).build().list();
-        Log.e(TAG, "获得T_main：" + list1.toString());
-        Log.e("list.size", list.size() + "");
-        Log.e("list1.size", list1.size() + "");
+        Lg.e("表头："+list1.size(),list1);
+        Lg.e("明细："+list.size(),list);
         // TODO: 2018/4/10 两个size都要验证大于0？
         if (list.size() > 0 && list1.size() >= 0) {
             for (int i = 0; i < list.size(); i++) {

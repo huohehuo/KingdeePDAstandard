@@ -245,7 +245,7 @@ Calendar cal = Calendar.getInstance();
 //            Log.v(TAG,"7.0以上，正在安装apk...");
             //provider authorities
             Uri apkUri = FileProvider.getUriForFile(context,
-                    "com.fangzuo.assist.provider",
+                    context.getPackageName()+".new.provider",
 //                    BuildConfig.APPLICATION_ID + ".provider",
                     file);
 //            Uri apkUri = FileProvider.getUriForFile(context, "com.fangzuo.assist.fileprovider", file);

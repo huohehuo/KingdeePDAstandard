@@ -124,7 +124,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="40dp"
                                 android:layout_weight="3"
-                                android:background="@android:drawable/edit_text" />
+                                android:background="@drawable/bg_edittext_selector" />
 
                             <ImageView
                                 android:id="@+id/search_ghunit"
@@ -191,7 +191,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:selectAllOnFocus="true"
                             android:imeOptions="actionNone"
@@ -366,7 +366,7 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:imeOptions="actionNone"
                             android:singleLine="true"
@@ -438,7 +438,7 @@
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
                             android:singleLine="true"
@@ -482,7 +482,7 @@
                             android:id="@+id/ed_pricesingle"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
                             android:singleLine="true"

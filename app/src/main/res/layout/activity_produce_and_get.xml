@@ -158,7 +158,7 @@
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
                             android:selectAllOnFocus="true"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:singleLine="true" />
 
                         <RelativeLayout
@@ -325,7 +325,7 @@
                             android:layout_height="40dp"
                             android:textSize="15sp"
                             android:imeOptions="actionNone"
-                            android:background="@android:drawable/edit_text"/>
+                            android:background="@drawable/bg_edittext_selector"/>
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
@@ -385,7 +385,7 @@
                             android:id="@+id/ed_num"
                             android:singleLine="true"
                             android:layout_width="0dp"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:layout_weight="1"
                             android:gravity="center"
                             android:inputType="numberDecimal"
@@ -428,7 +428,7 @@
                             android:singleLine="true"
                             android:gravity="center"
                             android:inputType="numberDecimal"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:layout_height="40dp"
                             android:textSize="15sp"
                             />

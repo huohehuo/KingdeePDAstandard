@@ -248,9 +248,10 @@ public class DBActivity extends BaseActivity {
             @Override
             protected void onNoDoubleClick(View view) {
                 if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
+//                    btnBackorder.setClickable(false);
+//                    LoadingUtil.show(mContext, "正在回单...");
+//                    upload();
+                    UpLoadActivity.start(mContext,activity);
                 } else {
                     Toast.showText(mContext, "无单据信息");
                 }
@@ -604,7 +605,7 @@ public class DBActivity extends BaseActivity {
 
     private void setDATA(String fnumber, boolean flag) {
         default_unitID = null;
-        edPihao.setText("");
+//        edPihao.setText("");
         getPici();
         if (flag) {
             default_unitID = product.FUnitID;
@@ -932,6 +933,8 @@ public class DBActivity extends BaseActivity {
 
     //处理网络库存与已添加的本地库存数量问题
     private String dealStoreNumForOut(String num) {
+        if (null==product)return num;
+        if (null==outstorageId)return num;
         List<T_Detail> list1 = t_detailDao.queryBuilder().where(
                 T_DetailDao.Properties.FProductId.eq(product.FItemID),
                 T_DetailDao.Properties.FoutStorageid.eq(outstorageId)

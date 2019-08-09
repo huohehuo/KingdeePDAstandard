@@ -120,9 +120,13 @@ public class IpPortActivity extends BaseActivity {
                     Hawk.put(Config.PDA,7);
                     App.PDA_Choose =7;
                     Toast.showText(mContext,"M80s"+App.PDA_Choose);
+                }else if ("肖邦".equals(string)) {
+                    Hawk.put(Config.PDA, 8);
+                    App.PDA_Choose =8;
+                    Toast.showText(mContext, "选择了肖邦" + App.PDA_Choose);
                 }else if ("手机端".equals(string)) {
-                    Hawk.put(Config.PDA, 110);
-                    App.PDA_Choose =110;
+                    Hawk.put(Config.PDA, 9);
+                    App.PDA_Choose =9;
                     Toast.showText(mContext, "选择了手机端" + App.PDA_Choose);
                 }
             }

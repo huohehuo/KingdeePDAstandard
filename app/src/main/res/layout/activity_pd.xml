@@ -193,7 +193,7 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
                             android:singleLine="true" />
@@ -392,7 +392,7 @@
                             android:id="@+id/ed_pihao"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:background="@android:drawable/edit_text"/>
+                            android:background="@drawable/bg_edittext_selector"/>
                     </LinearLayout>
                     <View
                         android:layout_width="match_parent"
@@ -429,7 +429,7 @@
                             android:inputType="numberDecimal"
                             android:layout_marginRight="3dp"
                             android:layout_height="40dp"
-                            android:background="@android:drawable/edit_text"
+                            android:background="@drawable/bg_edittext_selector"
                             android:layout_weight="1"/>
 
                     </LinearLayout>

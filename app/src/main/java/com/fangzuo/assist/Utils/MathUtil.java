@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 public class MathUtil {
 
+
     //防止强转时崩溃操作
     public static double toD(String string) {
         if (null == string) {
@@ -13,7 +14,25 @@ public class MathUtil {
         } else if (string.equals("")) {
             return 0;
         } else {
-            return Double.parseDouble(string);
+            try {
+                return Double.parseDouble(string);
+            }catch (Exception e){
+                return 0;
+            }
+        }
+    }
+    //防止强转时崩溃操作
+    public static int toInt(String string) {
+        if (null == string) {
+            return 0;
+        } else if (string.equals("")) {
+            return 0;
+        } else {
+            try{
+                return Integer.parseInt(string);
+            }catch (Exception e){
+                return 0;
+            }
         }
     }
 
@@ -33,6 +52,23 @@ public class MathUtil {
             return false;
         }
         return true;
+    }
+    //去掉小数点以后的数值
+    public static String Cut0(String value) {
+        if (value==null||"".equals(value)){
+            return "0";
+        }
+        if (value.contains(".")){
+            String str=Math.rint(Double.parseDouble(value))+"";
+            return str.substring(0,value.lastIndexOf("."));
+        }else{
+            return value;
+        }
+
+//       Lg.e("TEST",DoubleUtil.Cut0("0.50"));0
+//       Lg.e("TEST",DoubleUtil.Cut0("1.50"));2
+//       Lg.e("TEST",DoubleUtil.Cut0("1.40"));1
+//       Lg.e("TEST",DoubleUtil.Cut0("0.45"));0
     }
 
     //保留两位小数（四舍五入

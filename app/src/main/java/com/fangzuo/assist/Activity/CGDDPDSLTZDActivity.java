@@ -350,9 +350,10 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
             @Override
             protected void onNoDoubleClick(View view) {
                 if (DataModel.checkHasDetail(mContext, activity)) {
-                    btnBackorder.setClickable(false);
-                    LoadingUtil.show(mContext, "正在回单...");
-                    upload();
+//                    btnBackorder.setClickable(false);
+//                    LoadingUtil.show(mContext, "正在回单...");
+//                    upload();
+                    UpLoadActivity.start(mContext,tag,activity);
                 } else {
                     Toast.showText(mContext, "无单据信息");
                 }
@@ -655,6 +656,11 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                     Toast.showText(mContext, "请输入数量");
                     return;
                 }
+                if (null==storageID) {
+                    MediaPlayer.getInstance(mContext).error();
+                    Toast.showText(mContext, "仓库不能为空，请重试...");
+                    return;
+                }
                 if (fid == null) {
                     MediaPlayer.getInstance(mContext).error();
                     Toast.showText(mContext, "请选择单据");
@@ -667,9 +673,15 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                 }
                 LoadingUtil.show(mContext,"请稍后...");
                 if (isHebing) {
-                    List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId())
-                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)).build().list();
+                    List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
+                            T_DetailDao.Properties.Activity.eq(activity),
+                            T_DetailDao.Properties.FInterID.eq(fid),
+                            T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID),
+                            T_DetailDao.Properties.FStorageId.eq(storageID),
+                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                            T_DetailDao.Properties.FUnitId.eq(unitId),
+                            T_DetailDao.Properties.FEntryID.eq(fentryid),
+                            T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
                             num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
@@ -681,6 +693,7 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
                         }
                     }
                 }
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
                 String second = getTimesecond();
                 T_main t_main = new T_main();
                 t_main.FDepartment = "";
@@ -908,34 +921,34 @@ public class CGDDPDSLTZDActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
-            case EventBusInfoCode.Upload_OK://回单成功
-                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
-                        T_DetailDao.Properties.Activity.eq(activity)
-                ).build().list());
-                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
-                        T_mainDao.Properties.Activity.eq(activity)
-                ).build().list());
-                for (int i = 0; i < fidc.size(); i++) {
-                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
-                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
-                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
-                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
-                }
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                Toast.showText(mContext, "上传成功");
-                MediaPlayer.getInstance(mContext).ok();
-                Bundle b = new Bundle();
-                b.putInt("123", tag);
-                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
-                break;
-            case EventBusInfoCode.Upload_Error://回单失败
-                String error = (String) event.postEvent;
-                Toast.showText(mContext, error);
-                btnBackorder.setClickable(true);
-                LoadingUtil.dismiss();
-                MediaPlayer.getInstance(mContext).error();
-                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                for (int i = 0; i < fidc.size(); i++) {
+//                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
+//                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
+//                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                }
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                Toast.showText(mContext, "上传成功");
+//                MediaPlayer.getInstance(mContext).ok();
+//                Bundle b = new Bundle();
+//                b.putInt("123", tag);
+//                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
         }
     }
 
