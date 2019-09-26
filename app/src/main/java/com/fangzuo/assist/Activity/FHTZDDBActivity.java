@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -70,6 +71,7 @@ import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPici;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.InStorageNumDao;
@@ -80,6 +82,8 @@ import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.fangzuo.greendao.gen.UnitDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -97,6 +101,8 @@ public class FHTZDDBActivity extends BaseActivity {
     private int tag = 20;
     private int activity = Config.FHTZDDBActivity;
 
+    @BindView(R.id.iv_scan)
+    ImageView ivScan;
     @BindView(R.id.lv_pushsub)
     ListView lvPushsub;
     @BindView(R.id.sp_storageout)
@@ -483,6 +489,15 @@ public class FHTZDDBActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        if (isPhoneScan())ivScan.setVisibility(View.VISIBLE);
+        ivScan.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(FHTZDDBActivity.this);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+            }
+        });
 //        spDepartment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -1247,6 +1262,10 @@ public class FHTZDDBActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
 //                        T_DetailDao.Properties.Activity.eq(activity)

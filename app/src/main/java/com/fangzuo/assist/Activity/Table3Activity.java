@@ -60,6 +60,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
     private ArrayList<Boolean> isCheck;
     private List<T_Detail> list;
     private List<T_main> list1;
+    private List<T_main> mainsList;
     private TableAdapter4 tableAdapter;
 
     @Override
@@ -128,7 +129,20 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
             productcategory.setText("物料类别数:" + 0 + "个");
             productnum.setText("物料总数为:" + 0 + "");
         }
-
+        mainsList = new ArrayList<>();
+        mainsList = t_mainDao.queryBuilder().where(
+                T_mainDao.Properties.Activity.eq(activity)
+        ).build().list();
+        if (mainsList.size() > 0) {
+            for (int i = 0; i < mainsList.size(); i++) {
+                List<T_Detail> details = t_detailDao.queryBuilder().where(
+                        T_DetailDao.Properties.FOrderId.eq(mainsList.get(i).orderId)
+                ).build().list();
+                if (details.size() == 0 || details == null) {
+                    t_mainDao.deleteInTx(mainsList.get(i));
+                }
+            }
+        }
 
     }
 
@@ -176,9 +190,9 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                         T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)
                                 ).build().unique();
                                 Log.e(TAG, "获取到T_Detail:" + t_detail.toString());
-                                T_main t_main = t_mainDao.queryBuilder().where(
-                                        T_mainDao.Properties.FIndex.eq(list.get(j).FIndex)
-                                ).build().unique();
+//                                T_main t_main = t_mainDao.queryBuilder().where(
+//                                        T_mainDao.Properties.FIndex.eq(list.get(j).FIndex)
+//                                ).build().unique();
                                 PushDownSubDao pushDownSubDao = daoSession.getPushDownSubDao();
                                 List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(
                                         PushDownSubDao.Properties.FInterID.eq(t_detail.FInterID),
@@ -197,7 +211,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                     Lg.e("QTY:"+pushDownSubs.get(0).FQtying);
                                 }
                                 t_detailDao.delete(t_detail);
-                                t_mainDao.delete(t_main);
+//                                t_mainDao.delete(t_main);
                                 Toast.showText(mContext, "删除成功");
                             }
                         }

@@ -63,6 +63,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -589,14 +590,8 @@ public class PDActivity extends BaseActivity {
                     ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            pdSubDao = daoSession.getPDSubDao();
                             Log.e("deleteFID", pdMain.FID);
-                            List<PDSub> list = pdSubDao.queryBuilder().where(
-                                    PDSubDao.Properties.FID.eq(pdMain.FID)
-                            ).build().list();
-                            for (int j = 0; j < list.size(); j++) {
-                                pdSubDao.delete(list.get(j));
-                            }
+                            LocDataUtil.deletePd(pdMain.FID);
                             if (pdMains != null) {
                                 pdMainDao.delete(pdMains);
                             }
@@ -928,7 +923,6 @@ public class PDActivity extends BaseActivity {
         try {
             edCode.setText(product.FNumber);
             tvGoodName.setText(product.FName);
-            pdSubDao = daoSession.getPDSubDao();
             wavehouseAutoString = product.FSPID;
             if ((product.FBatchManager) != null && (product.FBatchManager).equals("1")) {
                 fBatchManager = true;
@@ -1066,7 +1060,6 @@ public class PDActivity extends BaseActivity {
             @Override
             public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
                 PDsubReturnBean pBean = gson.fromJson(cBean.returnJson, PDsubReturnBean.class);
-                PDSubDao pdSubDao = daoSession.getPDSubDao();
                 for (int i = 0; i < pBean.items.size(); i++) {
                     List<PDSub> list = pdSubDao.queryBuilder().where(
                             PDSubDao.Properties.FID.eq(pBean.items.get(i).FID),

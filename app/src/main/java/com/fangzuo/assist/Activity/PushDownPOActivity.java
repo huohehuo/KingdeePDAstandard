@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -73,6 +74,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPurchaseMethod;
 import com.fangzuo.assist.widget.SpinnerPurchaseScope;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.InStorageNumDao;
@@ -83,6 +85,8 @@ import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.fangzuo.greendao.gen.UnitDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -101,6 +105,8 @@ public class PushDownPOActivity extends BaseActivity {
     private int tag = 2;
     private int activity = Config.PushDownPOActivity;
 
+    @BindView(R.id.iv_scan)
+    ImageView ivScan;
     @BindView(R.id.lv_pushsub)
     ListView lvPushsub;
     @BindView(R.id.sp_storage)
@@ -387,6 +393,15 @@ public class PushDownPOActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        if (isPhoneScan())ivScan.setVisibility(View.VISIBLE);
+        ivScan.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(PushDownPOActivity.this);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+            }
+        });
         btnBackorder.setOnClickListener(new NoDoubleClickListener() {
             @Override
             protected void onNoDoubleClick(View view) {
@@ -1120,6 +1135,10 @@ public class PushDownPOActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
 //                        T_DetailDao.Properties.Activity.eq(activity)

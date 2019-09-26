@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/rl_top"
             android:background="@color/cpb_blue"
             android:layout_width="match_parent"
@@ -23,21 +23,27 @@
                 android:textColor="@color/red"/>
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:text="出库验货"
+                android:layout_weight="1"
+                android:gravity="center"
                 android:textColor="@color/white"
                 android:layout_centerInParent="true"
                 android:textSize="20sp"/>
             <CheckBox
                 android:id="@+id/isAutoAdd"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="自动添加"
                 android:textColor="@color/red"/>
+            <ImageView
+                android:id="@+id/iv_scan"
+                android:visibility="gone"
+                android:background="@mipmap/scan"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
 
-        </RelativeLayout>
+        </LinearLayout>
         <ListView
             android:id="@+id/lv_pushsub"
             android:layout_width="match_parent"

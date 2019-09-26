@@ -14,12 +14,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fangzuo.assist.ABase.BaseActivity;
+import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Adapter.BatchNoSpAdapter;
 import com.fangzuo.assist.Adapter.FidNoAdapter;
 import com.fangzuo.assist.Adapter.PushDownSubListAdapter;
@@ -28,6 +30,7 @@ import com.fangzuo.assist.Adapter.UnitSpAdapter;
 import com.fangzuo.assist.Adapter.WaveHouseSpAdapter;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.PurchaseInStoreUploadBean;
 import com.fangzuo.assist.Dao.BarCode;
 import com.fangzuo.assist.Dao.Product;
@@ -45,6 +48,7 @@ import com.fangzuo.assist.Utils.CommonMethod;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.DoubleUtil;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.MathUtil;
@@ -54,6 +58,7 @@ import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.ProductDao;
@@ -63,6 +68,8 @@ import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.fangzuo.greendao.gen.UnitDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -80,6 +87,8 @@ public class OutCheckGoodsActivity extends BaseActivity {
     private int tag = 7;
     private int activity = Config.OutCheckGoodsActivity;
 
+    @BindView(R.id.iv_scan)
+    ImageView ivScan;
     @BindView(R.id.ishebing)
     CheckBox ishebing;
     @BindView(R.id.isAutoAdd)
@@ -199,6 +208,15 @@ public class OutCheckGoodsActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        if (isPhoneScan())ivScan.setVisibility(View.VISIBLE);
+        ivScan.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(OutCheckGoodsActivity.this);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+            }
+        });
         btnBackorder.setOnClickListener(new NoDoubleClickListener() {
             @Override
             protected void onNoDoubleClick(View view) {
@@ -738,6 +756,49 @@ public class OutCheckGoodsActivity extends BaseActivity {
             }
         });
     }
+    @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
+//            case EventBusInfoCode.Upload_OK://回单成功
+//                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
+//                        T_DetailDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
+//                        T_mainDao.Properties.Activity.eq(activity)
+//                ).build().list());
+//                for (int i = 0; i < fidc.size(); i++) {
+//                    pushDownSubDao.deleteInTx(pushDownSubDao.queryBuilder().where(
+//                            PushDownSubDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                    pushDownMainDao.deleteInTx(pushDownMainDao.queryBuilder().where(
+//                            PushDownMainDao.Properties.FInterID.eq(fidc.get(i))).build().list());
+//                }
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                Toast.showText(mContext, "上传成功");
+//                MediaPlayer.getInstance(mContext).ok();
+//                Bundle b = new Bundle();
+//                b.putInt("123", tag);
+//                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
+//                break;
+//            case EventBusInfoCode.Upload_Error://回单失败
+//                String error = (String) event.postEvent;
+//                Toast.showText(mContext, error);
+//                btnBackorder.setClickable(true);
+//                LoadingUtil.dismiss();
+//                MediaPlayer.getInstance(mContext).error();
+//                break;
+        }
+    }
+
 
     @Override
     public void onBackPressed() {

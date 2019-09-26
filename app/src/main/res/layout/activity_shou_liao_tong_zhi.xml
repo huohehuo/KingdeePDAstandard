@@ -25,6 +25,13 @@
                 android:text="收料通知下推"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+            <ImageView
+                android:id="@+id/iv_scan"
+                android:visibility="gone"
+                android:layout_alignParentRight="true"
+                android:background="@mipmap/scan"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
         </RelativeLayout>
 
         <ListView

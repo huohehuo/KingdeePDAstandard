@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -80,6 +81,7 @@ import com.fangzuo.assist.widget.SpinnerPici;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
+import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
 import com.fangzuo.greendao.gen.InStorageNumDao;
@@ -90,6 +92,8 @@ import com.fangzuo.greendao.gen.T_DetailDao;
 import com.fangzuo.greendao.gen.T_mainDao;
 import com.fangzuo.greendao.gen.UnitDao;
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.query.QueryBuilder;
@@ -155,6 +159,8 @@ public class PushDownMTActivity extends BaseActivity {
     TextView tvKucun;
     @BindView(R.id.scrollView)
     ScrollView scrollView;
+    @BindView(R.id.iv_scan)
+    ImageView ivScan;
     //    private DaoSession daosession;
     private PushDownSubListAdapter pushDownSubListAdapter;
     private UnitSpAdapter unitAdapter;
@@ -587,6 +593,15 @@ public class PushDownMTActivity extends BaseActivity {
 
     @Override
     protected void initListener() {
+        if (isPhoneScan())ivScan.setVisibility(View.VISIBLE);
+        ivScan.setOnClickListener(new NoDoubleClickListener() {
+            @Override
+            protected void onNoDoubleClick(View view) {
+                IntentIntegrator intentIntegrator = new IntentIntegrator(PushDownMTActivity.this);
+                intentIntegrator.setCaptureActivity(CustomCaptureActivity.class);
+                intentIntegrator.initiateScan();
+            }
+        });
         btnBackorder.setOnClickListener(new NoDoubleClickListener() {
             @Override
             protected void onNoDoubleClick(View view) {
@@ -1381,6 +1396,10 @@ public class PushDownMTActivity extends BaseActivity {
     @Override
     protected void receiveEvent(ClassEvent event) {
         switch (event.Msg) {
+            case EventBusInfoCode.ScanResult://
+                BarcodeResult res = (BarcodeResult) event.postEvent;
+                OnReceive(res.getResult().getText());
+                break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
 //                        T_DetailDao.Properties.Activity.eq(activity)

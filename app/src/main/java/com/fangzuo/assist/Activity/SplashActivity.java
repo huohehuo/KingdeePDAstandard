@@ -255,6 +255,10 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
                     Hawk.put(Config.PDA, 9);
                     App.PDA_Choose =9;
                     Toast.showText(mContext, "选择了手机端" + App.PDA_Choose);
+                }else if ("优博讯".equals(string)) {
+                    Hawk.put(Config.PDA, 10);
+                    App.PDA_Choose =10;
+                    Toast.showText(mContext, "选择了优博讯" + App.PDA_Choose);
                 }
             }
 

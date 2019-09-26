@@ -146,43 +146,43 @@ public abstract class BaseFragment extends Fragment {
             }
         }
     };
-//    //UBX
-//    private ScanManager mScanManager;
-//    private BroadcastReceiver mScanDataReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            byte[] barcode = intent.getByteArrayExtra(ScanManager.DECODE_DATA_TAG);
-//            int barcodelen = intent.getIntExtra(ScanManager.BARCODE_LENGTH_TAG, 0);
-//            byte temp = intent.getByteExtra(ScanManager.BARCODE_TYPE_TAG, (byte) 0);
-//            Log.i("debug", "----codetype--" + temp);
-//            barcodeStr = new String(barcode, 0, barcodelen);
-//            OnReceive(barcodeStr);
-//
-//        }
-//    };
-//    private void initScan() {
-//        try{
-//            mScanManager = new ScanManager();
-//            mScanManager.openScanner();
-//            mScanManager.switchOutputMode(0);
-//            SoundPool soundpool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 100);
-//            int soundid = soundpool.load("/etc/Scan_new. ", 1);
-//            Log.e("OnResume","OnResume");
-//            IntentFilter filter = new IntentFilter();
-//            int[] idbuf = new int[]{PropertyID.WEDGE_INTENT_ACTION_NAME, PropertyID.WEDGE_INTENT_DATA_STRING_TAG};
-//            String[] value_buf = mScanManager.getParameterString(idbuf);
-//            if(value_buf != null && value_buf[0] != null && !value_buf[0].equals("")) {
-//                filter.addAction(value_buf[0]);
-//            } else {
-//                filter.addAction(ScanManager.ACTION_DECODE);
-//            }
-//
-//            getActivity().registerReceiver(mScanDataReceiver, filter);
-//        }catch (RuntimeException stub){
-//            stub.printStackTrace();
-//        }
-//
-//    }
+    //UBX
+    private ScanManager mScanManager;
+    private BroadcastReceiver mScanDataReceiverUBX = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            byte[] barcode = intent.getByteArrayExtra(ScanManager.DECODE_DATA_TAG);
+            int barcodelen = intent.getIntExtra(ScanManager.BARCODE_LENGTH_TAG, 0);
+            byte temp = intent.getByteExtra(ScanManager.BARCODE_TYPE_TAG, (byte) 0);
+            Log.i("debug", "----codetype--" + temp);
+            barcodeStr = new String(barcode, 0, barcodelen);
+            OnReceive(barcodeStr);
+
+        }
+    };
+    private void initScan() {
+        try{
+            mScanManager = new ScanManager();
+            mScanManager.openScanner();
+            mScanManager.switchOutputMode(0);
+            SoundPool soundpool = new SoundPool(1, AudioManager.STREAM_NOTIFICATION, 100);
+            int soundid = soundpool.load("/etc/Scan_new. ", 1);
+            Log.e("OnResume","OnResume");
+            IntentFilter filter = new IntentFilter();
+            int[] idbuf = new int[]{PropertyID.WEDGE_INTENT_ACTION_NAME, PropertyID.WEDGE_INTENT_DATA_STRING_TAG};
+            String[] value_buf = mScanManager.getParameterString(idbuf);
+            if(value_buf != null && value_buf[0] != null && !value_buf[0].equals("")) {
+                filter.addAction(value_buf[0]);
+            } else {
+                filter.addAction(ScanManager.ACTION_DECODE);
+            }
+
+            getActivity().registerReceiver(mScanDataReceiverUBX, filter);
+        }catch (RuntimeException stub){
+            stub.printStackTrace();
+        }
+
+    }
 
 
 //        //u8000
@@ -229,17 +229,17 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
         return super.onCreateView(inflater, container, savedInstanceState);
 
     }
+
 //    public void registerBroadCast(BroadcastReceiver mScanDataReceiver){
 //        IntentFilter scanDataIntentFilter = new IntentFilter();
 //        scanDataIntentFilter.addAction(ACTION_DISPLAY_SCAN_RESULT);
 //        mContext.registerReceiver(mScanDataReceiver, scanDataIntentFilter);
 //
 //    }
+
     @Override
     public void onResume() {
         super.onResume();
-
-
 
 
 //        //UBX
@@ -299,6 +299,8 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                 IntentFilter FilterXB = new IntentFilter();
                 FilterXB.addAction(SCN_CUST_ACTION_SCODE);
                 getActivity().registerReceiver(mScanDataReceiverForXB, FilterXB);
+            }else if (App.PDA_Choose==10) {
+                initScan();
             }
 //        }
     }
@@ -385,6 +387,8 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                         getActivity().unregisterReceiver(mScanDataReceiverForM80s);
                     }else if (App.PDA_Choose == 8){
                         getActivity().unregisterReceiver(mScanDataReceiverForXB);
+                    }else if (App.PDA_Choose == 10){
+                        getActivity().unregisterReceiver(mScanDataReceiverUBX);
                     }
 
                 }

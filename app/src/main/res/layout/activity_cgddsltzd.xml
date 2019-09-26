@@ -25,6 +25,14 @@
                 android:text="采购订单下推收料通知单"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
+            <ImageView
+                android:id="@+id/iv_scan"
+                android:visibility="gone"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@mipmap/scan"
+                android:layout_width="35dp"
+                android:layout_height="35dp" />
 
 
         </RelativeLayout>
