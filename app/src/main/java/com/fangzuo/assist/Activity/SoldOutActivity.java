@@ -83,6 +83,7 @@ import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -134,7 +135,7 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.tv_numinstorage)
     TextView tvNuminstorage;            //库存
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.ed_onsale)
     EditText edOnsale;                  //折扣率
     @BindView(R.id.ed_num)

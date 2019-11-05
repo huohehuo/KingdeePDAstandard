@@ -39,7 +39,7 @@
                     android:textColor="@android:color/black"/>
                 <EditText
                     android:text="192.168.0.166"
-                    android:singleLine="true"
+
                     android:id="@+id/ed_serverip"
                     android:layout_width="0dp"
                     android:layout_margin="1dp"
@@ -55,7 +55,7 @@
                     android:textColor="@android:color/black"/>
                 <EditText
                     android:text="1433"
-                    android:singleLine="true"
+
                     android:id="@+id/ed_port"
                     android:layout_width="0dp"
                     android:layout_margin="1dp"
@@ -82,7 +82,7 @@
                     android:textColor="@android:color/black"/>
                 <EditText
                     android:text="sa"
-                    android:singleLine="true"
+
                     android:id="@+id/ed_username"
                     android:layout_width="0dp"
                     android:layout_weight="3"
@@ -98,7 +98,7 @@
                     android:textColor="@android:color/black"/>
                 <EditText
                     android:text="Abc123"
-                    android:singleLine="true"
+
                     android:inputType="textPassword"
                     android:id="@+id/ed_pass"
                     android:layout_width="0dp"

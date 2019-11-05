@@ -74,6 +74,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -111,7 +112,7 @@ public class OtherOutStoreActivity extends BaseActivity {
     @BindView(R.id.sp_which_storage)
     SpinnerStorage spWhichStorage;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.scanbyCamera)
     RelativeLayout scanbyCamera;
     @BindView(R.id.ed_code)

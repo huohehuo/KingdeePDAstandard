@@ -2,6 +2,7 @@ package com.fangzuo.assist.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.GridView;
 
 import com.fangzuo.assist.ABase.BaseFragment;
 import com.fangzuo.assist.Adapter.GridViewAdapter;
+import com.fangzuo.assist.Beans.SettingList;
 import com.fangzuo.assist.Utils.GetSettingList;
 import com.fangzuo.assist.Activity.DBActivity;
 import com.fangzuo.assist.Activity.OtherInStoreActivity;
@@ -38,9 +40,12 @@ public class StorageFragment extends BaseFragment {
         unbinder = ButterKnife.bind(this, v);
         return v;
     }
+    GridViewAdapter ada;
     @Override
     protected void initData() {
-        GridViewAdapter ada= new GridViewAdapter(mContext, GetSettingList.getStorageList());
+        //        String getPermit=share.getString(ShareInfo.USER_PERMIT);
+//        String[] arylist = getPermit.split("\\-"); // 这样才能得到正确的结果
+        ada= new GridViewAdapter(mContext, GetSettingList.getStorageList());
         gv.setAdapter(ada);
         ada.notifyDataSetChanged();
     }
@@ -52,17 +57,20 @@ public class StorageFragment extends BaseFragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
-                    case 0://盘点
+                SettingList tv= (SettingList) ada.getItem(i);
+                Log.e("listitem",tv.tv);
+                switch (tv.tag){
+//                switch (i){
+                    case "8"://盘点
                         startNewActivity(PDActivity.class,null);
                         break;
-                    case 1://调拨
+                    case "9"://调拨
                         startNewActivity(DBActivity.class,null);
                         break;
-                    case 2://其他入库
+                    case "10"://其他入库
                         startNewActivity(OtherInStoreActivity.class,null);
                         break;
-                    case 3://其他出库
+                    case "11"://其他出库
                         startNewActivity(OtherOutStoreActivity.class,null);
                         break;
                 }

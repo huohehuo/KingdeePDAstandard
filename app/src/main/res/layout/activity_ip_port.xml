@@ -25,7 +25,7 @@
             android:background="@null"
             android:gravity="top"
             android:hint="请输入IP:"
-            android:singleLine="true"
+
             android:padding="13dp"
             android:textColorHint="#888888" />
 
@@ -50,7 +50,7 @@
             android:gravity="top"
             android:hint="请输入端口:"
             android:padding="13dp"
-            android:singleLine="true"
+
             android:textColorHint="#888888" />
 
     </android.support.design.widget.TextInputLayout>

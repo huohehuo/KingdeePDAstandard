@@ -159,7 +159,7 @@
                             android:layout_weight="8"
                             android:selectAllOnFocus="true"
                             android:background="@drawable/bg_edittext_selector"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
@@ -196,7 +196,7 @@
                     <TextView
                         android:id="@+id/tv_goodName"
                         android:layout_width="match_parent"
-                        android:singleLine="true"
+
                         android:gravity="center"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
@@ -264,7 +264,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="3"
                             android:background="@drawable/tv_bg"
-                            android:singleLine="true"
+
                             android:textColor="@color/white"
                             android:textSize="15sp" />
                     </LinearLayout>
@@ -319,7 +319,7 @@
                             android:visibility="gone"
                             android:id="@+id/ed_pihao"
                             android:layout_width="0dp"
-                            android:singleLine="true"
+
                             android:layout_weight="1"
                             android:gravity="center"
                             android:layout_height="40dp"
@@ -330,11 +330,11 @@
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/divider_color"/>
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
                             android:layout_weight="1"
-                            android:singleLine="true"
+
                             android:layout_height="40dp"
                             android:textSize="15sp"
                             />
@@ -383,7 +383,7 @@
                         android:layout_height="wrap_content">
                         <EditText
                             android:id="@+id/ed_num"
-                            android:singleLine="true"
+
                             android:layout_width="0dp"
                             android:background="@drawable/bg_edittext_selector"
                             android:layout_weight="1"
@@ -425,7 +425,7 @@
                         <EditText
                             android:id="@+id/ed_pricesingle"
                             android:layout_width="match_parent"
-                            android:singleLine="true"
+
                             android:gravity="center"
                             android:inputType="numberDecimal"
                             android:background="@drawable/bg_edittext_selector"

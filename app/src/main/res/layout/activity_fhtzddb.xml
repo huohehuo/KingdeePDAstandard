@@ -84,7 +84,7 @@
                         android:layout_height="40dp"
                         android:layout_weight="1"/>
                     <include layout="@layout/line_shu"/>
-                    <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                    <com.fangzuo.assist.widget.SpinnerWaveHouse
                         android:id="@+id/sp_wavehouseout"
                         android:layout_width="0dp"
                         android:layout_height="40dp"

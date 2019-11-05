@@ -28,7 +28,7 @@
                 android:marqueeRepeatLimit="marquee_forever"
                 android:ellipsize="marquee"
                 android:scrollHorizontally="true"
-                android:singleLine="true"
+
                 android:id="@+id/tv_title"
                 android:gravity="center"
                 android:layout_width="200dp"

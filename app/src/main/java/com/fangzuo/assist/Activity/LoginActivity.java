@@ -38,6 +38,8 @@ import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.RegisterUtil;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
+import com.fangzuo.assist.Utils.UpgradeUtil.AppStatisticalUtil;
+import com.fangzuo.assist.Utils.UpgradeUtil.AppVersionUtil;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.SpinnerUser;
@@ -100,13 +102,15 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         session = GreenDaoManager.getmInstance(mContext).getDaoSession();
         userDao = session.getUserDao();
         getPermisssion();
-        ver.setText("标准版 Ver:" + getVersionName());
+//        ver.setText("标准版 Ver:" + getVersionName());
+        ver.setText("标准版 Ver:" + Info.getAppNo());
         Lg.e("PDA：" + App.PDA_Choose);
         isRemPass.setChecked(Hawk.get(Info.IsRemanber, false));
         TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint({"HardwareIds", "MissingPermission"}) String deviceId = tm.getDeviceId();
         Log.e("IMIE", deviceId);
         share.setIMIE(deviceId);
+        AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");
     }
 
     @Override
@@ -114,7 +118,8 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         super.onResume();
         spinner.LoadUser();
         DataService.updateTime(mContext);
-        DownLoadUseTime();
+//        DownLoadUseTime();
+        AppVersionUtil.CheckVersion(mContext);
         //检查是否存在注册码
 //        RegisterUtil.checkHasRegister();
     }
@@ -277,11 +282,11 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     }
 
     private void Login() {
-        if (!checkTime()) {
-            DownLoadUseTime();
+//        if (!checkTime()) {
+//            DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
-            return;
-        }
+//            return;
+//        }
         if (!userID.equals("") && !userName.equals("")) {
             if (mEtPassword.getText().toString().equals(userPass)) {
                 ShareUtil.getInstance(mContext).setUserName(userName);

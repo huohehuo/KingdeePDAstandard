@@ -96,14 +96,13 @@
                         android:gravity="center_vertical"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="8dp"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
-                            android:text="供应商:"
+                            android:text="供应商: "
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
@@ -111,19 +110,20 @@
                             android:id="@+id/ed_supplier"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:layout_weight="5"
+                            android:layout_weight="1"
                             android:paddingLeft="10dp"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:selectAllOnFocus="true"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search_supplier"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1">
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            >
 
                             <ImageView
                                 android:layout_width="30dp"
@@ -138,7 +138,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="物料编码:"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="8dp"
                         android:textColor="@android:color/black"
                         android:textSize="15sp" />
 
@@ -177,13 +177,13 @@
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
                             android:selectAllOnFocus="true"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginRight="8dp"
                             android:layout_weight="1">
 
                             <ImageView
@@ -218,7 +218,6 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
                         android:gravity="center"
-                        android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="15sp" />
 
@@ -344,7 +343,7 @@
                             android:gravity="center"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <include
@@ -359,7 +358,7 @@
                             android:gravity="center"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -416,7 +415,7 @@
                             android:layout_weight="1"
                             android:gravity="center"
                             android:background="@drawable/bg_edittext_selector"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <include
@@ -431,7 +430,7 @@
                             android:gravity="center"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 

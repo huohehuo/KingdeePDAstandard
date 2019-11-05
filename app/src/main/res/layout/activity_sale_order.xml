@@ -106,7 +106,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:selectAllOnFocus="true"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search_supplier"
@@ -167,7 +167,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
@@ -210,7 +210,7 @@
                         android:layout_marginRight="10dp"
                         android:background="@drawable/tv_bg"
                         android:gravity="center"
-                        android:singleLine="true"
+
                         android:textColor="@color/white"
                         android:textSize="15sp" />
 
@@ -349,7 +349,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <View
@@ -365,7 +365,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -428,7 +428,7 @@
                             android:layout_marginRight="3dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <View
@@ -444,7 +444,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 

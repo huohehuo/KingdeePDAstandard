@@ -196,7 +196,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     private UnitSpAdapter unitAdapter;
     private String dateArrive;
     private String datePay;
-//    private String unitId;
+    //    private String unitId;
 //    private String unitName;
 //    private double unitrate;
     private String default_unitID;
@@ -205,6 +205,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     private ProductselectAdapter productselectAdapter;
     private ProductselectAdapter1 productselectAdapter1;
     private int activity = Config.PurchaseOrderActivity;
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_purchase_order);
@@ -286,7 +287,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                 if (DataModel.checkHasDetail(mContext, activity)) {
 //                    btnBackorder.setClickable(false);
 //                    LoadingUtil.show(mContext, "正在回单...");
-                    UpLoadActivity.start(mContext,activity);
+                    UpLoadActivity.start(mContext, activity);
 //                    upload();
                 } else {
                     Toast.showText(mContext, "无单据信息");
@@ -746,115 +747,117 @@ public class PurchaseOrderActivity extends BaseActivity {
         try {
             String discount = edOnsale.getText().toString();
             String num = edNum.getText().toString();
-            if (product==null){
+            if (product == null) {
                 MediaPlayer.getInstance(mContext).error();
                 Toast.showText(mContext, "请选择物料");
                 return;
             }
-            if (supplierid==null){
+            if (edCode.getText().toString().equals("")) {
+                Toast.showText(mContext, "请输入物料编号");
                 MediaPlayer.getInstance(mContext).error();
-                Toast.showText(mContext, "请选择供应商");
                 return;
             }
-            if (edSupplier.getText().toString().equals("") || edOnsale.getText().toString().equals("") || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
+            if (supplierid == null || edSupplier.getText().toString().equals("")) {
+                Toast.showText(mContext, "请选择供应商");
                 MediaPlayer.getInstance(mContext).error();
-                if (edCode.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入物料编号");
-                } else if (edPricesingle.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入单价");
-                } else if (edNum.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入数量");
-                } else if (edOnsale.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入折扣率");
-                } else if (edSupplier.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入供应商");
-                }
-            } else {
-                if (cbHebing.isChecked()) {
-                    List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
-                            T_DetailDao.Properties.Activity.eq(activity),
-                            T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
-                            T_DetailDao.Properties.FOrderId.eq(ordercode),
-                            T_DetailDao.Properties.FProductId.eq(product.FItemID),
-                            T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
-                            T_DetailDao.Properties.FDiscount.eq(discount)
+                return;
+            }
+            if (edOnsale.getText().toString().equals("")) {
+                Toast.showText(mContext, "请输入折扣率");
+            }
+            if (edNum.getText().toString().equals("")) {
+                Toast.showText(mContext, "请输入数量");
+            }
+            if (edPricesingle.getText().toString().equals("")) {
+                Toast.showText(mContext, "请输入单价");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
 
-                    ).build().list();
-                    if (detailhebing.size() > 0) {
-                        for (int i = 0; i < detailhebing.size(); i++) {
-                            num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
-                            t_detailDao.delete(detailhebing.get(i));
-                        }
+            if (cbHebing.isChecked()) {
+                List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
+                        T_DetailDao.Properties.Activity.eq(activity),
+                        T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
+                        T_DetailDao.Properties.FOrderId.eq(ordercode),
+                        T_DetailDao.Properties.FProductId.eq(product.FItemID),
+                        T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
+                        T_DetailDao.Properties.FDiscount.eq(discount)
+
+                ).build().list();
+                if (detailhebing.size() > 0) {
+                    for (int i = 0; i < detailhebing.size(); i++) {
+                        num = (MathUtil.toD(num) + MathUtil.toD(detailhebing.get(i).FQuantity)) + "";
+                        t_detailDao.delete(detailhebing.get(i));
                     }
                 }
-                List<T_main> dewlete = t_mainDao.queryBuilder().where(
-                        T_mainDao.Properties.OrderId.eq(ordercode)
-                ).build().list();
-                t_mainDao.deleteInTx(dewlete);
-                String second = getTimesecond();
-                T_main t_main = new T_main();
-                t_main.FDepartment = spDepartment.getDataName();
-                t_main.FDepartmentId = spDepartment.getDataId();
-                t_main.FIndex = second;
-                t_main.FPaymentDate = tvDatePay.getText().toString();
-                t_main.orderId = ordercode;
-                t_main.orderDate = tvDate.getText().toString();
-                t_main.FPurchaseUnit = spUnit.getDataName();
-                t_main.FSalesMan = spEmployee.getEmployeeName();
-                t_main.FSalesManId = spEmployee.getEmployeeId();
-                t_main.FMaker = share.getUserName();
-                t_main.FMakerId = share.getsetUserID();
-                t_main.FDirector = spManager.getEmployeeName();
-                t_main.FDirectorId = spManager.getEmployeeId();
-                t_main.FPaymentType = spPayMethod.getDataName();
-                t_main.FPaymentTypeId = spPayMethod.getDataId();
-                t_main.saleWayId = spPurchaseMethod.getDataId();
-                t_main.saleWay = spPurchaseMethod.getDataName();
-                t_main.FDeliveryAddress = "";
-                t_main.FRemark = edZhaiyao.getText().toString();
-                t_main.FCustody = spPurchaseScope.getDataName();
-                t_main.FCustodyId = spPurchaseScope.getDataId();
-                t_main.FAcount = "";
-                t_main.FAcountID = "";
-                t_main.Rem = edZhaiyao.getText().toString();
-                t_main.supplier = supplierName == null ? "" : supplierName;
-                t_main.supplierId = supplierid == null ? "" : supplierid;
-                t_main.FSendOutId = "";
-                t_main.FDeliveryType = "";
-                t_main.activity = activity;
-                t_main.sourceOrderTypeId = spYuandan.getDataId();
-                long insert1 = t_mainDao.insert(t_main);
+            }
+            List<T_main> dewlete = t_mainDao.queryBuilder().where(
+                    T_mainDao.Properties.OrderId.eq(ordercode)
+            ).build().list();
+            t_mainDao.deleteInTx(dewlete);
+            String second = getTimesecond();
+            T_main t_main = new T_main();
+            t_main.FDepartment = spDepartment.getDataName();
+            t_main.FDepartmentId = spDepartment.getDataId();
+            t_main.FIndex = second;
+            t_main.FPaymentDate = tvDatePay.getText().toString();
+            t_main.orderId = ordercode;
+            t_main.orderDate = tvDate.getText().toString();
+            t_main.FPurchaseUnit = spUnit.getDataName();
+            t_main.FSalesMan = spEmployee.getEmployeeName();
+            t_main.FSalesManId = spEmployee.getEmployeeId();
+            t_main.FMaker = share.getUserName();
+            t_main.FMakerId = share.getsetUserID();
+            t_main.FDirector = spManager.getEmployeeName();
+            t_main.FDirectorId = spManager.getEmployeeId();
+            t_main.FPaymentType = spPayMethod.getDataName();
+            t_main.FPaymentTypeId = spPayMethod.getDataId();
+            t_main.saleWayId = spPurchaseMethod.getDataId();
+            t_main.saleWay = spPurchaseMethod.getDataName();
+            t_main.FDeliveryAddress = "";
+            t_main.FRemark = edZhaiyao.getText().toString();
+            t_main.FCustody = spPurchaseScope.getDataName();
+            t_main.FCustodyId = spPurchaseScope.getDataId();
+            t_main.FAcount = "";
+            t_main.FAcountID = "";
+            t_main.Rem = edZhaiyao.getText().toString();
+            t_main.supplier = supplierName == null ? "" : supplierName;
+            t_main.supplierId = supplierid == null ? "" : supplierid;
+            t_main.FSendOutId = "";
+            t_main.FDeliveryType = "";
+            t_main.activity = activity;
+            t_main.sourceOrderTypeId = spYuandan.getDataId();
+            long insert1 = t_mainDao.insert(t_main);
 
-                T_Detail t_detail = new T_Detail();
-                t_detail.FBatch = "";
-                t_detail.FOrderId = ordercode;
-                t_detail.FProductCode = edCode.getText().toString();
-                t_detail.FProductId = product.FItemID;
-                t_detail.model = product.FModel;
-                t_detail.FProductName = product.FName;
-                t_detail.FIndex = second;
-                t_detail.FUnitId = spUnit.getDataId();
-                t_detail.FUnit = spUnit.getDataName();
-                t_detail.FDateDelivery = tvDateArrive.getText().toString();
-                t_detail.FStorage = "";
-                t_detail.FStorageId = "";
-                t_detail.FPosition = "";
-                t_detail.FPositionId = "";
-                t_detail.activity = activity;
-                t_detail.FDiscount = discount;
-                t_detail.FQuantity = num;
-                t_detail.unitrate = spUnit.getDataUnitrate();
-                t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
-                long insert = t_detailDao.insert(t_detail);
+            T_Detail t_detail = new T_Detail();
+            t_detail.FBatch = "";
+            t_detail.FOrderId = ordercode;
+            t_detail.FProductCode = edCode.getText().toString();
+            t_detail.FProductId = product.FItemID;
+            t_detail.model = product.FModel;
+            t_detail.FProductName = product.FName;
+            t_detail.FIndex = second;
+            t_detail.FUnitId = spUnit.getDataId();
+            t_detail.FUnit = spUnit.getDataName();
+            t_detail.FDateDelivery = tvDateArrive.getText().toString();
+            t_detail.FStorage = "";
+            t_detail.FStorageId = "";
+            t_detail.FPosition = "";
+            t_detail.FPositionId = "";
+            t_detail.activity = activity;
+            t_detail.FDiscount = discount;
+            t_detail.FQuantity = num;
+            t_detail.unitrate = spUnit.getDataUnitrate();
+            t_detail.FTaxUnitPrice = edPricesingle.getText().toString();
+            long insert = t_detailDao.insert(t_detail);
 
-                if (insert1 > 0 && insert > 0) {
-                    Toast.showText(mContext, "添加成功");
-                    MediaPlayer.getInstance(mContext).ok();
-                    resetAll();
-                } else {
-                    Toast.showText(mContext, "添加失败，请重试");
-                    MediaPlayer.getInstance(mContext).error();
-                }
+            if (insert1 > 0 && insert > 0) {
+                Toast.showText(mContext, "添加成功");
+                MediaPlayer.getInstance(mContext).ok();
+                resetAll();
+            } else {
+                Toast.showText(mContext, "添加失败，请重试");
+                MediaPlayer.getInstance(mContext).error();
             }
 
         } catch (Exception e) {
@@ -984,6 +987,6 @@ public class PurchaseOrderActivity extends BaseActivity {
         tvGoodName.setText("");
         tvModel.setText("");
         setfocus(edCode);
-        product=null;
+        product = null;
     }
 }

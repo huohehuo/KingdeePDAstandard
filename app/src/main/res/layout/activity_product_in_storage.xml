@@ -195,7 +195,7 @@
                             android:gravity="center_vertical"
                             android:selectAllOnFocus="true"
                             android:imeOptions="actionNone"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
@@ -235,7 +235,6 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
                         android:gravity="center"
-                        android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="15sp" />
 
@@ -309,7 +308,6 @@
                             android:layout_weight="3"
                             android:background="@drawable/tv_bg"
                             android:gravity="center"
-                            android:singleLine="true"
                             android:textColor="@color/white"
                             android:textSize="15sp" />
                     </LinearLayout>
@@ -369,7 +367,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:imeOptions="actionNone"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <View
@@ -377,12 +375,12 @@
                             android:layout_height="match_parent"
                             android:background="@color/divider_color" />
 
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
                             android:layout_weight="1"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -441,7 +439,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                         <View
@@ -485,7 +483,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
                     </LinearLayout>
 

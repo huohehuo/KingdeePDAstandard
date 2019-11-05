@@ -77,5 +77,6 @@
     <color name="colorAccent">#FF4081</color>
     <color name="bottombartv">#1296db</color>
     <color name="bg_login">#3de1ad</color>
+    <color name="bbbbb">#00f7f7f7</color>
 
 </resources>

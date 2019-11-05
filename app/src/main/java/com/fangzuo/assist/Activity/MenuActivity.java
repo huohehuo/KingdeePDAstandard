@@ -151,8 +151,8 @@ public class MenuActivity extends BaseActivity {
     @Override
     public void initData() {
         tvUser.setText("当前用户:" + ShareUtil.getInstance(mContext).getUserName());
-        ivSale.setImageResource(R.mipmap.sale);
-        tvSale.setTextColor(tvcolor);
+        ivPurchase.setImageResource(R.mipmap.purchase);
+        tvPurchase.setTextColor(tvcolor);
     }
 
 
@@ -225,7 +225,7 @@ public class MenuActivity extends BaseActivity {
         fragments.add(settingFragment);
         MenuFragmentAdapter menuFragmentAdapter = new MenuFragmentAdapter(fm, fragments);
         viewPager.setAdapter(menuFragmentAdapter);
-        viewPager.setCurrentItem(1);
+        viewPager.setCurrentItem(0);
     }
 
 

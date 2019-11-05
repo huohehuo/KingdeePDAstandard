@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,6 +74,7 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -106,7 +108,7 @@ public class PDActivity extends BaseActivity {
     @BindView(R.id.sp_storage)
     SpinnerStorage spStorage;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.scanbyCamera)
     RelativeLayout scanbyCamera;
     @BindView(R.id.ed_code)
@@ -577,7 +579,7 @@ public class PDActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.btn_delete, R.id.scanbyCamera, R.id.search, R.id.btn_add,R.id.btn_checkorder, R.id.btn_downloadall, R.id.btn_downloadchoosen})
+    @OnClick({R.id.tv_title,R.id.btn_delete, R.id.scanbyCamera, R.id.search, R.id.btn_add,R.id.btn_checkorder, R.id.btn_downloadall, R.id.btn_downloadchoosen})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_delete:
@@ -612,7 +614,6 @@ public class PDActivity extends BaseActivity {
 //                startActivityForResult(in, 0);
                 break;
             case R.id.search:
-                Log.e("search", "onclick");
                 Bundle b1 = new Bundle();
                 b1.putString("search", edCode.getText().toString());
                 b1.putInt("where", Info.SEARCHPRODUCT);
@@ -641,6 +642,9 @@ public class PDActivity extends BaseActivity {
                     pdSubRequestBean1.isClear = isClear;
                     download(gson.toJson(pdSubRequestBean1), false);
                 }
+                break;
+            case R.id.tv_title:
+                mDrawer.openDrawer(Gravity.RIGHT);
                 break;
         }
     }

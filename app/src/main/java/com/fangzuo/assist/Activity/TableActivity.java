@@ -152,11 +152,16 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                         T_DetailDao t_detailDao = daoSession.getT_DetailDao();
                         T_mainDao t_mainDao = daoSession.getT_mainDao();
                         for(int j = 0;j<list.size();j++){
-                            T_Detail t_detail = t_detailDao.queryBuilder().where(T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)).build().unique();
+                            T_Detail t_detail = t_detailDao.queryBuilder().where(
+                                    T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)
+                            ).build().unique();
                             if (activity != Config.PurchaseOrderActivity && activity != Config.SaleOrderActivity) {
                                 InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-                                List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId)
-                                        , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
+                                        InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                        InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId),
+                                        InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId),
+                                        InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
                                 if (innum.size() > 0) {
                                     if (activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity) {
                                         innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - ((Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate))) + "";
@@ -165,8 +170,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                         innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - ((Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate))) + "";
                                         inStorageNumDao.update(innum.get(0));
                                         InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
-                                        List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid)
-                                                , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                        List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(
+                                                InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                                InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid),
+                                                InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid),
+                                                InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                        ).build().list();
                                         if (outnum.size() > 0) {
                                             outnum.get(0).FQty = (Double.parseDouble(outnum.get(0).FQty) + (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                             inStorageNumDao1.update(outnum.get(0));
@@ -231,8 +240,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                     T_Detail t_detail = t_detailDao.queryBuilder().where(T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)).build().unique();
                                     if (activity != Config.PurchaseOrderActivity && activity != Config.SaleOrderActivity) {
                                         InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-                                        List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId)
-                                                , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                        List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
+                                                InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                                InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId),
+                                                InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId),
+                                                InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                        ).build().list();
                                         if (innum.size() > 0) {
                                             if (activity == Config.OtherInStoreActivity ||activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity) {
                                                 innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
@@ -241,8 +254,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                                 innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                                 inStorageNumDao.update(innum.get(0));
                                                 InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
-                                                List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid)
-                                                        , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                                List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(
+                                                        InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                                        InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid),
+                                                        InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid),
+                                                        InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                                ).build().list();
                                                 if (outnum.size() > 0) {
                                                     outnum.get(0).FQty = (Double.parseDouble(outnum.get(0).FQty) + (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                                     inStorageNumDao1.update(outnum.get(0));
@@ -298,8 +315,11 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                         T_Detail t_detail = t_detailDao.queryBuilder().where(T_DetailDao.Properties.FIndex.eq(list.get(position).FIndex)).build().unique();
                         if (activity != Config.PurchaseOrderActivity&& activity != Config.SaleOrderActivity) {
                             InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-                            List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId)
-                                    , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                            List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
+                                    InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                    InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId),
+                                    InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId),
+                                    InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
                             if (innum.size() > 0) {
                                 if (activity == Config.OtherInStoreActivity ||activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity || activity == Config.OtherInStoreActivity) {
                                     innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
@@ -308,8 +328,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                     innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                     inStorageNumDao.update(innum.get(0));
                                     InStorageNumDao inStorageNumDao1 = daoSession.getInStorageNumDao();
-                                    List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid)
-                                            , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                    List<InStorageNum> outnum = inStorageNumDao1.queryBuilder().where(
+                                            InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                            InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid),
+                                            InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid),
+                                            InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                    ).build().list();
                                     if (outnum.size() > 0) {
                                         outnum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) + (Double.parseDouble(t_detail.FQuantity) * t_detail.unitrate)) + "";
                                         inStorageNumDao1.update(outnum.get(0));
@@ -356,8 +380,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                         if (!mEtNum.getText().toString().equals("")) {
                             if (activity != Config.PurchaseOrderActivity && activity != Config.SaleOrderActivity) {
                                 InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
-                                List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId)
-                                        , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
+                                        InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                        InStorageNumDao.Properties.FStockID.eq(t_detail.FStorageId),
+                                        InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.FPositionId),
+                                        InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                ).build().list();
                                 if (innum.size() > 0) {
                                     if (activity == Config.PurchaseInStorageActivity || activity == Config.ProductInStorageActivity || activity == Config.OtherInStoreActivity) {
                                         innum.get(0).FQty = (Double.parseDouble(innum.get(0).FQty) - (getnum * t_detail.unitrate)) + "";
@@ -366,8 +394,12 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
                                         t_detail.FQuantity = newnum;
                                         t_detailDao.update(t_detail);
                                     } else if (activity == Config.DBActivity) {
-                                        List<InStorageNum> outnum = inStorageNumDao.queryBuilder().where(InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch), InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid)
-                                                , InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid), InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)).build().list();
+                                        List<InStorageNum> outnum = inStorageNumDao.queryBuilder().where(
+                                                InStorageNumDao.Properties.FBatchNo.eq(t_detail.FBatch),
+                                                InStorageNumDao.Properties.FStockID.eq(t_detail.FoutStorageid),
+                                                InStorageNumDao.Properties.FStockPlaceID.eq(t_detail.Foutwavehouseid),
+                                                InStorageNumDao.Properties.FItemID.eq(t_detail.FProductId)
+                                        ).build().list();
                                         if (outnum.size() > 0) {
                                             if (getnum < 0 && Double.parseDouble(outnum.get(0).FQty) > -getnum) {
                                                 Log.e("qtyout", outnum.get(0).FQty);

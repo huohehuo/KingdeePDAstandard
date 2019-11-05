@@ -329,7 +329,7 @@
                             android:gravity="top"
                             android:hint="服务器:"
                             android:padding="13dp"
-                            android:singleLine="true"
+
                             android:textColorHint="#888888" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -353,7 +353,7 @@
                             android:gravity="top"
                             android:hint="端口:"
                             android:padding="13dp"
-                            android:singleLine="true"
+
                             android:textColorHint="#888888" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -377,7 +377,7 @@
                             android:gravity="top"
                             android:hint="用户名:"
                             android:padding="13dp"
-                            android:singleLine="true"
+
                             android:textColorHint="#888888" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -401,7 +401,7 @@
                             android:gravity="top"
                             android:hint="密码:"
                             android:padding="13dp"
-                            android:singleLine="true"
+
                             android:textColorHint="#888888" />
 
                     </android.support.design.widget.TextInputLayout>

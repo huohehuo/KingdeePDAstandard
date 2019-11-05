@@ -67,6 +67,7 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPurchaseMethod;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerWlkm;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -105,7 +106,7 @@ public class ShouLiaoTongZhiActivity extends BaseActivity {
     @BindView(R.id.sp_storage)
     Spinner spStorage;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.productName)
     TextView productName;
     @BindView(R.id.sp_unit)

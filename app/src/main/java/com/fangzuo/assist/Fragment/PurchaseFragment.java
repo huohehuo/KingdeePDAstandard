@@ -40,11 +40,12 @@ public class PurchaseFragment extends BaseFragment {
         mContext = getActivity();
         return v;
     }
+    GridViewAdapter ada;
     @Override
     protected void initData() {
 //        String getPermit=share.getString(ShareInfo.USER_PERMIT);
 //        String[] arylist = getPermit.split("\\-"); // 这样才能得到正确的结果
-        GridViewAdapter ada = new GridViewAdapter(mContext, GetSettingList.getPurchaseList());
+        ada = new GridViewAdapter(mContext, GetSettingList.getPurchaseList());
         gv.setAdapter(ada);
         ada.notifyDataSetChanged();
     }
@@ -54,17 +55,17 @@ public class PurchaseFragment extends BaseFragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                SettingList tv= (SettingList) ada.getItem(i);
-//                Log.e("listitem",tv.tv);
-//                switch (tv.tag){
-                switch (i) {
-                    case 0://采购订单
+                SettingList tv= (SettingList) ada.getItem(i);
+                Log.e("listitem",tv.tv);
+                switch (tv.tag){
+//                switch (i) {
+                    case "1"://采购订单
                         startNewActivity(PurchaseOrderActivity.class, null);
                         break;
-                    case 1://外购入库
+                    case "2"://外购入库
                         startNewActivity(PurchaseInStorageActivity.class, null);
                         break;
-                    case 2://产品入库
+                    case "3"://产品入库
                         startNewActivity(ProductInStorageActivity.class, null);
                         break;
                 }

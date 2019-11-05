@@ -78,6 +78,18 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash);
         mContext = this;
         getPermisssion();
+        // 避免从桌面启动程序后，会重新实例化入口类的activity----------------------------
+        //也就是说Home键再点app图标时，不会重新从登陆界面进
+        if (!this.isTaskRoot()) {
+            Intent intent = getIntent();
+            if (intent != null) {
+                String action = intent.getAction();
+                if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(action)) {
+                    finish();
+                    return;
+                }
+            }
+        }
         if (getNewMac() != null && !getNewMac().equals("")) {
             binding.tvCode.setText("注册码：" + MD5.getMD5(getNewMac()));
             Lg.e("注册码："+MD5.getMD5(getNewMac()));

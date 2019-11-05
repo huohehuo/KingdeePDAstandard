@@ -113,7 +113,7 @@
                             android:layout_height="match_parent"
                             android:background="@color/divider_color" />
 
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse_out"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
@@ -227,7 +227,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
@@ -260,7 +260,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
                         android:gravity="center"
-                        android:singleLine="true"
+
                         android:textColor="@color/white"
                         android:textSize="17sp" />
 
@@ -397,7 +397,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
-                            android:singleLine="true"
+
                             android:visibility="gone" />
                     </LinearLayout>
 
@@ -467,7 +467,7 @@
                             android:imeOptions="actionNone"
                             android:inputType="numberDecimal"
                             android:paddingTop="2dp"
-                            android:singleLine="true" />
+                             />
                     </LinearLayout>
 
                     <View

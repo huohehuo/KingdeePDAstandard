@@ -70,6 +70,7 @@ import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
@@ -116,7 +117,7 @@ public class ProductInStorageActivity extends BaseActivity {
     @BindView(R.id.ed_pihao)
     EditText edPihao;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.tv_numinstorage)
     TextView tvNuminstorage;
     @BindView(R.id.ed_num)

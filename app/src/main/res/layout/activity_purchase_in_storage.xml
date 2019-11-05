@@ -58,13 +58,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:weightSum="6">
+                        android:layout_marginLeft="8dp"
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1.5"
                             android:gravity="center"
                             android:text="供应商:"
                             android:textColor="@android:color/black"
@@ -74,18 +73,19 @@
                             android:id="@+id/ed_supplier"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:layout_weight="3.5"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:selectAllOnFocus="true"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search_supplier"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1">
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            >
 
                             <ImageView
                                 android:layout_width="30dp"
@@ -157,12 +157,12 @@
                             android:layout_height="match_parent"
                             android:background="@color/divider_color" />
 
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                     </LinearLayout>
@@ -185,15 +185,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:weightSum="10">
+                        android:layout_marginLeft="8dp"
+                        android:orientation="horizontal">
 
                         <RelativeLayout
                             android:id="@+id/scanbyCamera"
-                            android:layout_width="0dp"
+                            android:layout_width="40dp"
                             android:layout_height="40dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_weight="1">
+                            android:layout_marginLeft="4dp"
+                            android:layout_marginRight="4dp">
 
                             <ImageView
 
@@ -208,22 +208,20 @@
                             android:id="@+id/ed_code"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentRight="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_weight="8"
+                            android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
                             android:selectAllOnFocus="true"
-                            android:singleLine="true" />
+                             />
 
                         <RelativeLayout
                             android:id="@+id/search"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="40dp"
-                            android:layout_marginRight="10dp"
-                            android:layout_weight="1">
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            >
 
                             <ImageView
                                 android:layout_width="30dp"
@@ -255,7 +253,6 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
                         android:gravity="center"
-                        android:singleLine="true"
                         android:textColor="@color/white"
                         android:textSize="19sp" />
 
@@ -327,7 +324,6 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@drawable/tv_bg"
-                            android:singleLine="true"
                             android:textColor="@color/white"
                             android:textSize="19sp" />
 
@@ -389,8 +385,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
-                            android:imeOptions="actionNone"
-                            android:singleLine="true" />
+                            android:imeOptions="actionNone" />
 
                         <View
                             android:layout_width="1dp"
@@ -406,7 +401,6 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -479,7 +473,6 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
                             android:textSize="15sp" />
                     </LinearLayout>
 
@@ -767,7 +760,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/edit_text"
-                android:singleLine="true"
+
                 android:textSize="19sp" />
 
 

@@ -71,6 +71,7 @@ import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPici;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -108,7 +109,7 @@ public class FHTZDDBActivity extends BaseActivity {
     @BindView(R.id.sp_storageout)
     Spinner spStorageout;
     @BindView(R.id.sp_wavehouseout)
-    MyWaveHouseSpinner spWavehouseout;
+    SpinnerWaveHouse spWavehouseout;
     @BindView(R.id.sp_storagein)
     Spinner spStoragein;
     @BindView(R.id.sp_wavehousein)

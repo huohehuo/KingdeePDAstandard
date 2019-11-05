@@ -67,6 +67,7 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -108,7 +109,7 @@ public class XSDDPDFLTZDActivity extends BaseActivity {
     @BindView(R.id.sp_storage)
     Spinner spStorage;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.productName)
     TextView productName;
     @BindView(R.id.sp_unit)

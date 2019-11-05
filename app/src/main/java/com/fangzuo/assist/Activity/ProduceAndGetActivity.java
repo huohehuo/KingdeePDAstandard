@@ -79,6 +79,7 @@ import com.fangzuo.assist.widget.SpinnerLingliaoType;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -129,7 +130,7 @@ public class ProduceAndGetActivity extends BaseActivity {
     @BindView(R.id.ed_pihao)
     EditText edPihao;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.ed_num)
     EditText edNum;
     @BindView(R.id.sp_unit)

@@ -69,6 +69,7 @@ import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerUnit;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -96,7 +97,7 @@ public class DBActivity extends BaseActivity {
     @BindView(R.id.sp_storage_out)
     Spinner spStorageOut;
     @BindView(R.id.sp_wavehouse_out)
-    MyWaveHouseSpinner spWavehouseOut;
+    SpinnerWaveHouse spWavehouseOut;
     @BindView(R.id.sp_storage_in)
     Spinner spStorageIn;
     @BindView(R.id.sp_wavehouse_in)

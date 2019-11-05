@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="asdasdasdasdasdasd"
             android:textColor="@color/black"
-            android:singleLine="true"/>
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="asdasdasdasdasdasd"
             android:textColor="@color/black"
-            android:singleLine="true"/>
+            />
 
     </LinearLayout>
 
@@ -51,6 +51,6 @@
             android:layout_height="wrap_content"
             android:text="asdasdasdasdasdasd"
             android:textColor="@color/black"
-            android:singleLine="true"/>
+            />
     </LinearLayout>
 </LinearLayout>

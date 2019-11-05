@@ -23,6 +23,7 @@
                 android:text="合并"
                 android:textColor="@color/red"/>
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="盘点"
@@ -54,6 +55,7 @@
                     android:gravity="center"
                     android:orientation="vertical">
                     <RelativeLayout
+                        android:layout_marginLeft="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
@@ -144,7 +146,7 @@
                             android:layout_height="match_parent"
                             android:background="@color/divider_color" />
 
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -157,6 +159,7 @@
                         android:background="@color/divider_color" />
 
                     <TextView
+                        android:layout_marginLeft="4dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="物料编码:"
@@ -290,7 +293,7 @@
                         <TextView
                             android:id="@+id/tv_num_onServer"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/tv_bg"
                             android:gravity="center"
@@ -356,7 +359,7 @@
                         <TextView
                             android:id="@+id/tv_ypnum"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:background="@drawable/tv_bg"
                             android:gravity="center"

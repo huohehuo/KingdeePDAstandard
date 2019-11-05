@@ -5,6 +5,14 @@ package com.fangzuo.assist.Utils;
  */
 
 public class Info {
+    public static String getAppNo(){
+//        if ("1".equals(Hawk.get(Config.PDA_Project_Type,"1"))){
+//            return "1.881";
+//        }else{
+        return "2.0";
+//        }
+    }
+
     public static final String DATABASESETTING = "master";
     public static final int SEARCHFORRESULT = 9998;
     public static final int SEARCHFORRESULTPRODUCT = 9997;

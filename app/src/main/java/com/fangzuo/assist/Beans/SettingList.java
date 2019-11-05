@@ -13,7 +13,7 @@ public class SettingList {
         this.ImageResourse = Image;
         this.tv=tv;
     }
-    public SettingList(String tv,String tag,int Image){
+    public SettingList(String tag,String tv,int Image){
         this.ImageResourse = Image;
         this.tv=tv;
         this.tag = tag;

@@ -80,6 +80,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPici;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
+import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -118,7 +119,7 @@ public class PushDownMTActivity extends BaseActivity {
     @BindView(R.id.sp_storage)
     Spinner spStorage;
     @BindView(R.id.sp_wavehouse)
-    MyWaveHouseSpinner spWavehouse;
+    SpinnerWaveHouse spWavehouse;
     @BindView(R.id.productName)
     TextView productName;
     @BindView(R.id.sp_unit)

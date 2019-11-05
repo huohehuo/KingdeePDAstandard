@@ -2,6 +2,7 @@ package com.fangzuo.assist.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.GridView;
 import com.fangzuo.assist.ABase.BaseFragment;
 import com.fangzuo.assist.Activity.ProduceAndGetActivity;
 import com.fangzuo.assist.Adapter.GridViewAdapter;
+import com.fangzuo.assist.Beans.SettingList;
 import com.fangzuo.assist.Utils.GetSettingList;
 import com.fangzuo.assist.Activity.PushDownActivity;
 import com.fangzuo.assist.Activity.SaleOrderActivity;
@@ -38,9 +40,12 @@ public class SaleFragment extends BaseFragment {
         mContext = getActivity();
         return v;
     }
+    GridViewAdapter ada;
     @Override
     protected void initData() {
-        GridViewAdapter ada = new GridViewAdapter(mContext, GetSettingList.getSaleList());
+        //        String getPermit=share.getString(ShareInfo.USER_PERMIT);
+//        String[] arylist = getPermit.split("\\-"); // 这样才能得到正确的结果
+        ada = new GridViewAdapter(mContext, GetSettingList.getSaleList());
         gv.setAdapter(ada);
         ada.notifyDataSetChanged();
     }
@@ -50,17 +55,20 @@ public class SaleFragment extends BaseFragment {
         gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i){
-                    case 0://销售订单
+                SettingList tv= (SettingList) ada.getItem(i);
+                Log.e("listitem",tv.tv);
+                switch (tv.tag){
+//                switch (i){
+                    case "4"://销售订单
                         startNewActivity(SaleOrderActivity.class,null);
                         break;
-                    case 1://销售出库
+                    case "5"://销售出库
                         startNewActivity(SoldOutActivity.class,null);
                         break;
-                    case 2://单据下推
+                    case "6"://单据下推
                         startNewActivity(PushDownActivity.class,null);
                         break;
-                    case 3://生产领料
+                    case "7"://生产领料
                         startNewActivity(ProduceAndGetActivity.class,null);
                 }
             }

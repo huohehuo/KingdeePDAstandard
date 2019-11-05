@@ -89,7 +89,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
         list = t_detailDao.queryBuilder().where(
                 T_DetailDao.Properties.Activity.eq(activity)
         ).build().list();
-        Log.e(TAG, "获得T_Detail：" + list.toString());
+        Lg.e( "获得T_Detail：",list);
         list1 = t_mainDao.queryBuilder().where(
                 T_mainDao.Properties.Activity.eq(activity)
         ).build().list();
@@ -189,7 +189,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                 T_Detail t_detail = t_detailDao.queryBuilder().where(
                                         T_DetailDao.Properties.FIndex.eq(list.get(j).FIndex)
                                 ).build().unique();
-                                Log.e(TAG, "获取到T_Detail:" + t_detail.toString());
+                                Lg.e("获取到T_Detail:" ,t_detail);
 //                                T_main t_main = t_mainDao.queryBuilder().where(
 //                                        T_mainDao.Properties.FIndex.eq(list.get(j).FIndex)
 //                                ).build().unique();
@@ -202,7 +202,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                 Lg.e(pushDownSubs.size()+"多少个");
                                 if (pushDownSubs.size() > 0) {
                                     //删除后，更新数据里面的已验收数
-                                    Log.e(TAG, "获取到pushDownSubs:" + pushDownSubs.toString());
+                                    Lg.e("获取到pushDownSubs:" ,pushDownSubs);
                                     double result=(Double.valueOf(t_detail.FQuantity) * t_detail.unitrate) / getUnitrateSub(pushDownSubs.get(0));
                                     Lg.e("result:"+result);
                                     pushDownSubs.get(0).FQtying = doubleSub(Double.valueOf(pushDownSubs.get(0).FQtying),result) +"";
@@ -329,7 +329,7 @@ public class Table3Activity extends BaseActivity implements TableAdapter4.InnerC
                                 return;
                             } else {
                                 pushDownSubs.get(0).FQtying = sum + "";
-                                Log.e(TAG, "?修改后的已盘点数：FQtying" + pushDownSubs.get(0).FQtying);
+                                Lg.e( "?修改后的已盘点数：FQtying", pushDownSubs.get(0).FQtying);
                                 pushDownSubDao.update(pushDownSubs.get(0));
                                 t_detail.FQuantity = newnum;
                                 t_detailDao.update(t_detail);

@@ -99,7 +99,7 @@
 
                         <include layout="@layout/line_shu" />
 
-                        <com.fangzuo.assist.widget.MyWaveHouseSpinner
+                        <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -212,7 +212,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:imeOptions="actionNone"
-                            android:singleLine="true" />
+                             />
 
                         <include layout="@layout/line_shu" />
 
@@ -224,7 +224,7 @@
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
                             android:inputType="numberDecimal"
-                            android:singleLine="true"
+
                             android:textSize="15sp" />
 
                     </LinearLayout>
@@ -449,7 +449,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:drawable/edit_text"
-                android:singleLine="true"
+
                 android:textSize="19sp" />
 
 

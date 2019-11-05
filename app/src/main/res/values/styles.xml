@@ -14,6 +14,13 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!--用于取消程序启动时的白屏效果-->
+    <style name="AppTheme.Launcher">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
     <!-- my loading dialog -->
     <style name="LoadingDialogStyle">
         <item name="android:windowBackground">@android:color/transparent</item>
