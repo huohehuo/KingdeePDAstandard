@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context="com.fangzuo.assist.Activity.TestActivity">
 
-    <include layout="@layout/top_bar" />
+    <include layout="@layout/top_bar2" />
 
     <Button
         android:id="@+id/test_tomcat"

@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.telephony.TelephonyManager;
@@ -28,6 +29,7 @@ import com.fangzuo.assist.Dao.User;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Service.DataService;
+import com.fangzuo.assist.Service.NoticService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
@@ -116,9 +118,13 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     protected void onResume() {
         super.onResume();
+        ArrayList<Integer> list = new ArrayList<>();
+        list.add(2);list.add(3);list.add(7);
+        DataService.UpdateData(mContext,list);//更新指定表的本地数据
+
         spinner.LoadUser();
         DataService.updateTime(mContext);
-//        DownLoadUseTime();
+        DownLoadUseTime();
         AppVersionUtil.CheckVersion(mContext);
         //检查是否存在注册码
 //        RegisterUtil.checkHasRegister();
@@ -259,7 +265,21 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
             }
         });
+        btnLogin.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                NoticService.startNotic(mContext,ShareUtil.getInstance(mContext).getsetUserID(),getTime(true));
+                //                //发送更新提示广播
+//                Intent intent = new Intent(Config.VersionReceiver);
+//                intent.putExtra("version",rec+"");
+//                intent.setPackage(getPackageName());
+//                sendBroadcast(intent);
+                rec++;
+                return true;
+            }
+        });
     }
+    int rec =1;
 
     @Override
     protected void OnReceive(String code) {
@@ -282,11 +302,11 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     }
 
     private void Login() {
-//        if (!checkTime()) {
-//            DownLoadUseTime();
+        if (!checkTime()) {
+            DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
-//            return;
-//        }
+            return;
+        }
         if (!userID.equals("") && !userName.equals("")) {
             if (mEtPassword.getText().toString().equals(userPass)) {
                 ShareUtil.getInstance(mContext).setUserName(userName);

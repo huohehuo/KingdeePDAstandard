@@ -7,6 +7,7 @@ import com.fangzuo.assist.Dao.Employee;
 import com.fangzuo.assist.Dao.GetGoodsDepartment;
 import com.fangzuo.assist.Dao.InStorageNum;
 import com.fangzuo.assist.Dao.InStoreType;
+import com.fangzuo.assist.Dao.NoticBean;
 import com.fangzuo.assist.Dao.PayType;
 import com.fangzuo.assist.Dao.PriceMethod;
 import com.fangzuo.assist.Dao.Product;
@@ -42,6 +43,7 @@ public class DownloadReturnBean {
 	public ArrayList<InStoreType> inStorageTypes;
 	public ArrayList<GetBatchNoBean> getBatchNoBeans;
 	public ArrayList<SetFile> setFiles;
+	public ArrayList<NoticBean> noticBeans;
 
 
 

@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
@@ -87,7 +88,7 @@ public class SettingActivity extends BaseActivity implements DataSearchRyAdapter
     @BindView(R.id.btn_back)
     RelativeLayout btnBack;
     @BindView(R.id.tv_title)
-    TextView tvTitle;
+    AppCompatTextView tvTitle;
     @BindView(R.id.ry_data_search)
     RecyclerView ryDataSearch;
     @BindView(R.id.btn_connect)

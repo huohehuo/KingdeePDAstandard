@@ -91,13 +91,21 @@ public class App extends MultiDexApplication {
                 .writeTimeout(200, TimeUnit.SECONDS)
                 .build();
 
-        //这里的baseurl,注意要有实际格式的链接，不然会崩
-        retrofit = new Retrofit.Builder()
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(BasicShareUtil.getInstance(mContext).getBaseURL())
-                .build();
+        try {
+            //这里的baseurl,注意要有实际格式的链接，不然会崩
+            retrofit = new Retrofit.Builder()
+                    .client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                    .baseUrl(BasicShareUtil.getInstance(mContext).getBaseURL())
+                    .build();
+        }catch (Exception e){
+            //崩溃的时候，重置ip和端口
+            BasicShareUtil.getInstance(mContext).setIP("192.168.0.0");
+            BasicShareUtil.getInstance(mContext).setPort("8080");
+        }
+
+
         mService = new RService();
 
     }

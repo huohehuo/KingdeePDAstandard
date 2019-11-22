@@ -55,7 +55,7 @@ public class SettingMenuActivity extends BaseActivity {
     @BindView(R.id.btn_back)
     RelativeLayout btnBack;
     @BindView(R.id.tv_title)
-    TextView tvTitle;
+    AppCompatTextView tvTitle;
     @BindView(R.id.tv_ver_app)
     TextView tvVerApp;
     @BindView(R.id.tv_ver_web)
@@ -64,7 +64,6 @@ public class SettingMenuActivity extends BaseActivity {
     TextView tvVersion;
     @BindView(R.id.ll_update)
     LinearLayout llUpdate;
-
 
     //    @BindView(R.id.lv_setting)
 //    ListView lvSetting;

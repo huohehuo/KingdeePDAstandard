@@ -488,11 +488,6 @@
             android:orientation="horizontal"
             android:weightSum="4">
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
-
             <Button
                 android:id="@+id/btn_add"
                 android:layout_width="0dp"
@@ -502,10 +497,7 @@
                 android:text="添加"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_finishorder"
@@ -516,10 +508,7 @@
                 android:text="完单"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
+            <include layout="@layout/line_shu"/>
 
             <Button
                 android:id="@+id/btn_backorder"
@@ -530,11 +519,7 @@
                 android:text="回单"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
-
+            <include layout="@layout/line_shu"/>
             <Button
                 android:id="@+id/btn_checkorder"
                 android:layout_width="0dp"
@@ -544,10 +529,6 @@
                 android:text="查看"
                 android:textColor="@android:color/white" />
 
-            <View
-                android:layout_width="2dp"
-                android:layout_height="match_parent"
-                android:background="@color/divider_color" />
 
         </LinearLayout>
     </RelativeLayout>

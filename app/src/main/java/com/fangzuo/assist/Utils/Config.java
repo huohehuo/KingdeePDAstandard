@@ -14,6 +14,7 @@ public class Config {
     public static String PDA_IMIE="PDA_IMIE";//用于保存注册码
     public static String PDA_RegisterCode="PDA_RegisterCode";//用于保存注册码
     public static String PDA_RegisterMaxNum="PDA_RegisterMaxNum";//用于保存注册码
+    public static String VersionReceiver="com.fangzuo.assist.version";//用于保存注册码
 
     public static final String DATABASESETTING = "master";
     public static final String PDA = "PDA";

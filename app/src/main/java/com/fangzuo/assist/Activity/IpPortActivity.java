@@ -3,11 +3,13 @@ package com.fangzuo.assist.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
+import com.fangzuo.assist.widget.LoadingUtil;
 import com.orhanobut.hawk.Hawk;
 
 import butterknife.BindView;
@@ -44,9 +47,11 @@ public class IpPortActivity extends BaseActivity {
     @BindView(R.id.btn_back)
     RelativeLayout btnBack;
     @BindView(R.id.tv_title)
-    TextView tvTitle;
+    AppCompatTextView tvTitle;
     @BindView(R.id.tv_endtime)
     TextView tvEndtime;
+    @BindView(R.id.iv_check)
+    ImageView ivCheck;
     private BasicShareUtil share;
     ArrayAdapter<String> adapter;
     private String string;
@@ -154,7 +159,7 @@ public class IpPortActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @OnClick({R.id.btn_save,R.id.btn_back, R.id.tv_title, R.id.btn_loginout})
+    @OnClick({R.id.btn_save,R.id.btn_back, R.id.tv_title, R.id.btn_loginout, R.id.iv_check})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
@@ -196,6 +201,29 @@ public class IpPortActivity extends BaseActivity {
                 final AlertDialog alertDialog = ab.create();
                 alertDialog.setCanceledOnTouchOutside(false);
                 alertDialog.show();
+                break;
+            case R.id.iv_check:
+                if (!edPort.getText().toString().equals("") && !edIp.getText().toString().equals("")) {
+                    share.setIP(edIp.getText().toString());
+                    share.setPort(edPort.getText().toString());
+//                    finish();
+                }
+                LoadingUtil.showDialog(mContext, "正在检测服务端是否连通...");
+                App.getRService().doIOAction("TestServlet", "检测服务端是否连通", new MySubscribe<CommonResponse>() {
+                    @Override
+                    public void onNext(CommonResponse commonResponse) {
+                        super.onNext(commonResponse);
+                        LoadingUtil.dismiss();
+                        LoadingUtil.showAlter(mContext, "连接成功");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        LoadingUtil.dismiss();
+                        LoadingUtil.showAlter(mContext, "连接失败");
+                    }
+                });
                 break;
         }
     }

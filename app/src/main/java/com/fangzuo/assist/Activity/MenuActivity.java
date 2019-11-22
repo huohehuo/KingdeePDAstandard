@@ -2,6 +2,7 @@ package com.fangzuo.assist.Activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -33,6 +34,7 @@ import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.greendao.gen.DaoSession;
+import com.fangzuo.greendao.gen.NoticBeanDao;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.async.AsyncSession;
@@ -85,15 +87,19 @@ public class MenuActivity extends BaseActivity {
     TextView updateData;
     @BindView(R.id.container)
     CoordinatorLayout container;
+    @BindView(R.id.tv_notic)
+    TextView tvNotic;
+    @BindView(R.id.iv_notic)
+    ImageView ivNotic;
     private MenuActivity mContext;
     private FragmentTransaction ft;
     private Fragment curFragment;
-    private DaoSession daoSession;
     private AsyncSession asyncSession;
     private AsyncSession asyncSession2;
     private long nowTime;
     private int size;
     private ProgressDialog pg;
+    NoticBeanDao noticBeanDao;
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -105,7 +111,7 @@ public class MenuActivity extends BaseActivity {
                     AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
                     ab.setTitle("下载完成");
                     ab.setMessage("耗时:" + (endTime - nowTime) + "ms" + ",共插入" + size + "条数据");
-                    ab.setPositiveButton("确认",null);
+                    ab.setPositiveButton("确认", null);
                     ab.create().show();
                     break;
                 case 2:
@@ -115,13 +121,13 @@ public class MenuActivity extends BaseActivity {
             }
         }
     };
+
     @Override
     public void initView() {
         setContentView(R.layout.activity_menu);
         mContext = this;
-        BasicShareUtil share = BasicShareUtil.getInstance(mContext);
-        DaoSession session = GreenDaoManager.getmInstance(mContext).getDaoSession();
         ButterKnife.bind(mContext);
+        noticBeanDao = daoSession.getNoticBeanDao();
         initFragments();
         Welcome();
 
@@ -153,17 +159,12 @@ public class MenuActivity extends BaseActivity {
         tvUser.setText("当前用户:" + ShareUtil.getInstance(mContext).getUserName());
         ivPurchase.setImageResource(R.mipmap.purchase);
         tvPurchase.setTextColor(tvcolor);
+        tvNotic.setText(noticBeanDao.loadAll().size()+"");
     }
 
 
     @Override
     public void initListener() {
-        updateData.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DownLoadData.getInstance(mContext,container,handler).alertToChoose();
-            }
-        });
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -209,9 +210,6 @@ public class MenuActivity extends BaseActivity {
     }
 
 
-
-
-
     private void initFragments() {
         FragmentManager fm = getSupportFragmentManager();
         PurchaseFragment purchaseFragment = new PurchaseFragment();
@@ -228,43 +226,6 @@ public class MenuActivity extends BaseActivity {
         viewPager.setCurrentItem(0);
     }
 
-
-    @OnClick(R.id.bottom_btn_purchase)
-    public void onBottomBtnPurchaseClicked() {
-        Log.e("bottomBar", "purchase");
-        viewPager.setCurrentItem(0, true);
-        resetBottomView();
-        ivPurchase.setImageResource(R.mipmap.purchase);
-        tvPurchase.setTextColor(tvcolor);
-
-    }
-
-    @OnClick(R.id.bottom_btn_sale)
-    public void onBottomBtnSaleClicked() {
-        Log.e("bottomBar", "purchase");
-        viewPager.setCurrentItem(1, true);
-        resetBottomView();
-        ivSale.setImageResource(R.mipmap.sale);
-        tvSale.setTextColor(tvcolor);
-    }
-
-    @OnClick(R.id.bottom_btn_storage)
-    public void onBottomBtnStorageClicked() {
-        Log.e("bottomBar", "purchase");
-        viewPager.setCurrentItem(2, true);
-        resetBottomView();
-        ivStorage.setImageResource(R.mipmap.storage);
-        tvStorage.setTextColor(tvcolor);
-    }
-
-    @OnClick(R.id.bottom_btn_setting)
-    public void onBottomBtnSettingClicked() {
-        viewPager.setCurrentItem(3, true);
-        resetBottomView();
-        ivSetting.setImageResource(R.mipmap.setting_focus);
-        tvSetting.setTextColor(tvcolor);
-    }
-
     private void resetBottomView() {
         ivPurchase.setImageResource(R.mipmap.unpurchase);
         ivSale.setImageResource(R.mipmap.unsale);
@@ -276,15 +237,48 @@ public class MenuActivity extends BaseActivity {
         tvStorage.setTextColor(tvColorUnClick);
     }
 
-    @OnClick(R.id.btn_back)
-    public void onViewClicked() {
-        onBackPressed();
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         return super.onTouchEvent(event);
     }
 
 
+    @OnClick({R.id.btn_back, R.id.iv_notic, R.id.update_data, R.id.bottom_btn_purchase, R.id.bottom_btn_sale, R.id.bottom_btn_storage, R.id.bottom_btn_setting})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_back:
+                onBackPressed();
+                break;
+            case R.id.iv_notic:
+                NoticeActivity.start(mContext);
+                break;
+            case R.id.update_data:
+                DownLoadData.getInstance(mContext, container, handler).alertToChoose();
+                break;
+            case R.id.bottom_btn_purchase:
+                viewPager.setCurrentItem(0, true);
+                resetBottomView();
+                ivPurchase.setImageResource(R.mipmap.purchase);
+                tvPurchase.setTextColor(tvcolor);
+                break;
+            case R.id.bottom_btn_sale:
+                viewPager.setCurrentItem(1, true);
+                resetBottomView();
+                ivSale.setImageResource(R.mipmap.sale);
+                tvSale.setTextColor(tvcolor);
+                break;
+            case R.id.bottom_btn_storage:
+                viewPager.setCurrentItem(2, true);
+                resetBottomView();
+                ivStorage.setImageResource(R.mipmap.storage);
+                tvStorage.setTextColor(tvcolor);
+                break;
+            case R.id.bottom_btn_setting:
+                viewPager.setCurrentItem(3, true);
+                resetBottomView();
+                ivSetting.setImageResource(R.mipmap.setting_focus);
+                tvSetting.setTextColor(tvcolor);
+                break;
+        }
+    }
 }

@@ -11,10 +11,12 @@ import com.fangzuo.assist.Beans.DownloadReturnBean;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Asynchttp;
+import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
+import com.fangzuo.assist.Utils.JsonCreater;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
@@ -43,6 +45,9 @@ import com.google.gson.Gson;
 import com.loopj.android.http.AsyncHttpClient;
 
 import org.greenrobot.greendao.async.AsyncSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -92,6 +97,16 @@ public class DataService extends IntentService {
         intent.setAction(UpdateTime);
         context.startService(intent);
     }
+    //获取基础数据
+    private static final String UpdateData = "com.fangzuo.assist.Service.action.UpdateData";
+    public static void UpdateData(Context context, ArrayList<Integer> list) {
+        Intent intent = new Intent(context, DataService.class);
+        intent.setAction(UpdateData);
+        intent.putIntegerArrayListExtra("list",list);
+        context.startService(intent);
+    }
+
+
     /**
      * Starts this service to perform action Baz with the given parameters. If
      * the service is already performing a task this action will be queued.
@@ -126,9 +141,64 @@ public class DataService extends IntentService {
                 handleActionBaz(txtNa,err);
             }else if (UpdateTime.equals(action)) {
                 handleActionUpdateTime();
+            } else if (UpdateData.equals(action)) {
+                final ArrayList<Integer> list = intent.getIntegerArrayListExtra("list");
+                handleActionUpdateData(list);
             }
         }
     }
+    //下载数据,只能小数据，数据多的会崩溃
+    private void handleActionUpdateData(ArrayList<Integer> list) {
+        ArrayList<Integer> choose = new ArrayList<>();
+        choose.addAll(list);
+
+//        choose.add(2);//部门表
+//        choose.add(3);//职员表
+//        choose.add(7);//单位
+        String json = JsonCreater.DownLoadData(
+                BasicShareUtil.getInstance(App.getContext()).getDatabaseIp(),
+                BasicShareUtil.getInstance(App.getContext()).getDatabasePort(),
+                BasicShareUtil.getInstance(App.getContext()).getDataBaseUser(),
+                BasicShareUtil.getInstance(App.getContext()).getDataBasePass(),
+                BasicShareUtil.getInstance(App.getContext()).getDataBase(),
+                BasicShareUtil.getInstance(App.getContext()).getVersion(),
+                choose
+        );
+        App.getRService().downloadData(json, new MySubscribe<CommonResponse>() {
+            @Override
+            public void onNext(CommonResponse commonResponse) {
+                DownloadReturnBean dBean = JsonCreater.gson.fromJson(commonResponse.returnJson, DownloadReturnBean.class);
+                if (dBean.units != null && dBean.units.size() > 0) {
+                    UnitDao unitDao = session.getUnitDao();
+                    unitDao.deleteAll();
+                    unitDao.insertOrReplaceInTx(dBean.units);
+                    unitDao.detachAll();
+                    Lg.e("OK单位"+dBean.units.size());
+                }
+                if (dBean.employee != null && dBean.employee.size() > 0) {
+                    EmployeeDao employeeDao = session.getEmployeeDao();
+                    employeeDao.deleteAll();
+                    employeeDao.insertOrReplaceInTx(dBean.employee);
+                    employeeDao.detachAll();
+                }
+                if (dBean.department != null && dBean.department.size() > 0) {
+                    DepartmentDao yuandanTypeDao = session.getDepartmentDao();
+                    yuandanTypeDao.deleteAll();
+                    yuandanTypeDao.insertOrReplaceInTx(dBean.department);
+                    yuandanTypeDao.detachAll();
+                    Lg.e("OK部门表"+dBean.department.size());
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+//                    LoadingUtil.dismiss();
+//                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Updata_Error,e.toString()));
+            }
+        });
+    }
+
     private void handleActionUpdateTime(){
         App.getRService().doIOAction(WebApi.SetUseTime, "更新时间", new MySubscribe<CommonResponse>() {
             @Override

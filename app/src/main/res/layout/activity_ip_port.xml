@@ -1,73 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
+    <include layout="@layout/top_bar2" />
+    <ScrollView
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
-    <!--<include-->
-        <!--android:id="@+id/toolbar"-->
-        <!--layout="@layout/top_bar" />-->
-    <include layout="@layout/top_bar" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_marginTop="25dp"
-        android:layout_width="match_parent"
-        android:textColorHint="@color/colorPrimaryDark"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/ed_ip"
+        <LinearLayout
+            android:layout_margin="4dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="9"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="请输入IP:"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+            <!--<include-->
+            <!--android:id="@+id/toolbar"-->
+            <!--layout="@layout/top_bar" />-->
 
-            android:padding="13dp"
-            android:textColorHint="#888888" />
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请输入IP:"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
 
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/ed_ip"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:paddingLeft="4dp"
+                android:background="@drawable/bg_edittext_selector"
+                android:hint="输入IP"
+                android:singleLine="true"
+                android:textColorHint="@color/dividerLine" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#a0cccbcb"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="请输入端口:"
+                android:textColor="@android:color/black"
+                android:textSize="15sp" />
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_marginTop="25dp"
-        android:layout_width="match_parent"
-        android:textColorHint="@color/colorPrimaryDark"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/ed_port"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="9"
-            android:background="@null"
-            android:gravity="top"
-            android:hint="请输入端口:"
-            android:padding="13dp"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            android:textColorHint="#888888" />
+                <EditText
+                    android:id="@+id/ed_port"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_edittext_selector"
+                    android:hint="输入端口"
+                    android:paddingLeft="4dp"
+                    android:singleLine="true"
+                    android:textColorHint="@color/dividerLine" />
 
-    </android.support.design.widget.TextInputLayout>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="选择PDA设备型号:"
-        android:textColor="@android:color/black"/>
-    <Spinner
-        android:id="@+id/sp_pda"
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:layout_above="@+id/tv_code"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal" />
-    </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_check"
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_marginLeft="4dp"
+                    android:background="@drawable/checkdd" />
+            </LinearLayout>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:text="选择PDA设备型号:"
+                android:textColor="@android:color/black"/>
+            <Spinner
+                android:id="@+id/sp_pda"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:spinnerMode="dialog"
+                android:layout_above="@+id/tv_code"
+                android:layout_centerHorizontal="true"
+                android:gravity="center" />
+
+            <include layout="@layout/line_heng"/>
+
+        </LinearLayout>
+
+
+    </ScrollView>
     <TextView
         android:layout_above="@id/ll_btn"
         android:id="@+id/tv_endtime"
@@ -99,5 +119,4 @@
             android:id="@+id/btn_save"/>
 
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>

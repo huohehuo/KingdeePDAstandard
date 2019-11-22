@@ -198,6 +198,13 @@ public class LoadingUtil {
         }
     }
     //弹窗提示
+    public static void showAlter(Context mContext,String title){
+        new AlertDialog.Builder(mContext)
+                .setTitle(title)
+                .setPositiveButton("确认",null)
+                .create().show();
+    }
+    //弹窗提示
     public static void showAlter(Context mContext,String title,String msg){
         new AlertDialog.Builder(mContext)
                 .setTitle(title)

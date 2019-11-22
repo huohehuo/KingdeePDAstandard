@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
+import com.fangzuo.assist.Beans.PostBean;
 import com.fangzuo.assist.BuildConfig;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 
@@ -63,12 +64,16 @@ public class RService {
     public void downloadData(String json, MySubscribe<CommonResponse> mySubscribe) {
         toSubscribe(request.downloadData(getParams(json)), mySubscribe);
     }
+
     //执行接口
     public void doIOAction(String io, String data,MySubscribe<CommonResponse> mySubscribe) {
         toSubscribe(request.actionIO(io, getParams(data)), mySubscribe);
     }
 
-
+    //执行接口
+    public void doIOAction4Post(String io, PostBean data, MySubscribe<CommonResponse> mySubscribe) {
+        toSubscribe(request.actionIO4Post(io, data), mySubscribe);
+    }
 
 
 //    /**

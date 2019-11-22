@@ -19,7 +19,9 @@ public class GreenDaoManager {
     private GreenDaoManager(Context context) {
         //通过 DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的 SQLiteOpenHelper
         //注意：默认的 DaoMaster.DevOpenHelper 会在数据库升级时，删除所有的表，意味着这将导致数据的丢失。
-        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(context, "db_localInfo",null);
+//        DaoMaster.DevOpenHelper devOpenHelper = new DaoMaster.DevOpenHelper(context, "db_localInfo",null);
+        DbUpgradeHelper devOpenHelper = new DbUpgradeHelper(context, "db_localInfo",null);
+
         //注意：该数据库连接属于 DaoMaster，所以多个 Session 指的是相同的数据库连接。
         SQLiteDatabase sqLiteDatabase = devOpenHelper.getWritableDatabase();
 

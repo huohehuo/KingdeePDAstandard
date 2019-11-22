@@ -153,7 +153,12 @@ public class SpinnerWaveHouse extends RelativeLayout {
     }
 
     //自动设置保存的值
-    //type: 根据什么字段定位：number，id，name
+    //type: 根据什么字段定位：0 number，1 id， 2 name
+    int sltype=100;
+    public void setAuto(final Context context, final Storage storage, String autoStr,int type) {
+        sltype = type;
+        setAuto(context,storage,autoStr);
+    }
     public void setAuto(final Context context, final Storage storage, String autoStr) {
         waveHouseId = "0";
         waveHouseName = "";
@@ -392,27 +397,63 @@ public class SpinnerWaveHouse extends RelativeLayout {
                 mSp.setAdapter(waveHouseSpAdapter);
                 waveHouseSpAdapter.notifyDataSetChanged();
             if (null==autoString || "".equals(autoString) || "0".equals(autoString)) {
-                if (list.size()>0){
-                    waveHouseId = list.get(0).FSPID;
-                    waveHouseName = list.get(0).FName;
-                    waveHouseNumber = list.get(0).FNumber;
-                }
+//                if (list.size()>0){
+                waveHouseId = waveHouses.get(0).FSPID;
+                waveHouseName = waveHouses.get(0).FName;
+                waveHouseNumber = waveHouses.get(0).FNumber;
+//                }
                 LoadingUtil.dismiss();
 //                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.check_Storage_waveHouse, autoString));
             } else {
-//                if ("number".equals(type)) {
+                if (sltype==0) {
                     for (int j = 0; j < waveHouses.size(); j++) {
-                        if (waveHouses.get(j).FNumber.equals(autoString) ||
-                                waveHouses.get(j).FSPID.equals(autoString)||
-                                waveHouses.get(j).FName.equals(autoString)) {
+                        if (waveHouses.get(j).FNumber.equals(autoString)) {
                             Lg.e("仓位定位（自定义控件number：" + autoString);
-                            waveHouseId=waveHouses.get(j).FSPID;
+                            waveHouseId = waveHouses.get(j).FSPID;
                             waveHouseName = waveHouses.get(j).FName;
                             waveHouseNumber = waveHouses.get(j).FNumber;
                             mSp.setSelection(j);
                             break;
                         }
                     }
+                }else if (sltype==1){
+                    for (int j = 0; j < waveHouses.size(); j++) {
+                        if (waveHouses.get(j).FSPID.equals(autoString)) {
+                            Lg.e("仓位定位（自定义控件id：" + autoString);
+                            waveHouseId = waveHouses.get(j).FSPID;
+                            waveHouseName = waveHouses.get(j).FName;
+                            waveHouseNumber = waveHouses.get(j).FNumber;
+                            mSp.setSelection(j);
+                            break;
+                        }
+                    }
+                }else if (sltype==2){
+                    for (int j = 0; j < waveHouses.size(); j++) {
+                        if (
+                                waveHouses.get(j).FName.equals(autoString)) {
+                            Lg.e("仓位定位（自定义控件name：" + autoString);
+                            waveHouseId = waveHouses.get(j).FSPID;
+                            waveHouseName = waveHouses.get(j).FName;
+                            waveHouseNumber = waveHouses.get(j).FNumber;
+                            mSp.setSelection(j);
+                            break;
+                        }
+                    }
+                }else{
+                    for (int j = 0; j < waveHouses.size(); j++) {
+                        if (waveHouses.get(j).FNumber.equals(autoString) ||
+                                waveHouses.get(j).FSPID.equals(autoString) ||
+                                waveHouses.get(j).FName.equals(autoString)) {
+                            Lg.e("仓位定位（自定义控件number：" + autoString);
+                            waveHouseId = waveHouses.get(j).FSPID;
+                            waveHouseName = waveHouses.get(j).FName;
+                            waveHouseNumber = waveHouses.get(j).FNumber;
+                            mSp.setSelection(j);
+                            break;
+                        }
+                    }
+                }
+                sltype =100;
 //                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.check_Storage_waveHouse, ""));
 //                } else if ("id".equals(type)) {
 //                    for (int j = 0; j < waveHouses.size(); j++) {
@@ -442,6 +483,7 @@ public class SpinnerWaveHouse extends RelativeLayout {
             LoadingUtil.dismiss();
             waveHouseSpAdapter.notifyDataSetChanged();
         } else {
+            mSp.setAdapter(waveHouseSpAdapter);
             LoadingUtil.dismiss();
             waveHouseSpAdapter.notifyDataSetChanged();
         }
