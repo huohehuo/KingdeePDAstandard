@@ -27,5 +27,17 @@ public class EventBusInfoCode {
 
     public static final String ScanResult = "ScanResult";
     public static final String Close_Activity = "Close_Activity";
+    public static final String Upload_Notice = "Upload_Notice";
+    public static final String Click_Order = "Click_Order";//用于点击单据跳转
+
+    public static final String Storage = "Storage";
+    public static final String Storage2 = "Storage2";
+    public static final String WaveHouse2 = "WaveHouse2";
+    public static final String WaveHouse = "WaveHouse";
+    public static final String Man = "Man";
+    public static final String Man2 = "Man2";
+    public static final String Man3 = "Man3";
+    public static final String Man4 = "Man4";
+
 
 }

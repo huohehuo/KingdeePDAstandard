@@ -188,6 +188,8 @@ public class SoldOutActivity extends BaseActivity {
     RadioButton red;
     @BindView(R.id.redorBlue)
     RadioGroup redorBlue;
+    @BindView(R.id.ed_pihao)
+    EditText edPihao;
     private SoldOutActivity mContext;
     private DecimalFormat df;
     private long ordercode;         //获取当前时间段

@@ -12,7 +12,10 @@ import android.widget.GridView;
 import com.fangzuo.assist.ABase.BaseFragment;
 import com.fangzuo.assist.Activity.ProduceAndGetActivity;
 import com.fangzuo.assist.Adapter.GridViewAdapter;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.SettingList;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
+import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GetSettingList;
 import com.fangzuo.assist.Activity.PushDownActivity;
 import com.fangzuo.assist.Activity.SaleOrderActivity;
@@ -57,20 +60,7 @@ public class SaleFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SettingList tv= (SettingList) ada.getItem(i);
                 Log.e("listitem",tv.tv);
-                switch (tv.tag){
-//                switch (i){
-                    case "4"://销售订单
-                        startNewActivity(SaleOrderActivity.class,null);
-                        break;
-                    case "5"://销售出库
-                        startNewActivity(SoldOutActivity.class,null);
-                        break;
-                    case "6"://单据下推
-                        startNewActivity(PushDownActivity.class,null);
-                        break;
-                    case "7"://生产领料
-                        startNewActivity(ProduceAndGetActivity.class,null);
-                }
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Click_Order,tv.tag));
             }
         });
     }

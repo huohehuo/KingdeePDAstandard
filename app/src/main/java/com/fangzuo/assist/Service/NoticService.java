@@ -7,11 +7,15 @@ import android.content.Context;
 import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.CommonResponse;
 import com.fangzuo.assist.Beans.DownloadReturnBean;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.SearchBean;
 import com.fangzuo.assist.Dao.NoticBean;
 import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
+import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GreenDaoManager;
+import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.greendao.gen.NoticBeanDao;
 import com.google.gson.Gson;
 
@@ -89,6 +93,7 @@ public class NoticService extends IntentService {
     private void handleActionFoo(String userid, String time) {
         SearchBean bean = new SearchBean();
         bean.val1 = userid;bean.val2 = time;
+        Lg.e("请求推送"+userid+time);
         App.getRService().doIOAction("GetNoticData", new Gson().toJson(bean), new MySubscribe<CommonResponse>() {
             @Override
             public void onNext(CommonResponse commonResponse) {
@@ -97,12 +102,17 @@ public class NoticService extends IntentService {
                 DownloadReturnBean sBean = new Gson().fromJson(commonResponse.returnJson, DownloadReturnBean.class);
                 if (null!=sBean.noticBeans && sBean.noticBeans.size()>0){
                     NoticBeanDao noticBean = GreenDaoManager.getmInstance(App.getContext()).getDaoSession().getNoticBeanDao();
-                    noticBean.deleteAll();
-                    noticBean.insertInTx(sBean.noticBeans);
+                    for (int i = 0; i < sBean.noticBeans.size(); i++) {
+                        //当本地不存在该billno，则添加
+                        if (noticBean.queryBuilder().where(NoticBeanDao.Properties.FBillNo.eq(sBean.noticBeans)).build().list().size()<=0){
+                            noticBean.insertInTx(sBean.noticBeans.get(i));
+                            EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_Notice, ""));
+                        }
+                    }
                     for (int i = 0; i < sBean.noticBeans.size(); i++) {
                         //                //发送更新提示广播
                         Intent intent = new Intent(Config.VersionReceiver);
-                        intent.putExtra("noticID",i+"");
+                        intent.putExtra("noticID",sBean.noticBeans.get(i).FNoticeId);
                         intent.putExtra("billNo",sBean.noticBeans.get(i).FBillNo);
                         intent.putExtra("num",sBean.noticBeans.get(i).FNumAll);
                         intent.setPackage(getPackageName());
@@ -114,7 +124,7 @@ public class NoticService extends IntentService {
 
             @Override
             public void onError(Throwable e) {
-                super.onError(e);
+//                super.onError(e);
             }
         });
 

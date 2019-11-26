@@ -21,6 +21,7 @@ import android.media.SoundPool;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +40,7 @@ import com.fangzuo.assist.Activity.Crash.App;
 import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.R;
 import com.fangzuo.assist.Service.DataService;
+import com.fangzuo.assist.Service.NoticService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
@@ -221,6 +223,7 @@ public abstract class BaseActivity extends FragmentActivity {
     private int year;
     private int month;
     private int day;
+//    private Handler handlerForNotice;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -237,6 +240,7 @@ public abstract class BaseActivity extends FragmentActivity {
         daoSession = GreenDaoManager.getmInstance(mContext).getDaoSession();
         t_mainDao = daoSession.getT_mainDao();
         t_detailDao = daoSession.getT_DetailDao();
+//        handlerForNotice = new Handler();
         //UBX
 //        initScan();
 
@@ -251,10 +255,30 @@ public abstract class BaseActivity extends FragmentActivity {
         }
         return false;
     }
+
+//    public void startRunGetNotice(){
+//        App.gettingNotice = true;
+//        handlerForNotice.postDelayed(runGetNotice(),5000);
+//    }
+//
+//    private Runnable runnable;
+//    private Runnable runGetNotice(){
+//        return runnable = new Runnable() {
+//            @Override
+//            public void run() {
+//                NoticService.startNotic(mContext,ShareUtil.getInstance(mContext).getsetUserID(),getTime(true));
+//                handlerForNotice.postDelayed(runGetNotice(),5000);
+//            }
+//        };
+//    }
 @Override
 protected void onResume() {
     // TODO Auto-generated method stub
     super.onResume();
+    Lg.e("onResume");
+//    if (App.gettingNotice){
+//        handlerForNotice.postDelayed(runGetNotice(),5000);
+//    }
     try{
         switch (App.PDA_Choose){
             case 1://G02A
@@ -423,11 +447,14 @@ protected void onResume() {
     }catch (Exception e){
         DataService.pushError(mContext, this.getClass().getSimpleName(), e);
     }
-
 }
     @Override
     protected void onPause() {
         super.onPause();
+        Lg.e("opPause");
+//        if (null!=handlerForNotice && null !=runnable){
+//            handlerForNotice.removeCallbacks(runnable);
+//        }
         try{
             if (App.PDA_Choose==6){
                 try

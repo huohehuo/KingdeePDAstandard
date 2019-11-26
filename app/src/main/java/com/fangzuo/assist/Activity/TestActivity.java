@@ -118,13 +118,13 @@ public class TestActivity extends BaseActivity {
                     @Override
                     public void onSucceed(CommonResponse cBean) {
                         LoadingUtil.dismiss();
-                        tvResult.setText("服务器测试结果:\r\n" + cBean.returnJson);
+                        tvResult.setText("服务器测试结果:成功~\r\n" + cBean.returnJson);
                     }
 
                     @Override
                     public void OnFail(String Msg) {
                         LoadingUtil.dismiss();
-                        tvResult.setText("服务器测试结果:" + Msg);
+                        tvResult.setText("服务器测试结果:失败~" + Msg);
                     }
                 });
     }

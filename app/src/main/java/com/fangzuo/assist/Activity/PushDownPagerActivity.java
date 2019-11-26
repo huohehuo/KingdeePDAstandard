@@ -32,12 +32,18 @@ public class PushDownPagerActivity extends BaseActivity {
     @BindView(R.id.tv_pdname)
     TextView tvPdname;
 
+    public String billNO;
+    public String bringCode;
     @Override
     protected void initView() {
         setContentView(R.layout.activity_push_down_pager);
         ButterKnife.bind(this);
         tag = getIntent().getExtras().getInt("123");
+        billNO = getIntent().getExtras().getString("billNO");
+        bringCode = getIntent().getExtras().getString("barcode");
         Log.e("获取到--tag--", tag +"");
+        Log.e("获取到--billNO--", billNO +"");
+        Log.e("获取到--bringCode--", bringCode +"");
         setPDTitle(tag);//设置页面标题
     }
 
@@ -71,9 +77,7 @@ public class PushDownPagerActivity extends BaseActivity {
         Log.e("code:","PushDownPagerActivity-"+code);
     }
 
-    public int getTitles(){
-        return tag;
-    }
+
     //根据tag设置头部标题
     private void setPDTitle(int tag) {
         String string = "";
@@ -133,4 +137,16 @@ public class PushDownPagerActivity extends BaseActivity {
             tvPdname.setVisibility(View.GONE);
         }
     }
+    public int getTitles(){
+        return tag;
+    }
+    public String getBillNo(){
+        return billNO==null?"":billNO;
+    }
+    public String getBarcode(){
+        return bringCode==null?"":bringCode;
+    }
+
+
+
 }

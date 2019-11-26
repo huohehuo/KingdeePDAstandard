@@ -145,8 +145,8 @@ public class PDActivity extends BaseActivity {
     DrawerLayout mDrawer;
     @BindView(R.id.sp_unit)
     SpinnerUnit spUnit;
-    //    @BindView(R.id.ed_pihao)
-//    EditText edPihao;
+    @BindView(R.id.ed_pihao)
+    EditText edPihao;
     @BindView(R.id.refresh)
     SwipeRefreshLayout refresh;
     @BindView(isAutoAdd)
@@ -155,6 +155,7 @@ public class PDActivity extends BaseActivity {
     CheckBox cbHebing;
     @BindView(R.id.sp_pihao)
     Spinner spPihao;
+
 //    private Gson gson;
     private List<PDMain> mainContainer;
     private List<Boolean> isCheck;

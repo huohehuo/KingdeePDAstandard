@@ -179,10 +179,14 @@
                         android:layout_height="wrap_content"
                         android:text="在线配置"
                         android:textColor="@color/dividerLine" />
-
-
+                <CheckBox
+                    android:layout_marginLeft="15dp"
+                    android:id="@+id/cb_auto_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="自动登录"
+                    android:textColor="@color/dividerLine" />
                 </LinearLayout>
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

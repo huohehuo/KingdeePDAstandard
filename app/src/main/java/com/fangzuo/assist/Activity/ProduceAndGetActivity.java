@@ -127,8 +127,6 @@ public class ProduceAndGetActivity extends BaseActivity {
     TextView tvModel;
     @BindView(R.id.tv_numinstorage)
     TextView tvNuminstorage;
-    @BindView(R.id.ed_pihao)
-    EditText edPihao;
     @BindView(R.id.sp_wavehouse)
     SpinnerWaveHouse spWavehouse;
     @BindView(R.id.ed_num)
@@ -166,6 +164,8 @@ public class ProduceAndGetActivity extends BaseActivity {
     RadioGroup redorBlue;
     @BindView(R.id.sp_pihao)
     Spinner spPihao;
+    @BindView(R.id.ed_pihao)
+    EditText edPihao;
     private boolean isAuto;
     private DecimalFormat df;
 //    private DaoSession daoSession;

@@ -115,6 +115,8 @@ public class DownLoadPushFragment extends BaseFragment {
     @BindView(R.id.sp_supplier)
     SpinnerSupplier spSupplier;
     private int tag;
+    public String billNO;
+    public String bringCode;
     private FragmentActivity mContext;
 //    private SupplierSpAdapter supplierAdapter;
 //    private ClientSpAdapter clientSpAdapter;
@@ -148,7 +150,10 @@ public class DownLoadPushFragment extends BaseFragment {
             //供应商信息绑定
             spClient.setVisibility(View.GONE);
             spSupplier.setVisibility(View.VISIBLE);
-
+        }
+        if (null!= billNO && !"".equals(billNO)){
+            Lg.e("返回的单号："+billNO);
+            OnReceive(billNO);
         }
     }
 
@@ -171,20 +176,24 @@ public class DownLoadPushFragment extends BaseFragment {
                 ScanDLReturnBean sBean = new Gson().fromJson(commonResponse.returnJson, ScanDLReturnBean.class);
                 PushDownMainDao pushDownMainDao = daosession.getPushDownMainDao();
                 PushDownSubDao pushDownSubDao = daosession.getPushDownSubDao();
-                List<PushDownMain> list = pushDownMainDao.queryBuilder().where(PushDownMainDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list();
+                List<PushDownMain> list = pushDownMainDao.queryBuilder().where(
+                        PushDownMainDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list();
                 if (list.size() > 0) {
-                    pushDownMainDao.deleteInTx(list);
-                    List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(PushDownSubDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list();
-                    if (pushDownSubs.size() > 0) {
-                        pushDownSubDao.deleteInTx(pushDownSubs);
-                    }
-                    T_mainDao t_mainDao = daosession.getT_mainDao();
-                    T_DetailDao t_detailDao = daosession.getT_DetailDao();
-                    t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.FDeliveryType.eq(sBean.list1.get(0).FInterID)).build().list());
-                    t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(T_DetailDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list());
+//                    pushDownMainDao.deleteInTx(list);
+//                    List<PushDownSub> pushDownSubs = pushDownSubDao.queryBuilder().where(
+//                            PushDownSubDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list();
+//                    if (pushDownSubs.size() > 0) {
+//                        pushDownSubDao.deleteInTx(pushDownSubs);
+//                    }
+//                    T_mainDao t_mainDao = daosession.getT_mainDao();
+//                    T_DetailDao t_detailDao = daosession.getT_DetailDao();
+//                    t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.FDeliveryType.eq(sBean.list1.get(0).FInterID)).build().list());
+//                    t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(T_DetailDao.Properties.FInterID.eq(sBean.list1.get(0).FInterID)).build().list());
+                }else{
+                    pushDownMainDao.insert(sBean.list1.get(0));
+                    pushDownSubDao.insertInTx(sBean.list);
                 }
-                pushDownMainDao.insert(sBean.list1.get(0));
-                pushDownSubDao.insertInTx(sBean.list);
+
                 final ArrayList<String> container = new ArrayList<>();
                 container.add(sBean.list1.get(0).FInterID);
                 new Handler().postDelayed(new Runnable() {
@@ -421,6 +430,8 @@ public class DownLoadPushFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         tag = ((PushDownPagerActivity) activity).getTitles();
+        billNO = ((PushDownPagerActivity) activity).getBillNo();
+        bringCode = ((PushDownPagerActivity) activity).getBarcode();
         Lg.e("获取到--tag--", tag + "");
     }
 

@@ -33,6 +33,7 @@ import com.fangzuo.assist.Service.NoticService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.ControlUtil;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
@@ -76,6 +77,8 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     EditText mEtPassword;
     @BindView(R.id.isOL)
     CheckBox mCbisOL;
+    @BindView(R.id.cb_auto_login)
+    CheckBox cbAutoLogin;
     @BindView(R.id.btn_setting)
     Button mBtnSetting;
     @BindView(R.id.btn_login)
@@ -108,11 +111,21 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         ver.setText("标准版 Ver:" + Info.getAppNo());
         Lg.e("PDA：" + App.PDA_Choose);
         isRemPass.setChecked(Hawk.get(Info.IsRemanber, false));
+        cbAutoLogin.setChecked(Hawk.get(Info.IsAutoLogin, false));
         TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint({"HardwareIds", "MissingPermission"}) String deviceId = tm.getDeviceId();
         Log.e("IMIE", deviceId);
         share.setIMIE(deviceId);
-        AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");
+
+        //自动登录
+        if ("OK".equals(Hawk.get(Config.AutoLogin,""))){
+            if (!checkTime()) {
+                ControlUtil.DownLoadUseTime();
+//            Toast.showText(mContext,"验证信息失败");
+                return;
+            }
+            startNewActivity(MenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
+        }
     }
 
     @Override
@@ -124,78 +137,18 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
         spinner.LoadUser();
         DataService.updateTime(mContext);
-        DownLoadUseTime();
+        //更新时间控制日期
+        ControlUtil.DownLoadUseTime();
         AppVersionUtil.CheckVersion(mContext);
         //检查是否存在注册码
 //        RegisterUtil.checkHasRegister();
-    }
-
-    //获取配置文件中的时间数据
-    private void DownLoadUseTime() {
-        App.getRService().doIOAction(WebApi.GetUseTime, "获取时间", new MySubscribe<CommonResponse>() {
-            @Override
-            public void onNext(CommonResponse commonResponse) {
-                super.onNext(commonResponse);
-                LoadingUtil.dismiss();
-                if (!commonResponse.state) return;
-                UseTimeBean bean = gson.fromJson(commonResponse.returnJson, UseTimeBean.class);
-                if (Integer.parseInt(getTime(false)) < Integer.parseInt(bean.nowTime)) {
-                    Toast.showText(mContext, "PDA本地时间与服务器时间有误，请调整好时间");
-                    Hawk.put(Config.SaveTime, bean);
-                    return;
-                } else {
-                    if (Integer.parseInt(getTime(false)) > Integer.parseInt(dealTime(bean.endTime))) {
-                        Toast.showText(mContext, "软件已过期，请联系供应商提供服务");
-                        Hawk.put(Config.SaveTime, bean);
-                        return;
-                    } else {
-                        Lg.e("获取起止时间：" + commonResponse.returnJson);
-                        Hawk.put(Config.SaveTime, bean);
-                    }
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                super.onError(e);
-                LoadingUtil.dismiss();
-//                    Hawk.put(Config.SaveTime,null);
-                Toast.showText(mContext, e.toString());
-                Lg.e("错误：" + e.toString());
-            }
-        });
-
-
-//        Lg.e("本地配置数据；",Hawk.get(Config.SettingData,new DownloadReturnBean().new SetFile()));
-//
-//        Asynchttp.post(mContext,Config.Setting_Url, "sdfa", new Asynchttp.Response() {
-//            @Override
-//            public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
-//                Lg.e("配置数据：",cBean);
-//                Lg.e("配置数据：",cBean.returnJson);
-//                DownloadReturnBean dBean = JsonCreater.gson.fromJson(cBean.returnJson, DownloadReturnBean.class);
-//                Lg.e("配置解析：",dBean);
-//                Lg.e("配置解析：",dBean.serverTime);
-//                for (int i = 0; i < dBean.setFiles.size(); i++) {
-//                    if (getApplication().getPackageName().equals(dBean.setFiles.get(i).AppID)){
-//                        Lg.e("存在App：",dBean.setFiles.get(i));
-//                        Hawk.put(Config.SettingData,dBean.setFiles.get(i));
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailed(String Msg, AsyncHttpClient client) {
-//                Lg.e("配置解析错误："+Msg);
-//            }
-//        });
     }
 
     //检测是否符合时间要求
     private boolean checkTime() {
         if (null == Hawk.get(Config.SaveTime, null)) {
             LoadingUtil.showDialog(mContext, "正在获取配置信息...");
-            DownLoadUseTime();
+            ControlUtil.DownLoadUseTime();
             return false;
         } else {
             UseTimeBean bean = Hawk.get(Config.SaveTime);
@@ -230,6 +183,12 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 Hawk.put(Info.IsRemanber, b);
+            }
+        });
+        cbAutoLogin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Hawk.put(Info.IsAutoLogin, b);
             }
         });
         mCbisOL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -303,7 +262,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
     private void Login() {
         if (!checkTime()) {
-            DownLoadUseTime();
+            ControlUtil.DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
             return;
         }
@@ -317,7 +276,14 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
                 } else {
                     Hawk.put(userName, "");
                 }
-                startNewActivity(MenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, false, null);
+                if (cbAutoLogin.isChecked()){
+                    Hawk.put(Config.AutoLoginName,userName);
+                    Hawk.put(Config.AutoLoginPwd,mEtPassword.getText().toString());
+                    Hawk.put(Config.AutoLogin,"OK");
+                }else{
+                    Hawk.put(Config.AutoLogin,"noOK");
+                }
+                startNewActivity(MenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
             } else {
                 Toast.showText(mContext, "请输入正确的登录信息");
             }

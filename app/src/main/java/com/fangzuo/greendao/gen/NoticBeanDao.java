@@ -25,12 +25,13 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property FBillNo = new Property(1, String.class, "FBillNo", false, "FBILL_NO");
-        public final static Property FNumAll = new Property(2, String.class, "FNumAll", false, "FNUM_ALL");
-        public final static Property FType = new Property(3, String.class, "FType", false, "FTYPE");
-        public final static Property FActivityType = new Property(4, String.class, "FActivityType", false, "FACTIVITY_TYPE");
-        public final static Property FTime = new Property(5, String.class, "FTime", false, "FTIME");
-        public final static Property FRemark = new Property(6, String.class, "FRemark", false, "FREMARK");
+        public final static Property FNoticeId = new Property(1, String.class, "FNoticeId", false, "FNOTICE_ID");
+        public final static Property FBillNo = new Property(2, String.class, "FBillNo", false, "FBILL_NO");
+        public final static Property FNumAll = new Property(3, String.class, "FNumAll", false, "FNUM_ALL");
+        public final static Property FType = new Property(4, String.class, "FType", false, "FTYPE");
+        public final static Property FActivityType = new Property(5, String.class, "FActivityType", false, "FACTIVITY_TYPE");
+        public final static Property FTime = new Property(6, String.class, "FTime", false, "FTIME");
+        public final static Property FRemark = new Property(7, String.class, "FRemark", false, "FREMARK");
     }
 
 
@@ -47,12 +48,13 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"NOTIC_BEAN\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"FBILL_NO\" TEXT," + // 1: FBillNo
-                "\"FNUM_ALL\" TEXT," + // 2: FNumAll
-                "\"FTYPE\" TEXT," + // 3: FType
-                "\"FACTIVITY_TYPE\" TEXT," + // 4: FActivityType
-                "\"FTIME\" TEXT," + // 5: FTime
-                "\"FREMARK\" TEXT);"); // 6: FRemark
+                "\"FNOTICE_ID\" TEXT," + // 1: FNoticeId
+                "\"FBILL_NO\" TEXT," + // 2: FBillNo
+                "\"FNUM_ALL\" TEXT," + // 3: FNumAll
+                "\"FTYPE\" TEXT," + // 4: FType
+                "\"FACTIVITY_TYPE\" TEXT," + // 5: FActivityType
+                "\"FTIME\" TEXT," + // 6: FTime
+                "\"FREMARK\" TEXT);"); // 7: FRemark
     }
 
     /** Drops the underlying database table. */
@@ -70,34 +72,39 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
             stmt.bindLong(1, id);
         }
  
+        String FNoticeId = entity.getFNoticeId();
+        if (FNoticeId != null) {
+            stmt.bindString(2, FNoticeId);
+        }
+ 
         String FBillNo = entity.getFBillNo();
         if (FBillNo != null) {
-            stmt.bindString(2, FBillNo);
+            stmt.bindString(3, FBillNo);
         }
  
         String FNumAll = entity.getFNumAll();
         if (FNumAll != null) {
-            stmt.bindString(3, FNumAll);
+            stmt.bindString(4, FNumAll);
         }
  
         String FType = entity.getFType();
         if (FType != null) {
-            stmt.bindString(4, FType);
+            stmt.bindString(5, FType);
         }
  
         String FActivityType = entity.getFActivityType();
         if (FActivityType != null) {
-            stmt.bindString(5, FActivityType);
+            stmt.bindString(6, FActivityType);
         }
  
         String FTime = entity.getFTime();
         if (FTime != null) {
-            stmt.bindString(6, FTime);
+            stmt.bindString(7, FTime);
         }
  
         String FRemark = entity.getFRemark();
         if (FRemark != null) {
-            stmt.bindString(7, FRemark);
+            stmt.bindString(8, FRemark);
         }
     }
 
@@ -110,34 +117,39 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
             stmt.bindLong(1, id);
         }
  
+        String FNoticeId = entity.getFNoticeId();
+        if (FNoticeId != null) {
+            stmt.bindString(2, FNoticeId);
+        }
+ 
         String FBillNo = entity.getFBillNo();
         if (FBillNo != null) {
-            stmt.bindString(2, FBillNo);
+            stmt.bindString(3, FBillNo);
         }
  
         String FNumAll = entity.getFNumAll();
         if (FNumAll != null) {
-            stmt.bindString(3, FNumAll);
+            stmt.bindString(4, FNumAll);
         }
  
         String FType = entity.getFType();
         if (FType != null) {
-            stmt.bindString(4, FType);
+            stmt.bindString(5, FType);
         }
  
         String FActivityType = entity.getFActivityType();
         if (FActivityType != null) {
-            stmt.bindString(5, FActivityType);
+            stmt.bindString(6, FActivityType);
         }
  
         String FTime = entity.getFTime();
         if (FTime != null) {
-            stmt.bindString(6, FTime);
+            stmt.bindString(7, FTime);
         }
  
         String FRemark = entity.getFRemark();
         if (FRemark != null) {
-            stmt.bindString(7, FRemark);
+            stmt.bindString(8, FRemark);
         }
     }
 
@@ -150,12 +162,13 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
     public NoticBean readEntity(Cursor cursor, int offset) {
         NoticBean entity = new NoticBean( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // FBillNo
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // FNumAll
-            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // FType
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // FActivityType
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // FTime
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // FRemark
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // FNoticeId
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // FBillNo
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // FNumAll
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // FType
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // FActivityType
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // FTime
+            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // FRemark
         );
         return entity;
     }
@@ -163,12 +176,13 @@ public class NoticBeanDao extends AbstractDao<NoticBean, Long> {
     @Override
     public void readEntity(Cursor cursor, NoticBean entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setFBillNo(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setFNumAll(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setFType(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setFActivityType(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setFTime(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setFRemark(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setFNoticeId(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setFBillNo(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setFNumAll(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setFType(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setFActivityType(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setFTime(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setFRemark(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

@@ -161,6 +161,8 @@ public class OtherOutStoreActivity extends BaseActivity {
     CheckBox autoAdd;
     @BindView(R.id.sp_pihao)
     Spinner spPihao;
+    @BindView(R.id.ed_pihao)
+    EditText edPihao;
 
 
     private DecimalFormat df;

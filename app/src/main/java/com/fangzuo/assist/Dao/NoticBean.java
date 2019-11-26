@@ -11,16 +11,18 @@ import org.greenrobot.greendao.annotation.Id;
 public class NoticBean {
     @Id(autoincrement = true)
     public Long id;
+    public String FNoticeId;
     public String FBillNo;
     public String FNumAll;
     public String FType;
     public String FActivityType;
     public String FTime;
     public String FRemark;
-    @Generated(hash = 1727642620)
-    public NoticBean(Long id, String FBillNo, String FNumAll, String FType,
-            String FActivityType, String FTime, String FRemark) {
+    @Generated(hash = 433136535)
+    public NoticBean(Long id, String FNoticeId, String FBillNo, String FNumAll,
+            String FType, String FActivityType, String FTime, String FRemark) {
         this.id = id;
+        this.FNoticeId = FNoticeId;
         this.FBillNo = FBillNo;
         this.FNumAll = FNumAll;
         this.FType = FType;
@@ -72,6 +74,12 @@ public class NoticBean {
     }
     public void setFRemark(String FRemark) {
         this.FRemark = FRemark;
+    }
+    public String getFNoticeId() {
+        return this.FNoticeId;
+    }
+    public void setFNoticeId(String FNoticeId) {
+        this.FNoticeId = FNoticeId;
     }
 
 }

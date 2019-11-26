@@ -2,13 +2,17 @@ package com.fangzuo.assist.Activity.Crash;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.fangzuo.assist.RxSerivce.RService;
+import com.fangzuo.assist.Service.NoticService;
 import com.fangzuo.assist.Utils.BasicShareUtil;
+import com.fangzuo.assist.Utils.CommonUtil;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.ShareUtil;
 import com.google.gson.Gson;
 import com.orhanobut.hawk.Hawk;
 
@@ -42,6 +46,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends MultiDexApplication {
     public static boolean isDebug=true;
+    public static boolean gettingNotice=false;
     public static String JsonFile="";
 
     private static Context mContext;
@@ -60,6 +65,7 @@ public class App extends MultiDexApplication {
 
     public static int PDA_Choose;//{" 1 G02A设备","2 8000设备","3 5000设备"4 M60,"5手机端，6 h100};
 
+    private static Handler handlerForNotice;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -107,8 +113,31 @@ public class App extends MultiDexApplication {
 
 
         mService = new RService();
+        //循环获取推送信息
+        handlerForNotice = new Handler();
+        runnable =new Runnable() {
+            @Override
+            public void run() {
+                NoticService.startNotic(mContext, ShareUtil.getInstance(mContext).getsetUserID(), CommonUtil.getTime(true));
+                handlerForNotice.postDelayed(runnable,5000);
+            }
+        };
 
     }
+    //启动循环获取推送信息
+    public static void startRunGetNotice(){
+        handlerForNotice.removeCallbacks(runnable);
+        App.gettingNotice = true;
+        handlerForNotice.postDelayed(runnable,5000);
+    }
+    //停止循环获取推送信息
+    public static void stopRunGetNotice(){
+        App.gettingNotice = false;
+        handlerForNotice.removeCallbacks(runnable);
+
+    }
+
+    private static Runnable runnable;
 
     public static Context getContext(){
         return mContext;

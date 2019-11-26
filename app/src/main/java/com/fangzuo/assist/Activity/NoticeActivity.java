@@ -39,6 +39,21 @@ public class NoticeActivity extends BaseActivity {
     private NoticRyAdapter adapter;
     NoticBeanDao noticBeanDao;
     @Override
+    protected boolean isRegisterEventBus() {
+        return true;
+    }
+
+    @Override
+    protected void receiveEvent(ClassEvent event) {
+        switch (event.Msg) {
+            case EventBusInfoCode.Upload_Notice://
+                initData();
+                break;
+        }
+    }
+
+
+    @Override
     protected void initView() {
         setContentView(R.layout.activity_notice);
         ButterKnife.bind(this);
@@ -51,6 +66,7 @@ public class NoticeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        adapter.removeAll();
         adapter.addAll(noticBeanDao.loadAll());
     }
 
@@ -62,7 +78,20 @@ public class NoticeActivity extends BaseActivity {
             public void onItemClick(int position) {
                 NoticBean noticBean = adapter.getAllData().get(position);
                 Lg.e("点击",noticBean);
+                Bundle b = new Bundle();
+                b.putInt("123", 3);
+                b.putString("billNO", noticBean.FBillNo);
+                startNewActivity(PushDownPagerActivity.class, 0, 0, true, b);
 
+
+            }
+        });
+        adapter.setOnItemLongClickListener(new RecyclerArrayAdapter.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(int position) {
+                noticBeanDao.delete(adapter.getAllData().get(position));
+                initData();
+                return true;
             }
         });
     }

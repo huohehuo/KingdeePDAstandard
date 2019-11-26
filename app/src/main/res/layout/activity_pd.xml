@@ -369,6 +369,16 @@
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:background="@color/divider_color"/>
+                        <EditText
+                            android:visibility="gone"
+                            android:id="@+id/ed_pihao"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_edittext_selector"
+                            android:gravity="center"
+                            android:imeOptions="actionNone" />
                         <Spinner
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -380,23 +390,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:background="@color/divider_color" />
-                    <LinearLayout
-                        android:visibility="gone"
-                        android:layout_width="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="批号:"
-                            android:textSize="15sp"
-                            android:textColor="@color/black"/>
-                        <EditText
-                            android:id="@+id/ed_pihao"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:background="@drawable/bg_edittext_selector"/>
-                    </LinearLayout>
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"

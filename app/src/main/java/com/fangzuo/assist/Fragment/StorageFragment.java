@@ -11,7 +11,10 @@ import android.widget.GridView;
 
 import com.fangzuo.assist.ABase.BaseFragment;
 import com.fangzuo.assist.Adapter.GridViewAdapter;
+import com.fangzuo.assist.Beans.EventBusEvent.ClassEvent;
 import com.fangzuo.assist.Beans.SettingList;
+import com.fangzuo.assist.Utils.EventBusInfoCode;
+import com.fangzuo.assist.Utils.EventBusUtil;
 import com.fangzuo.assist.Utils.GetSettingList;
 import com.fangzuo.assist.Activity.DBActivity;
 import com.fangzuo.assist.Activity.OtherInStoreActivity;
@@ -59,21 +62,7 @@ public class StorageFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SettingList tv= (SettingList) ada.getItem(i);
                 Log.e("listitem",tv.tv);
-                switch (tv.tag){
-//                switch (i){
-                    case "8"://盘点
-                        startNewActivity(PDActivity.class,null);
-                        break;
-                    case "9"://调拨
-                        startNewActivity(DBActivity.class,null);
-                        break;
-                    case "10"://其他入库
-                        startNewActivity(OtherInStoreActivity.class,null);
-                        break;
-                    case "11"://其他出库
-                        startNewActivity(OtherOutStoreActivity.class,null);
-                        break;
-                }
+                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Click_Order,tv.tag));
             }
         });
     }

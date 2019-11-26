@@ -390,15 +390,15 @@
                             android:layout_weight="1" />
 
                         <EditText
+                            android:visibility="gone"
                             android:id="@+id/ed_pihao"
                             android:layout_width="0dp"
-                            android:layout_height="35dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
-                            android:gravity="center_vertical"
-                            android:imeOptions="actionNone"
-
-                            android:visibility="gone" />
+                            android:gravity="center"
+                            android:imeOptions="actionNone" />
                     </LinearLayout>
 
                     <View

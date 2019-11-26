@@ -369,6 +369,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+                        <EditText
+                            android:visibility="gone"
+                            android:id="@+id/ed_pihao"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_edittext_selector"
+                            android:gravity="center"
+                            android:imeOptions="actionNone" />
+
                         <Spinner
                             android:layout_width="0dp"
                             android:layout_height="40dp"

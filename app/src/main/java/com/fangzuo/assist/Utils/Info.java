@@ -25,6 +25,7 @@ public class Info {
 
     public static final String AutoLogin="AutoLogin";
     public static final String IsRemanber="IsRemanber";
+    public static final String IsAutoLogin="IsAutoLogin";
     public static final String Storage="storage";
 
 
