@@ -13,6 +13,7 @@ import com.fangzuo.assist.R;
 
 import java.util.ArrayList;
 
+import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -56,6 +57,15 @@ public class SettingListAdapter extends BaseAdapter {
         }
         viewHolder.iv.setImageResource(items.get(i).ImageResourse);
         viewHolder.tv.setText(items.get(i).tv);
+        //设置非通用单据为灰色
+        if ("16".equals(items.get(i).tag) || "17".equals(items.get(i).tag) || "20".equals(items.get(i).tag)
+                || "21".equals(items.get(i).tag) || "22".equals(items.get(i).tag) || "23".equals(items.get(i).tag)
+                || "24".equals(items.get(i).tag) || "25".equals(items.get(i).tag)
+                ){
+            viewHolder.tv.setTextColor(viewHolder.gray);
+        }else{
+            viewHolder.tv.setTextColor(viewHolder.black);
+        }
         return view;
     }
 
@@ -65,6 +75,8 @@ public class SettingListAdapter extends BaseAdapter {
         ImageView iv;
         @BindView(R.id.tv)
         TextView tv;
+        @BindColor(R.color.pd_text_gray)int gray;
+        @BindColor(R.color.pd_text_black)int black;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

@@ -181,6 +181,12 @@ public class SpinnerStorage extends RelativeLayout {
      * @param saveKeyStr        用于保存的key
      * @param string            自动设置的z值
      * */
+    private boolean addNullStorage;
+    public void setAutoSelection(String saveKeyStr,String string,boolean addNull) {
+        addNullStorage=addNull;
+        setAutoSelection(saveKeyStr,string);
+    }
+
     public void setAutoSelection(String saveKeyStr,String string) {
         saveKeyString =saveKeyStr;
         autoString = string;
@@ -188,14 +194,28 @@ public class SpinnerStorage extends RelativeLayout {
         if ("".equals(string)){
             autoString = Hawk.get(saveKeyString,"");
         }
-        for (int j = 0; j < adapter.getCount(); j++) {
-            if (((Storage) adapter.getItem(j)).FName.equals(autoString)
-                    || ((Storage) adapter.getItem(j)).FItemID.equals(autoString)) {
-                mSp.setSelection(j);
+        Lg.e("addNull",addNullStorage);
+        if (addNullStorage){
+            container.clear();
+            StorageDao storageDao = daoSession.getStorageDao();
+            List<Storage> storages = storageDao.loadAll();
+            container.add(new Storage("","","","","","","","","",""));
+            container.addAll(storages);
+            mSp.setAdapter(adapter);
+            addNullStorage = false;
+        }else{
+            for (int j = 0; j < adapter.getCount(); j++) {
+                if (((Storage) adapter.getItem(j)).FName.equals(autoString)
+                        || ((Storage) adapter.getItem(j)).FItemID.equals(autoString)
+                        || ((Storage) adapter.getItem(j)).FNumber.equals(autoString)
+                        ) {
+                    mSp.setSelection(j);
 //                autoString = null;
-                break;
+                    break;
+                }
             }
         }
+
     }
 
     public StorageSpAdapter getAdapter() {

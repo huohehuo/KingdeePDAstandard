@@ -44,6 +44,7 @@ import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.ShareUtil;
 import com.fangzuo.assist.Utils.Toast;
+import com.fangzuo.assist.Utils.UpgradeUtil.AppVersionUtil;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.greendao.gen.DaoSession;
@@ -166,12 +167,21 @@ public class MenuActivity extends BaseActivity {
         noticBeanDao = daoSession.getNoticBeanDao();
         initFragments();
         //登录成功，开启循环请求推送信息
-        App.startRunGetNotice();
+//        App.startRunGetNotice();
         //更新时间控制日期
         ControlUtil.DownLoadUseTime();
 
     }
-
+    @Override
+    public void onBackPressed() {
+//        //若是没勾选自动登录，推出后停止获取推送信息
+        if (!"OK".equals(Hawk.get(Config.CheckAutoLogin,""))){
+//            App.stopRunGetNotice();
+            startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
+        }else{
+            super.onBackPressed();
+        }
+    }
     @Override
     public void initData() {
         tvUser.setText("当前用户:" + ShareUtil.getInstance(mContext).getUserName());
@@ -181,7 +191,7 @@ public class MenuActivity extends BaseActivity {
         items_pushdown= new ArrayList<>();
 //        String getPermit= Hawk.get(Config.User_Permit,"");
 //        String[] aa = getPermit.split("\\-"); // 这样才能得到正确的结果
-        dealPushDownMenu(null);
+//        dealPushDownMenu(null);
     }
 
 
@@ -228,28 +238,18 @@ public class MenuActivity extends BaseActivity {
 
 
 
+    //初始化Fragment
     private void initFragments() {
         FragmentManager fm = getSupportFragmentManager();
-        PurchaseFragment purchaseFragment = new PurchaseFragment();
-        SaleFragment saleFragment = new SaleFragment();
-        StorageFragment storageFragment = new StorageFragment();
-        SettingFragment settingFragment = new SettingFragment();
         ArrayList<Fragment> fragments = new ArrayList<>();
-        fragments.add(purchaseFragment);
-        fragments.add(saleFragment);
-        fragments.add(storageFragment);
-        fragments.add(settingFragment);
+        fragments.add(new PurchaseFragment());
+        fragments.add(new SaleFragment());
+        fragments.add(new StorageFragment());
+        fragments.add(new SettingFragment());
         MenuFragmentAdapter menuFragmentAdapter = new MenuFragmentAdapter(fm, fragments);
         viewPager.setAdapter(menuFragmentAdapter);
         viewPager.setCurrentItem(0);
     }
-
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
-    }
-
 
     @OnClick({R.id.btn_back, R.id.iv_notic, R.id.update_data, R.id.bottom_btn_purchase, R.id.bottom_btn_sale, R.id.bottom_btn_storage, R.id.bottom_btn_setting})
     public void onViewClicked(View view) {
@@ -260,7 +260,7 @@ public class MenuActivity extends BaseActivity {
                         .setPositiveButton("确认", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Hawk.put(Config.AutoLogin,"noOK");
+                                Hawk.put(Config.CheckAutoLogin,"noOK");
                                 App.stopRunGetNotice();//停止获取推送信息
                                 startNewActivity(LoginActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
                                 finish();
@@ -339,38 +339,38 @@ public class MenuActivity extends BaseActivity {
                 startNewActivity(OtherOutStoreActivity.class,R.anim.activity_slide_left_in, R.anim.activity_slide_left_out,false,  null);
                 break;
             case "6"://单据下推
-                // 创建对话框构建器
-                b = new Bundle();
-                builder = new AlertDialog.Builder(this);
-                // 设置参数
-                builder.setAdapter(
-                        new ArrayAdapter<String>(this,
-                                R.layout.item_choose, R.id.textView, items_pushdown),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog,
-                                                int which) {
-                                switch (items_pushdown.get(which)) {
-                                    case "销售订单下推销售出库":b.clear();b.putInt("123", 1);break;
-                                    case "采购订单下推外购入库":b.clear();b.putInt("123", 2);break;
-                                    case "发货通知下推销售出库":b.clear();b.putInt("123", 3);break;
-                                    case "收料通知下推外购入库":b.clear();b.putInt("123", 4);break;
-                                    case "委外订单下推委外入库":b.clear();b.putInt("123", 11);break;
-                                    case "委外订单下推委外出库":b.clear();b.putInt("123", 12);break;
-                                    case "生产任务单下推产品入库":b.clear();b.putInt("123", 9);break;
-                                    case "生产任务单下推生产领料":b.clear();b.putInt("123", 13);break;
-                                    case "采购订单下推收料通知单":b.clear();b.putInt("123", 14);break;
-                                    case "销售订单下推发料通知单":b.clear();b.putInt("123", 15);break;
-                                    case "生产任务单下推生产汇报单":b.clear();b.putInt("123", 16);break;
-                                    case "汇报单下推产品入库":b.clear();b.putInt("123", 18);break;
-                                    case "销售出库单验货":b.clear();b.putInt("123", 7);break;
-                                    case "发货通知生成调拨单":b.clear();b.putInt("123", 20);break;
-                                }
-                                startNewActivity(PushDownPagerActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b);
-                            }
-                        });
-                builder.create().show();
-//                startNewActivity(PushDownActivity.class,R.anim.activity_slide_left_in, R.anim.activity_slide_left_out,false,  null);
+//                // 创建对话框构建器
+//                b = new Bundle();
+//                builder = new AlertDialog.Builder(this);
+//                // 设置参数
+//                builder.setAdapter(
+//                        new ArrayAdapter<String>(this,
+//                                R.layout.item_choose, R.id.textView, items_pushdown),
+//                        new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog,
+//                                                int which) {
+//                                switch (items_pushdown.get(which)) {
+//                                    case "销售订单下推销售出库":b.clear();b.putInt("123", 1);break;
+//                                    case "采购订单下推外购入库":b.clear();b.putInt("123", 2);break;
+//                                    case "发货通知下推销售出库":b.clear();b.putInt("123", 3);break;
+//                                    case "收料通知下推外购入库":b.clear();b.putInt("123", 4);break;
+//                                    case "委外订单下推委外入库":b.clear();b.putInt("123", 11);break;
+//                                    case "委外订单下推委外出库":b.clear();b.putInt("123", 12);break;
+//                                    case "生产任务单下推产品入库":b.clear();b.putInt("123", 9);break;
+//                                    case "生产任务单下推生产领料":b.clear();b.putInt("123", 13);break;
+//                                    case "采购订单下推收料通知单":b.clear();b.putInt("123", 14);break;
+//                                    case "销售订单下推发料通知单":b.clear();b.putInt("123", 15);break;
+//                                    case "生产任务单下推生产汇报单":b.clear();b.putInt("123", 16);break;
+//                                    case "汇报单下推产品入库":b.clear();b.putInt("123", 18);break;
+//                                    case "销售出库单验货":b.clear();b.putInt("123", 7);break;
+//                                    case "发货通知生成调拨单":b.clear();b.putInt("123", 20);break;
+//                                }
+//                                startNewActivity(PushDownPagerActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b);
+//                            }
+//                        });
+//                builder.create().show();
+                startNewActivity(PushDownActivity.class,R.anim.activity_slide_left_in, R.anim.activity_slide_left_out,false,  null);
                 break;
 
         }
@@ -441,6 +441,12 @@ public class MenuActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //检测版本更新
+        AppVersionUtil.CheckVersion(mContext);
+    }
 
     //重置所有按钮未未选中状态
     private void resetBottomView() {
@@ -454,6 +460,13 @@ public class MenuActivity extends BaseActivity {
         tvStorage.setTextColor(tvColorUnClick);
     }
 
+
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
 
 
     @Override

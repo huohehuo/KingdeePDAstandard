@@ -84,6 +84,7 @@ import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -155,9 +156,9 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.tv_date_pay)
-    TextView tvDatePay;
+    TextAutoTime tvDatePay;
     @BindView(R.id.sp_sale_scope)
     SpinnerSaleScope spSaleScope;             //销售范围
     @BindView(R.id.sp_saleMethod)
@@ -357,8 +358,6 @@ public class SoldOutActivity extends BaseActivity {
 //        spSendMethod.setSelection(share.getSOUTsendmethod());
 
 
-        tvDate.setText(share.getSOUTdate());
-        tvDatePay.setText(share.getSOUTdatepay());
     }
 
     @Override
@@ -1049,7 +1048,7 @@ public class SoldOutActivity extends BaseActivity {
         }
     }
 
-    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
+    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             //选择客户
@@ -1084,12 +1083,6 @@ public class SoldOutActivity extends BaseActivity {
                 Bundle b2 = new Bundle();
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
-                break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
-            case R.id.tv_date_pay:
-                datePicker(tvDatePay);
                 break;
         }
     }
@@ -1168,8 +1161,8 @@ public class SoldOutActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if (edNum.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -1208,8 +1201,7 @@ public class SoldOutActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-            t_mainDao.deleteInTx(dewlete);
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

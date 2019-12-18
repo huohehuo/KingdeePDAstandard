@@ -104,7 +104,7 @@ public class NoticService extends IntentService {
                     NoticBeanDao noticBean = GreenDaoManager.getmInstance(App.getContext()).getDaoSession().getNoticBeanDao();
                     for (int i = 0; i < sBean.noticBeans.size(); i++) {
                         //当本地不存在该billno，则添加
-                        if (noticBean.queryBuilder().where(NoticBeanDao.Properties.FBillNo.eq(sBean.noticBeans)).build().list().size()<=0){
+                        if (noticBean.queryBuilder().where(NoticBeanDao.Properties.FBillNo.eq(sBean.noticBeans.get(i).FBillNo)).build().list().size()<=0){
                             noticBean.insertInTx(sBean.noticBeans.get(i));
                             EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Upload_Notice, ""));
                         }

@@ -81,6 +81,7 @@ import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerWlkm;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -147,9 +148,9 @@ public class PurchaseInStorageActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.tv_date_pay)
-    TextView tvDatePay;
+    TextAutoTime tvDatePay;
     @BindView(R.id.sp_purchaseMethod)
     SpinnerPurchaseMethod spPurchaseMethod;
     @BindView(R.id.sp_capture_person)
@@ -427,20 +428,6 @@ public class PurchaseInStorageActivity extends BaseActivity {
             }
         });
 
-        tvDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePicker(tvDate);
-            }
-        });
-
-        tvDatePay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePicker(tvDatePay);
-
-            }
-        });
 
 //        spPurchaseMethod.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -697,8 +684,7 @@ public class PurchaseInStorageActivity extends BaseActivity {
 //        spDepartment.setSelection(share.getPISdepartment());
 //        spWanglaikemu.setSelection(share.getPISwanglaikemu());
 
-        tvDate.setText(share.getPISdate());
-        tvDatePay.setText(share.getPISdatepay());
+
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_pis), "");
         spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_pis), "");
         spDepartment.setAutoSelection(getString(R.string.spDepartment_pis), "");
@@ -1197,10 +1183,10 @@ public class PurchaseInStorageActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if (edNum.getText().toString().equals("")) {
-                setfocus(edNum);
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
                 MediaPlayer.getInstance(mContext).error();
+                setfocus(edNum);
                 return;
             }
             if (edPricesingle.getText().toString().equals("")) {
@@ -1246,10 +1232,9 @@ public class PurchaseInStorageActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> delete = t_mainDao.queryBuilder().where(
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
                     T_mainDao.Properties.OrderId.eq(ordercode)
-            ).build().list();
-            t_mainDao.deleteInTx(delete);
+            ).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

@@ -40,6 +40,7 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
         public final static Property FDCSPID = new Property(13, String.class, "FDCSPID", false, "FDCSPID");
         public final static Property FBatchNo = new Property(14, String.class, "FBatchNo", false, "FBATCH_NO");
         public final static Property FDCSTOCK_ID = new Property(15, String.class, "FDCSTOCK_ID", false, "FDCSTOCK__ID");
+        public final static Property Tag = new Property(16, int.class, "tag", false, "TAG");
     }
 
 
@@ -70,7 +71,8 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
                 "\"FDCSTOCK_ID\" TEXT," + // 12: FDCStockID
                 "\"FDCSPID\" TEXT," + // 13: FDCSPID
                 "\"FBATCH_NO\" TEXT," + // 14: FBatchNo
-                "\"FDCSTOCK__ID\" TEXT);"); // 15: FDCSTOCK_ID
+                "\"FDCSTOCK__ID\" TEXT," + // 15: FDCSTOCK_ID
+                "\"TAG\" INTEGER NOT NULL );"); // 16: tag
     }
 
     /** Drops the underlying database table. */
@@ -162,6 +164,7 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
         if (FDCSTOCK_ID != null) {
             stmt.bindString(16, FDCSTOCK_ID);
         }
+        stmt.bindLong(17, entity.getTag());
     }
 
     @Override
@@ -247,6 +250,7 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
         if (FDCSTOCK_ID != null) {
             stmt.bindString(16, FDCSTOCK_ID);
         }
+        stmt.bindLong(17, entity.getTag());
     }
 
     @Override
@@ -272,7 +276,8 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // FDCStockID
             cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // FDCSPID
             cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // FBatchNo
-            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15) // FDCSTOCK_ID
+            cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15), // FDCSTOCK_ID
+            cursor.getInt(offset + 16) // tag
         );
         return entity;
     }
@@ -295,6 +300,7 @@ public class PushDownSubDao extends AbstractDao<PushDownSub, Long> {
         entity.setFDCSPID(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setFBatchNo(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
         entity.setFDCSTOCK_ID(cursor.isNull(offset + 15) ? null : cursor.getString(offset + 15));
+        entity.setTag(cursor.getInt(offset + 16));
      }
     
     @Override

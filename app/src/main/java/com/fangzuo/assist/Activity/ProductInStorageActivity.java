@@ -72,6 +72,7 @@ import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -133,7 +134,7 @@ public class ProductInStorageActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.sp_yuandan)
     SpinnerYuanDan spYuandan;
     @BindView(R.id.sp_yanshou)
@@ -450,12 +451,7 @@ public class ProductInStorageActivity extends BaseActivity {
 
             }
         });
-        tvDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                datePicker(tvDate);
-            }
-        });
+
     }
 
     @Override
@@ -474,7 +470,6 @@ public class ProductInStorageActivity extends BaseActivity {
     }
 
     private void LoadBasicData() {
-        tvDate.setText(share.getPROISdate());
 //        storageAdapter = method.getStorageSpinner(spWhichStorage);
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_pris), "");
         spYuandan.setAutoSelection(getString(R.string.spYuandan_pris), "");
@@ -951,15 +946,18 @@ public class ProductInStorageActivity extends BaseActivity {
                 Toast.showText(mContext, "请选择交货单位");
                 return;
             }
-            if ((edghunit.getText().toString().equals("")) || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
+            if ((edghunit.getText().toString().equals("")) || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("")) {
                 MediaPlayer.getInstance(mContext).error();
                 if (edCode.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入物料编号");
                 } else if (edPricesingle.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入单价");
-                } else if (edNum.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入数量");
-                } else if (edghunit.getText().toString().equals("")) {
+                }else if (edghunit.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入交货单位");
                 }
             } else if (fBatchManager && edPihao.getText().toString().equals("")) {
@@ -983,10 +981,9 @@ public class ProductInStorageActivity extends BaseActivity {
                         }
                     }
                 }
-                List<T_main> dewlete = t_mainDao.queryBuilder().where(
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(
                         T_mainDao.Properties.OrderId.eq(ordercode)
-                ).build().list();
-                t_mainDao.deleteInTx(dewlete);
+                ).build().list());
                 String second = getTimesecond();
                 T_main t_main = new T_main();
                 t_main.FDepartment = jiaohuoName == null ? "" : jiaohuoName;

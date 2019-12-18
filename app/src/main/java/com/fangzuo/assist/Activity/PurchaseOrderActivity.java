@@ -73,6 +73,7 @@ import com.fangzuo.assist.widget.SpinnerPurchaseMethod;
 import com.fangzuo.assist.widget.SpinnerPurchaseScope;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.widget.TextViewCard;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
@@ -107,7 +108,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     @BindView(R.id.ishebing)
     CheckBox cbHebing;
     @BindView(R.id.tv_date_arrive)
-    TextView tvDateArrive;
+    TextAutoTime tvDateArrive;
     @BindView(R.id.scanbyCamera)
     RelativeLayout scanbyCamera;
     @BindView(R.id.ed_code)
@@ -137,9 +138,9 @@ public class PurchaseOrderActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.tv_date_pay)
-    TextView tvDatePay;
+    TextAutoTime tvDatePay;
     @BindView(R.id.sp_purchase_scope)
     SpinnerPurchaseScope spPurchaseScope;
     @BindView(R.id.sp_purchaseMethod)
@@ -265,9 +266,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     }
 
     private void loadBasicData() {
-        tvDateArrive.setText(getTime(true));
-        tvDate.setText(share.getPOdate());
-        tvDatePay.setText(share.getPOpaydate());
+
         method.updateSupplier();
         //第一个参数用于保存上一个值，第二个为自动跳转到该默认值
         spEmployee.setAutoSelection(getString(R.string.spEmployee_po), "");
@@ -502,14 +501,11 @@ public class PurchaseOrderActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.search_supplier, R.id.tv_date_arrive, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
+    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.search_supplier:
                 SearchSupplier();
-                break;
-            case R.id.tv_date_arrive:
-                datePicker(tvDateArrive);
                 break;
             case R.id.scanbyCamera:
                 IntentIntegrator intentIntegrator = new IntentIntegrator(mContext);
@@ -536,12 +532,6 @@ public class PurchaseOrderActivity extends BaseActivity {
                 Bundle b1 = new Bundle();
                 b1.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b1);
-                break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
-            case R.id.tv_date_pay:
-                datePicker(tvDatePay);
                 break;
         }
     }
@@ -764,9 +754,13 @@ public class PurchaseOrderActivity extends BaseActivity {
             }
             if (edOnsale.getText().toString().equals("")) {
                 Toast.showText(mContext, "请输入折扣率");
+                MediaPlayer.getInstance(mContext).error();
+                return;
             }
-            if (edNum.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
+                MediaPlayer.getInstance(mContext).error();
+                return;
             }
             if (edPricesingle.getText().toString().equals("")) {
                 Toast.showText(mContext, "请输入单价");
@@ -782,7 +776,6 @@ public class PurchaseOrderActivity extends BaseActivity {
                         T_DetailDao.Properties.FProductId.eq(product.FItemID),
                         T_DetailDao.Properties.FTaxUnitPrice.eq(edPricesingle.getText().toString()),
                         T_DetailDao.Properties.FDiscount.eq(discount)
-
                 ).build().list();
                 if (detailhebing.size() > 0) {
                     for (int i = 0; i < detailhebing.size(); i++) {
@@ -791,10 +784,7 @@ public class PurchaseOrderActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(
-                    T_mainDao.Properties.OrderId.eq(ordercode)
-            ).build().list();
-            t_mainDao.deleteInTx(dewlete);
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

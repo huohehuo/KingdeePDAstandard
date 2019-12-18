@@ -46,7 +46,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class App extends MultiDexApplication {
     public static boolean isDebug=true;
-    public static boolean gettingNotice=false;
     public static String JsonFile="";
 
     private static Context mContext;
@@ -65,7 +64,6 @@ public class App extends MultiDexApplication {
 
     public static int PDA_Choose;//{" 1 G02A设备","2 8000设备","3 5000设备"4 M60,"5手机端，6 h100};
 
-    private static Handler handlerForNotice;
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -125,6 +123,9 @@ public class App extends MultiDexApplication {
 
     }
     //启动循环获取推送信息
+    public static boolean gettingNotice=false;
+    private static Handler handlerForNotice;
+    private static Runnable runnable;
     public static void startRunGetNotice(){
         handlerForNotice.removeCallbacks(runnable);
         App.gettingNotice = true;
@@ -137,7 +138,6 @@ public class App extends MultiDexApplication {
 
     }
 
-    private static Runnable runnable;
 
     public static Context getContext(){
         return mContext;

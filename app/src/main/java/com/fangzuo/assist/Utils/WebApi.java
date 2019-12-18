@@ -20,12 +20,19 @@ public class WebApi {
     public static final String PROP = "SetPropties";
     public static final String DOWNLOADDATA = "DownloadInfo";
     public static final String UPLOADPIS = "PurchaseInStoreUpload";
+    public static final String PurchaseInStorageActivityUpload = "PurchaseInStorageActivityUpload";
     public static final String UPLOADPROIS = "ProductInStoreUpload";
+    public static final String ProductInStorageActivityUpload = "ProductInStorageActivityUpload";
     public static final String UPLOADPO = "PurchaseOrderUpload";
+    public static final String PurchaseOrderActivityUpload = "PurchaseOrderActivityUpload";
     public static final String UPLOADSO = "SalesOrderUpload";
+    public static final String SaleOrderActivityUpload = "SaleOrderActivityUpload";
     public static final String UPLOADSOUT = "SoldOutUpload";
+    public static final String SoldOutActivityUpload = "SoldOutActivityUpload";
     public static final String OTHERINSTORE = "OtherInStoreUpload";
+    public static final String OtherInStoreActivityUpload = "OtherInStoreActivityUpload";
     public static final String OTHEROUTSTORE = "OtherOutStoreUpload";
+    public static final String OtherOutStoreActivityUpload = "OtherOutStoreActivityUpload";
     public static final String DBUPLOAD = "DBUpload";
     public static final String PDMAINLIST = "GetPDList";
     public static final String PDSUBLIST = "GetPDSubList";
@@ -52,6 +59,7 @@ public class WebApi {
     public static final String TESTDATABASE = "TestDataBase";
     public static final String PRPDUCTSEARCHWHERE = "ProductSearchWhere";
     public static final String PRODUCEANDGET = "ProduceAndGetUpload";
+    public static final String ProduceAndGetActivityUpload = "ProduceAndGetActivityUpload";
 
     public static final String SUPPLIERSEARCHLIKE = "SupplerSearchLike";
     public static final String CLIENTSEARCHLIKE = "ClientSearchLike";

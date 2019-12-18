@@ -221,7 +221,7 @@ public class UpLoadActivity extends BaseActivity {
         String string = "";
         switch (activity) {
             case Config.PurchaseOrderActivity:
-                io = WebApi.UPLOADPO;
+                io = WebApi.PurchaseOrderActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FPaymentDate + "|" +
@@ -237,7 +237,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.sourceOrderTypeId + "|";
                 break;
             case Config.PurchaseInStorageActivity:
-                io = WebApi.UPLOADPIS;
+                io = WebApi.PurchaseInStorageActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FPaymentDate + "|" +
@@ -257,7 +257,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.orderId + "|";
                 break;
             case Config.ProductInStorageActivity:
-                io = WebApi.UPLOADPROIS;
+                io = WebApi.ProductInStorageActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FDepartmentId + "|" +
@@ -267,7 +267,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.sourceOrderTypeId + "|";
                 break;
             case Config.SaleOrderActivity:
-                io = WebApi.UPLOADSO;
+                io = WebApi.SaleOrderActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FPaymentDate + "|" +
@@ -284,7 +284,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.sourceOrderTypeId + "|";
                 break;
             case Config.SoldOutActivity:
-                io = WebApi.UPLOADSOUT;
+                io = WebApi.SoldOutActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FPaymentDate + "|" +
@@ -302,7 +302,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.sourceOrderTypeId + "|";
                 break;
             case Config.ProduceAndGetActivity:
-                io = WebApi.PRODUCEANDGET;
+                io = WebApi.ProduceAndGetActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FDepartmentId + "|"
@@ -313,7 +313,7 @@ public class UpLoadActivity extends BaseActivity {
                         "" + "|";
                 break;
             case Config.OtherOutStoreActivity:
-                io = WebApi.OTHEROUTSTORE;
+                io = WebApi.OtherOutStoreActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FDepartmentId + "|" +
@@ -328,7 +328,7 @@ public class UpLoadActivity extends BaseActivity {
                         t_main.sourceOrderTypeId + "|";
                 break;
             case Config.OtherInStoreActivity:
-                io = WebApi.OTHERINSTORE;
+                io = WebApi.OtherInStoreActivityUpload;
                 string = t_main.FMakerId + "|" +
                         t_main.orderDate + "|" +
                         t_main.FDepartmentId + "|" +

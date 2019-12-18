@@ -59,7 +59,10 @@
         <attr name="wspinner_name_size" format="dimension"/>
     </declare-styleable>
 
-
+    <declare-styleable name="Style_Time_Choose">
+        <attr name="Time_titile" format="string"/>
+        <attr name="Time_titile_size" format="dimension"/>
+    </declare-styleable>
     <declare-styleable name="Style_Spinner_Unit">
         <attr name="Uspinner_name" format="string"/>
         <attr name="Uspinner_focusable" format="boolean"/>

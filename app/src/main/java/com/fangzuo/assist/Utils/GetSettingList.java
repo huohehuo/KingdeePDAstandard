@@ -54,12 +54,13 @@ public class GetSettingList {
         ArrayList<SettingList> items = new ArrayList<>();
         items.add(new SettingList("12","销售订单下推销售出库",R.mipmap.pandian));
         items.add(new SettingList("13","采购订单下推外购入库",R.mipmap.diaobo));
-        items.add(new SettingList("14","发货通知下推销售出库",R.mipmap.ruku));
-        items.add(new SettingList("15","收料通知下推外购入库",R.mipmap.chuku));
-        items.add(new SettingList("16","委外订单下推委外入库",R.mipmap.pandian));
-        items.add(new SettingList("17","委外订单下推委外出库",R.mipmap.diaobo));
         items.add(new SettingList("18","生产任务单下推产品入库",R.mipmap.ruku));
         items.add(new SettingList("19","生产任务单下推生产领料",R.mipmap.pandian));
+        items.add(new SettingList("14","发货通知下推销售出库",R.mipmap.ruku));
+        items.add(new SettingList("15","收料通知下推外购入库",R.mipmap.chuku));
+        //---------------非通用单据---------------------------
+        items.add(new SettingList("16","委外订单下推委外入库",R.mipmap.pandian));
+        items.add(new SettingList("17","委外订单下推委外出库",R.mipmap.diaobo));
         items.add(new SettingList("20","采购订单下推收料通知单",R.mipmap.pandian));
         items.add(new SettingList("21","销售订单下推发料通知单",R.mipmap.pandian));
         items.add(new SettingList("22","生产任务单下推生产汇报单",R.mipmap.pandian));

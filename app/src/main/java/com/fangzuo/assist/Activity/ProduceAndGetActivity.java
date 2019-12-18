@@ -80,6 +80,7 @@ import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -146,7 +147,7 @@ public class ProduceAndGetActivity extends BaseActivity {
     @BindView(R.id.cb_isStorage)
     CheckBox cbIsStorage;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.sp_getType)
     SpinnerLingliaoType spGetType;
     @BindView(R.id.sp_getman)
@@ -283,7 +284,7 @@ public class ProduceAndGetActivity extends BaseActivity {
     }
 
     private void LoadBasicData() {
-        tvDate.setText(share.getPROISdate());
+
 //        storageAdapter = method.getStorageSpinner(spWhichStorage);
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_pag), "");
         spDepartment.setAutoSelection(getString(R.string.spDepartment_pag), "");
@@ -618,7 +619,7 @@ public class ProduceAndGetActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scanbyCamera:
@@ -647,9 +648,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
                 break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
+
         }
     }
 
@@ -919,8 +918,8 @@ public class ProduceAndGetActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if ("".equals(edNum.getText().toString())) {
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -970,8 +969,7 @@ public class ProduceAndGetActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-            t_mainDao.deleteInTx(dewlete);
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

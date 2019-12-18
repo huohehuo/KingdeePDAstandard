@@ -51,12 +51,14 @@
                android:textColor="@android:color/white"
                android:textStyle="bold"/>
            <TextView
+               android:visibility="gone"
                android:id="@+id/tv_notic"
                tools:text="10"
                android:layout_gravity="center_vertical"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content" />
            <ImageView
+               android:visibility="gone"
                android:background="@drawable/notic"
                android:id="@+id/iv_notic"
                android:layout_width="30dp"

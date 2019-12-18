@@ -2,6 +2,7 @@ package com.fangzuo.assist.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.v7.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,7 +41,7 @@ import java.util.List;
 
 public class SpinnerUnit extends RelativeLayout {
     // 返回按钮控件
-    private Spinner mSp;
+    private AppCompatSpinner mSp;
     // 标题Tv
     private TextView mTitleTv;
     private static BasicShareUtil share;
@@ -65,7 +66,7 @@ public class SpinnerUnit extends RelativeLayout {
         adapter = new UnitSpAdapter(context, list);
         share = BasicShareUtil.getInstance(context);
         // 获取控件
-        mSp = (Spinner) findViewById(R.id.sp);
+        mSp = (AppCompatSpinner) findViewById(R.id.sp);
         mTitleTv = (TextView) findViewById(R.id.tv);
         TypedArray attrArray = context.obtainStyledAttributes(attributeSet, R.styleable.Style_Spinner_Unit);
         int count = attrArray.getIndexCount();

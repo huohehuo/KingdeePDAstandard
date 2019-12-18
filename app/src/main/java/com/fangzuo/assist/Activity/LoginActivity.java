@@ -88,12 +88,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     private LoginActivity mContext;
     @BindView(R.id.sp_login)
     SpinnerUser spinner;
-    private DaoSession session;
     private String userName = "";
     private String userID = "";
     private List<User> users;
     private BasicShareUtil share;
-    private boolean isOL;
     private String userPass;
     private UserDao userDao;
 
@@ -104,8 +102,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         mContext = this;
         initBar();
         share = BasicShareUtil.getInstance(mContext);
-        session = GreenDaoManager.getmInstance(mContext).getDaoSession();
-        userDao = session.getUserDao();
+        userDao = daoSession.getUserDao();
         getPermisssion();
 //        ver.setText("标准版 Ver:" + getVersionName());
         ver.setText("标准版 Ver:" + Info.getAppNo());
@@ -117,8 +114,9 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         Log.e("IMIE", deviceId);
         share.setIMIE(deviceId);
 
+        AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");
         //自动登录
-        if ("OK".equals(Hawk.get(Config.AutoLogin,""))){
+        if ("OK".equals(Hawk.get(Config.CheckAutoLogin,""))){
             if (!checkTime()) {
                 ControlUtil.DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
@@ -194,7 +192,6 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         mCbisOL.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isOL = b;
                 BasicShareUtil.getInstance(mContext).setIsOL(b);
 //                users = userDao.loadAll();
 //                LoginSpAdapter ada = new LoginSpAdapter(mContext, users);
@@ -224,22 +221,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 
             }
         });
-        btnLogin.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                NoticService.startNotic(mContext,ShareUtil.getInstance(mContext).getsetUserID(),getTime(true));
-                //                //发送更新提示广播
-//                Intent intent = new Intent(Config.VersionReceiver);
-//                intent.putExtra("version",rec+"");
-//                intent.setPackage(getPackageName());
-//                sendBroadcast(intent);
-                rec++;
-                return true;
-            }
-        });
     }
-    int rec =1;
-
     @Override
     protected void OnReceive(String code) {
         Toast.showText(mContext, "测试扫码:" + code);
@@ -276,12 +258,13 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
                 } else {
                     Hawk.put(userName, "");
                 }
+                //自动登录时，下次会自动登录直接跳到主菜单界面
                 if (cbAutoLogin.isChecked()){
                     Hawk.put(Config.AutoLoginName,userName);
                     Hawk.put(Config.AutoLoginPwd,mEtPassword.getText().toString());
-                    Hawk.put(Config.AutoLogin,"OK");
+                    Hawk.put(Config.CheckAutoLogin,"OK");
                 }else{
-                    Hawk.put(Config.AutoLogin,"noOK");
+                    Hawk.put(Config.CheckAutoLogin,"noOK");
                 }
                 startNewActivity(MenuActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
             } else {

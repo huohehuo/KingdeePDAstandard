@@ -27,6 +27,7 @@ public class PushDownSub {
     public String FDCSPID;
     public String FBatchNo;
     public String FDCSTOCK_ID;
+    public int tag;
     public String getFQtying() {
         return this.FQtying;
     }
@@ -123,12 +124,12 @@ public class PushDownSub {
     public void setFDCSTOCK_ID(String FDCSTOCK_ID) {
         this.FDCSTOCK_ID = FDCSTOCK_ID;
     }
-    @Generated(hash = 385272229)
+    @Generated(hash = 124257572)
     public PushDownSub(Long id, String FName, String FNumber, String FModel,
             String FBillNo, String FInterID, String FEntryID, String FItemID,
             String FUnitID, String FAuxQty, String FAuxPrice, String FQtying,
-            String FDCStockID, String FDCSPID, String FBatchNo,
-            String FDCSTOCK_ID) {
+            String FDCStockID, String FDCSPID, String FBatchNo, String FDCSTOCK_ID,
+            int tag) {
         this.id = id;
         this.FName = FName;
         this.FNumber = FNumber;
@@ -145,6 +146,7 @@ public class PushDownSub {
         this.FDCSPID = FDCSPID;
         this.FBatchNo = FBatchNo;
         this.FDCSTOCK_ID = FDCSTOCK_ID;
+        this.tag = tag;
     }
     @Generated(hash = 2008125598)
     public PushDownSub() {
@@ -171,5 +173,11 @@ public class PushDownSub {
                 ", FBatchNo='" + FBatchNo + '\'' +
                 ", FDCSTOCK_ID='" + FDCSTOCK_ID + '\'' +
                 '}';
+    }
+    public int getTag() {
+        return this.tag;
+    }
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 }

@@ -658,11 +658,14 @@ public class PDActivity extends BaseActivity {
                 return;
             }
             String num = edPdnum.getText().toString();
+            if (MathUtil.toD(edPdnum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
             if (edCode.getText().toString().equals("")) {
                 Toast.showText(mContext, "请输入物料编号");
-            } else if (edPdnum.getText().toString().equals("0") || edPdnum.getText().toString().equals("")) {
-                Toast.showText(mContext, "请输入盘点数量");
-            } else {
+            }else {
                 T_DetailDao t_detailDao = daoSession.getT_DetailDao();
                 Lg.e("AddOrder:" ,pdsubChoice);
                 if (isHebing) {

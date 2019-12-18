@@ -75,6 +75,7 @@ import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -140,7 +141,7 @@ public class OtherOutStoreActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.sp_inStoreType)
     SpinnerStoreType spInStoreType;
     @BindView(R.id.sp_capture_person)
@@ -181,16 +182,6 @@ public class OtherOutStoreActivity extends BaseActivity {
     private WaveHouseSpAdapter waveHouseAdapter;
     private String storageId;
     private String storageName;
-    //    private String capturePersonId;
-//    private String capyurePersonName;
-//    private String signPersonId;
-//    private String signPersonName;
-//    private String departmentId;
-//    private String departmentName;
-//    private String PersonId;
-//    private String PersonName;
-//    private String managerId;
-//    private String managerName;
     private String wavehouseID;
     private String wavehouseName;
     private UnitSpAdapter unitAdapter;
@@ -201,8 +192,8 @@ public class OtherOutStoreActivity extends BaseActivity {
     private String date;
     //    private String inStoreTypeId;
 //    private String inStoreTypeName;
-    private boolean isHebing = true;
-    private boolean isAuto;
+//    private boolean isHebing = true;
+//    private boolean isAuto;
 
 
     @BindView(R.id.cb_isStorage)
@@ -262,9 +253,8 @@ public class OtherOutStoreActivity extends BaseActivity {
         share = ShareUtil.getInstance(mContext);
         df = new DecimalFormat("######0.00");
         initDrawer(drawer);
-        cbHebing.setChecked(isHebing);
-        autoAdd.setChecked(share.getOISisAuto());
-        isAuto = share.getOISisAuto();
+        cbHebing.setChecked(Hawk.get(Info.isHebing+activity,true));
+        autoAdd.setChecked(Hawk.get(Info.isAutoAdd+activity,false));
         isGetDefaultStorage = share.getBoolean(Info.Storage + activity);
         cbIsStorage.setChecked(isGetDefaultStorage);
     }
@@ -308,14 +298,13 @@ public class OtherOutStoreActivity extends BaseActivity {
         cbHebing.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isHebing = b;
+                Hawk.put(Info.isHebing+activity,b);
             }
         });
         autoAdd.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                isAuto = b;
-                share.setOISisAuto(b);
+                Hawk.put(Info.isAutoAdd+activity,b);
             }
         });
         spPihao.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -593,10 +582,10 @@ public class OtherOutStoreActivity extends BaseActivity {
 //        spDepartment.setSelection(share.getOOSdepartment());
 //        spInStoreType.setSelection(share.getOOSInstoreType());
 
-        tvDate.setText(share.getOOSdate());
+
     }
 
-    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.search_supplier:
@@ -631,9 +620,7 @@ public class OtherOutStoreActivity extends BaseActivity {
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
                 break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
+
         }
     }
     @Override
@@ -765,7 +752,7 @@ public class OtherOutStoreActivity extends BaseActivity {
 
             getInstorageNum(product);
 
-            if (isAuto) {
+            if (autoAdd.isChecked()) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1025,8 +1012,8 @@ public class OtherOutStoreActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if ("".equals(edNum.getText().toString())) {
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -1043,7 +1030,7 @@ public class OtherOutStoreActivity extends BaseActivity {
                 }
             }
 
-            if (isHebing) {
+            if (cbHebing.isChecked()) {
                 List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(
                         T_DetailDao.Properties.Activity.eq(activity),
                         T_DetailDao.Properties.FOrderId.eq(ordercode),
@@ -1061,8 +1048,7 @@ public class OtherOutStoreActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-            t_mainDao.deleteInTx(dewlete);
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

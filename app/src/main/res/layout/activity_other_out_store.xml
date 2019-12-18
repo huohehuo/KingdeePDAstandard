@@ -552,21 +552,12 @@
                 android:textColor="@android:color/holo_red_light"/>
 
 
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="日期:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <TextView
+            <com.fangzuo.assist.widget.TextAutoTime
                 android:id="@+id/tv_date"
+                app:Time_titile="日期:"
+                app:Time_titile_size="11sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="19sp" />
-
-
+                android:layout_height="wrap_content"/>
 
 
             <TextView

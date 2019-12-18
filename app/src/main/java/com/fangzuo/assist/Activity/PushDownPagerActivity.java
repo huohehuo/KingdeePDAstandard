@@ -10,6 +10,7 @@ import com.fangzuo.assist.ABase.BaseActivity;
 import com.fangzuo.assist.Adapter.StripAdapter;
 import com.fangzuo.assist.Fragment.pushdown.ChooseFragment;
 import com.fangzuo.assist.Fragment.pushdown.DownLoadPushFragment;
+import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.PagerSlidingTabStrip;
 import com.fangzuo.assist.R;
 
@@ -41,9 +42,9 @@ public class PushDownPagerActivity extends BaseActivity {
         tag = getIntent().getExtras().getInt("123");
         billNO = getIntent().getExtras().getString("billNO");
         bringCode = getIntent().getExtras().getString("barcode");
-        Log.e("获取到--tag--", tag +"");
-        Log.e("获取到--billNO--", billNO +"");
-        Log.e("获取到--bringCode--", bringCode +"");
+        Lg.e("获取到--tag--", tag +"");
+        Lg.e("获取到--billNO--", billNO +"");
+        Lg.e("获取到--bringCode--", bringCode +"");
         setPDTitle(tag);//设置页面标题
     }
 

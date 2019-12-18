@@ -2,26 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
+    android:paddingRight="4dp"
+    android:paddingLeft="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:visibility="gone"
         android:id="@+id/tv"
-        android:text="名字"
+        tools:text="时间"
+        android:layout_weight="1.5"
         android:textColor="#000000"
+        android:gravity="center"
         android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content" />
 
-<!--
-        android:background="@drawable/spinner_drop_down_shape"
--->
-    <Spinner
-        android:id="@+id/sp"
+    <TextView
+        android:id="@+id/time"
         android:layout_marginLeft="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
+        tools:text="2012211"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="38dp"
+        android:background="@drawable/shape_time_choose"
         android:textSize="15sp"
         />
 

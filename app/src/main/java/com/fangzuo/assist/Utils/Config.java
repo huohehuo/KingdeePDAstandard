@@ -5,7 +5,7 @@ public class Config {
     public static final String Error_Url = "http://148.70.108.65:8080/LogAssist/GetLogMessage";
 //    public static final String Setting_Url = "http://148.70.108.65:8080/LogAssist/GetSettingData";//配置文件地址
     public static final String Setting_Url = "http://192.168.0.136:8083/Assist/GetSettingData";//配置文件地址
-    public static final String Apk_Url = "http://148.70.108.65:8080/AppFile/Cloud/app-debug.apk";
+    public static final String Apk_Url = "http://148.70.108.65:8080/AppFile/Standerd/app-debug.apk";
     public static final String Json_Url = "http://148.70.108.65:8080/JsonFile/setting.txt";
     public static final String Data_Url = "DownData/AllData.txt";
     public static String Company="通用版";
@@ -16,7 +16,7 @@ public class Config {
     public static String PDA_RegisterCode="PDA_RegisterCode";//用于保存注册码
     public static String PDA_RegisterMaxNum="PDA_RegisterMaxNum";//用于保存注册码
     public static String VersionReceiver="com.fangzuo.assist.version";//用于保存注册码
-    public static String AutoLogin="AutoLogin";//是否自动登录
+    public static String CheckAutoLogin="CheckAutoLogin";//是否自动登录
     public static String AutoLoginName="AutoLoginName";//是否自动登录
     public static String AutoLoginPwd="AutoLoginPwd";//是否自动登录
 

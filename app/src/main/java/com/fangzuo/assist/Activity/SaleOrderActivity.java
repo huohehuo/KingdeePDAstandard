@@ -72,6 +72,7 @@ import com.fangzuo.assist.widget.SpinnerSaleMethodForSaleOrder;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerYuanDan;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -101,7 +102,7 @@ public class SaleOrderActivity extends BaseActivity {
     @BindView(R.id.ishebing)
     CheckBox cbHebing;
     @BindView(R.id.tv_date_arrive)
-    TextView tvDateArrive;
+    TextAutoTime tvDateArrive;
     @BindView(R.id.ed_supplier)
     EditText edClient;
     @BindView(R.id.search_supplier)
@@ -135,9 +136,9 @@ public class SaleOrderActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.tv_date_pay)
-    TextView tvDatePay;
+    TextAutoTime tvDatePay;
     @BindView(R.id.sp_sale_scope)
     SpinnerSaleScope spSaleScope;
     @BindView(R.id.sp_saleMethod)
@@ -527,12 +528,9 @@ public class SaleOrderActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.tv_date_arrive, R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date, R.id.tv_date_pay})
+    @OnClick({ R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tv_date_arrive:
-                datePicker(tvDateArrive);
-                break;
             case R.id.search_supplier:
                 Bundle b = new Bundle();
                 b.putString("search", edClient.getText().toString());
@@ -565,19 +563,10 @@ public class SaleOrderActivity extends BaseActivity {
                 b2.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b2);
                 break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
-            case R.id.tv_date_pay:
-                datePicker(tvDatePay);
-                break;
         }
     }
 
     private void loadBasicData() {
-        tvDateArrive.setText(getTime(true));
-        tvDate.setText(share.getPOdate());
-        tvDatePay.setText(share.getPOpaydate());
 
 //        slaesRange = method.getPurchaseRange(spSaleScope);
 //        payMethodSpinner = method.getPayMethodSpinner(spSaleMethod);
@@ -849,15 +838,17 @@ public class SaleOrderActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-
-            if (edOnsale.getText().toString().equals("") || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("") || edNum.getText().toString().equals("")) {
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
+                MediaPlayer.getInstance(mContext).error();
+                return;
+            }
+            if (edOnsale.getText().toString().equals("") || edCode.getText().toString().equals("") || edPricesingle.getText().toString().equals("")) {
                 MediaPlayer.getInstance(mContext).error();
                 if (edCode.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入物料编号");
                 } else if (edPricesingle.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入单价");
-                } else if (edNum.getText().toString().equals("")) {
-                    Toast.showText(mContext, "请输入数量");
                 } else if (edOnsale.getText().toString().equals("")) {
                     Toast.showText(mContext, "请输入折扣率");
                 }
@@ -877,8 +868,7 @@ public class SaleOrderActivity extends BaseActivity {
                         }
                     }
                 }
-                List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-                t_mainDao.deleteInTx(dewlete);
+                t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
                 String second = getTimesecond();
                 T_main t_main = new T_main();
                 t_main.FDepartment = spDepartment.getDataName();

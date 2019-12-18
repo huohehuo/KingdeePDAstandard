@@ -27,6 +27,8 @@ public class Info {
     public static final String IsRemanber="IsRemanber";
     public static final String IsAutoLogin="IsAutoLogin";
     public static final String Storage="storage";
+    public static final String isHebing="isHebing";
+    public static final String isAutoAdd="isAutoAdd";
 
 
     public static final int RegisterNo = 1;

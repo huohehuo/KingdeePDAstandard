@@ -70,6 +70,7 @@ import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
+import com.fangzuo.assist.widget.TextAutoTime;
 import com.fangzuo.assist.zxing.CustomCaptureActivity;
 import com.fangzuo.assist.zxing.activity.CaptureActivity;
 import com.fangzuo.greendao.gen.BarCodeDao;
@@ -131,7 +132,7 @@ public class DBActivity extends BaseActivity {
     @BindView(R.id.btn_checkorder)
     Button btnCheckorder;
     @BindView(R.id.tv_date)
-    TextView tvDate;
+    TextAutoTime tvDate;
     @BindView(R.id.sp_department)
     SpinnerDepartMent spDepartment;
     @BindView(R.id.sp_employee)
@@ -236,7 +237,7 @@ public class DBActivity extends BaseActivity {
     @Override
     protected void initData() {
         isAutoAdd.setChecked(share.getDBisAuto());
-        tvDate.setText(getTime(true));
+
         method = CommonMethod.getMethod(mContext);
 //        if (share.getDBOrderCode() == 0) {
 //            ordercode = Long.parseLong(getTime(false) + "001");
@@ -564,7 +565,7 @@ public class DBActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder, R.id.tv_date})
+    @OnClick({R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.scanbyCamera:
@@ -593,9 +594,7 @@ public class DBActivity extends BaseActivity {
                 b1.putInt("activity", activity);
                 startNewActivity(TableActivity.class, R.anim.activity_fade_in, R.anim.activity_fade_out, false, b1);
                 break;
-            case R.id.tv_date:
-                datePicker(tvDate);
-                break;
+
         }
 
 
@@ -1047,8 +1046,8 @@ public class DBActivity extends BaseActivity {
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
-            if ("".equals(edNum.getText().toString())) {
-                Toast.showText(mContext, "请输入数量");
+            if (MathUtil.toD(edNum.getText().toString())<=0) {
+                Toast.showText(mContext, "输入数量必须大于 0 ");
                 MediaPlayer.getInstance(mContext).error();
                 return;
             }
@@ -1094,8 +1093,7 @@ public class DBActivity extends BaseActivity {
                     }
                 }
             }
-            List<T_main> dewlete = t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list();
-            t_mainDao.deleteInTx(dewlete);
+            t_mainDao.deleteInTx(t_mainDao.queryBuilder().where(T_mainDao.Properties.OrderId.eq(ordercode)).build().list());
             String second = getTimesecond();
             T_main t_main = new T_main();
             t_main.FDepartment = spDepartment.getDataName();

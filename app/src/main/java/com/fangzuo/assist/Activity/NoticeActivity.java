@@ -105,7 +105,7 @@ public class NoticeActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_back:
-                finish();
+                startNewActivity(SplashActivity.class, R.anim.activity_slide_left_in, R.anim.activity_slide_left_out, true, null);
                 break;
             case R.id.tv_title:
                 break;

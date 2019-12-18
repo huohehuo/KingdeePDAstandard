@@ -483,24 +483,6 @@ protected void onResume() {
             if (App.PDA_Choose==7 && null!=mScanDataReceiverForM80s)unregisterReceiver(mScanDataReceiverForM80s);
             if (App.PDA_Choose==8 && null!=mScanDataReceiverForXB)unregisterReceiver(mScanDataReceiverForXB);
             if (App.PDA_Choose==10 && null!=mScanDataReceiverUBX)unregisterReceiver(mScanDataReceiverUBX);
-//            if (mScanDataReceiver != null ||
-//                    mScanDataReceiverForG02A != null||
-//                    mScanDataReceiverFor5000 != null||
-//                    mScanDataReceiverForXDL != null||
-//                    mScanDataReceiverForM60 != null
-//                    ) {
-//                if (App.PDA_Choose == 1) {
-//                    unregisterReceiver(mScanDataReceiverForG02A);
-//                } else if (App.PDA_Choose==2){
-//                    unregisterReceiver(mScanDataReceiver);
-//                }else if (App.PDA_Choose == 3){
-//                    unregisterReceiver(mScanDataReceiverFor5000);
-//                }else if (App.PDA_Choose == 4){
-//                    unregisterReceiver(mScanDataReceiverForM60);
-//                }else if (App.PDA_Choose == 5){
-//                    unregisterReceiver(mScanDataReceiverForXDL);
-//                }
-//            }
 
         }catch (Exception e){
             DataService.pushError(mContext, this.getClass().getSimpleName(), e);

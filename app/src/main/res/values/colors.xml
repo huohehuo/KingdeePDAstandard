@@ -79,4 +79,7 @@
     <color name="bg_login">#3de1ad</color>
     <color name="bbbbb">#00f7f7f7</color>
 
+    <color name="pd_text_black">#fb2d2c2c</color>
+    <color name="pd_text_gray">#807f7f</color>
+
 </resources>
