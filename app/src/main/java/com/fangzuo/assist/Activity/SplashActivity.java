@@ -36,6 +36,7 @@ import com.fangzuo.assist.Utils.Config;
 import com.fangzuo.assist.Utils.Lg;
 import com.fangzuo.assist.Utils.MD5;
 import com.fangzuo.assist.Utils.Toast;
+import com.fangzuo.assist.Utils.UpgradeUtil.AppRegisterUtil;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.databinding.ActivitySplashBinding;
 import com.google.gson.Gson;
@@ -202,6 +203,29 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
 
             }
         });
+
+        binding.btnRegister.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                builder.setTitle("请输入注册请求的备注信息");    //设置对话框标题
+//                builder.setIcon(android.R.drawable.btn_star);   //设置对话框标题前的图标
+                final EditText edit = new EditText(mContext);
+                builder.setView(edit);
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppRegisterUtil.upDataStatis(mContext,MD5.getMD5(getNewMac()),edit.getText().toString());
+                    }
+                });
+                builder.setNegativeButton("取消", null);
+                builder.setCancelable(true);    //设置按钮是否可以按返回键取消,false则不可以取消
+                AlertDialog dialog = builder.create();  //创建对话框
+                dialog.setCanceledOnTouchOutside(true); //设置弹出框失去焦点是否隐藏,即点击屏蔽其它地方是否隐藏
+                dialog.show();
+                return true;
+            }
+        });
         binding.btnTry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -313,7 +337,7 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
 //        });
     }
 
-    private static String getNewMac() {
+    public static String getNewMac() {
         try {
             List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
             for (NetworkInterface nif : all) {

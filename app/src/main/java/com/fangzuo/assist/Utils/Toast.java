@@ -29,6 +29,6 @@ public class Toast {
             public void run() {
                 toast.cancel();
             }
-        },2300);
+        },2500);
     }
 }
