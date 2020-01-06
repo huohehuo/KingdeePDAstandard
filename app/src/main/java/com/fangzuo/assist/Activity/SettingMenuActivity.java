@@ -103,7 +103,7 @@ public class SettingMenuActivity extends BaseActivity {
 //                tvVerApp.setText("app:" + Info.TestNo);
 //            }
 //        }
-        tvVerApp.setText("app:" + getVersionName());
+        tvVerApp.setText("app:" + Info.getAppNo());
         App.getRService().doIOAction(WebApi.ServiceVersion, "", new MySubscribe<CommonResponse>() {
             @Override
             public void onNext(CommonResponse commonResponse) {

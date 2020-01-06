@@ -183,7 +183,34 @@ public abstract class BaseFragment extends Fragment {
         }
 
     }
-
+    //M71
+    // Constants for Broadcast Receiver defined below.
+    public static final String ACTION_BROADCAST_RECEIVER = "com.android.decodewedge.decode_action";
+    public static final String CATEGORY_BROADCAST_RECEIVER = "com.android.decodewedge.decode_category";
+    // extra data
+    public static final String EXTRA_BARCODE_DATA = "com.android.decode.intentwedge.barcode_data";
+    public static final String EXTRA_BARCODE_STRING_M71 = "com.android.decode.intentwedge.barcode_string";
+    //    public static final String EXTRA_BARCODE_TYPE = "com.android.decode.intentwedge.barcode_type";
+//    public static final String ACTION_START_DECODE = "com.datalogic.decode.action.START_DECODE";
+//    public static final String ACTION_STOP_DECODE = "com.datalogic.decode.action.STOP_DECODE";
+    private BroadcastReceiver mScanDataReceiverForM71 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_BROADCAST_RECEIVER)) {
+                try {
+                    barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING_M71);
+//                                    barcodeType = intent.getStringExtra(EXTRA_BARCODE_TYPE);
+                    if (barcodeStr != null) {
+                        OnReceive(barcodeStr);
+                    }
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                    Log.e("in", e.toString());
+                }
+            }
+        }
+    };
 
 //        //u8000
 //    private ScanDevice sm;
@@ -301,6 +328,11 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                 getActivity().registerReceiver(mScanDataReceiverForXB, FilterXB);
             }else if (App.PDA_Choose==10) {
                 initScan();
+            }else if (App.PDA_Choose==11) {
+                IntentFilter FilterM71 = new IntentFilter();
+                FilterM71.addAction(ACTION_BROADCAST_RECEIVER);
+                FilterM71.addCategory(CATEGORY_BROADCAST_RECEIVER);
+                getActivity().registerReceiver(mScanDataReceiverForM71, FilterM71);
             }
 //        }
     }
@@ -389,6 +421,8 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                         getActivity().unregisterReceiver(mScanDataReceiverForXB);
                     }else if (App.PDA_Choose == 10){
                         getActivity().unregisterReceiver(mScanDataReceiverUBX);
+                    }else if (App.PDA_Choose == 11){
+                        getActivity().unregisterReceiver(mScanDataReceiverForM71);
                     }
 
                 }

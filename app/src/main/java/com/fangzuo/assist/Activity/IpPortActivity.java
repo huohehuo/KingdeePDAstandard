@@ -137,6 +137,10 @@ public class IpPortActivity extends BaseActivity {
                     Hawk.put(Config.PDA, 10);
                     App.PDA_Choose =10;
                     Toast.showText(mContext, "选择了优博讯" + App.PDA_Choose);
+                }else if ("M71".equals(string)) {
+                    Hawk.put(Config.PDA, 11);
+                    App.PDA_Choose =11;
+                    Toast.showText(mContext, "选择了M71" + App.PDA_Choose);
                 }
             }
 

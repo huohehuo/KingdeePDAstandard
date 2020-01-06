@@ -1,6 +1,7 @@
 package com.fangzuo.assist.Fragment.pushdown;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -344,7 +345,15 @@ public class ChooseFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_delete:
-                delete();
+                new AlertDialog.Builder(mContext)
+                        .setTitle("是否删除单据")
+                        .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                delete();
+                            }
+                        })
+                        .create().show();
                 break;
             case R.id.btn_search:
                 Search();
