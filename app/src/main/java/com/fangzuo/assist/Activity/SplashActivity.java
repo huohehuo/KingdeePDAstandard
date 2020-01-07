@@ -147,7 +147,7 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
 
     public void initData() {
         //创建ArrayAdapter对象
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Config.PDA_Type);
+        adapter = new ArrayAdapter<>(this, R.layout.item_select_pda, Config.PDA_Type);
         binding.spPda.setAdapter(adapter);
         instance = BasicShareUtil.getInstance(mContext);
         CheckServer();

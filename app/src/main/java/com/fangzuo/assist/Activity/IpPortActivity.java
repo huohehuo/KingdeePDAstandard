@@ -3,6 +3,7 @@ package com.fangzuo.assist.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
+import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
 import android.widget.AdapterView;
@@ -43,7 +44,7 @@ public class IpPortActivity extends BaseActivity {
     @BindView(R.id.btn_save)
     Button btnSave;
     @BindView(R.id.sp_pda)
-    Spinner spPda;
+    AppCompatSpinner spPda;
     @BindView(R.id.btn_back)
     RelativeLayout btnBack;
     @BindView(R.id.tv_title)
@@ -74,7 +75,7 @@ public class IpPortActivity extends BaseActivity {
 
     @Override
     protected void initData() {
-        adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Config.PDA_Type);
+        adapter = new ArrayAdapter<>(this, R.layout.item_select_pda, Config.PDA_Type);
         spPda.setAdapter(adapter);
         new Handler().postDelayed(new Runnable() {
             @Override

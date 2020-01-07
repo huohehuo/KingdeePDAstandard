@@ -46,6 +46,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:orientation="horizontal">
 
                 <EditText
@@ -66,20 +67,21 @@
                     android:layout_marginLeft="4dp"
                     android:background="@drawable/checkdd" />
             </LinearLayout>
+            <include layout="@layout/line_heng"/>
             <TextView
-                android:layout_marginTop="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:text="选择PDA设备型号:"
+                android:layout_gravity="center_horizontal"
                 android:textColor="@android:color/black"/>
-            <Spinner
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_gravity="center_horizontal"
                 android:id="@+id/sp_pda"
                 android:layout_width="200dp"
                 android:layout_height="40dp"
                 android:spinnerMode="dialog"
-                android:layout_above="@+id/tv_code"
-                android:layout_centerHorizontal="true"
+                android:background="@drawable/spinner_pda_drop_down_shape"
                 android:gravity="center" />
 
             <include layout="@layout/line_heng"/>
@@ -103,6 +105,7 @@
         android:layout_alignParentBottom="true"
         >
         <Button
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+	android:interpolator="@android:anim/accelerate_decelerate_interpolator" >
+
+	<item>
+		<shape>
+			<solid android:color="#39ffffff"/>
+			<corners android:radius="2dip"/>
+			<stroke android:width="1dip"
+				android:color="#23ffffff"/>
+		</shape>
+	</item>
+
+	<item>
+		<bitmap android:src="@drawable/pda"
+			android:gravity="end"/>
+	</item>
+</layer-list>

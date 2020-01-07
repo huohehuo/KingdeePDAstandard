@@ -535,7 +535,7 @@ public class DBActivity extends BaseActivity {
         if (edPihao.hasFocus()) {
             edPihao.setText(code);
             if (isAuto) {
-                Addorder();
+                getOutstorageNum(product,true);
             } else if (edNum.getText().toString().equals("")) {
                 setfocus(edNum);
             }
@@ -584,7 +584,7 @@ public class DBActivity extends BaseActivity {
                 startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULT, b);
                 break;
             case R.id.btn_add:
-                Addorder();
+                getOutstorageNum(product,true);
                 break;
             case R.id.btn_finishorder:
                 finishOrder();
@@ -804,7 +804,7 @@ public class DBActivity extends BaseActivity {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Addorder();
+                        getOutstorageNum(product,true);
                     }
                 }, 150);
             } else {
@@ -878,8 +878,16 @@ public class DBActivity extends BaseActivity {
 
     }
 
+    //添加前，先查一遍库存再自动添加
+    private boolean autoToAdd = false;
+    private void getOutstorageNum(Product product,boolean auto) {
+        autoToAdd = auto;
+        getOutstorageNum(product);
+    }
+
     private void getOutstorageNum(Product product) {
         if (product == null) {
+            autoToAdd = false;
             return;
         }
         if (fBatchManager) {
@@ -909,12 +917,19 @@ public class DBActivity extends BaseActivity {
 //                        tvNumoutStore.setText((qty / unitrate) + "");
                     tvNumoutStore.setText(dealStoreNumForOut((qty / spUnit.getDataUnitrate()) + ""));
                     qty = MathUtil.toD(dealStoreNumForOut(qty + ""));
-
+                    if (autoToAdd){
+                        Addorder();
+                    }
+                    autoToAdd = false;
                 }
 
                 @Override
                 public void onFailed(String Msg, AsyncHttpClient client) {
                     tvNumoutStore.setText("0");
+                    if (autoToAdd){
+                        Addorder();
+                    }
+                    autoToAdd = false;
                 }
             });
         } else {
@@ -938,6 +953,10 @@ public class DBActivity extends BaseActivity {
             } else {
                 tvNumoutStore.setText("0");
             }
+            if (autoToAdd){
+                Addorder();
+            }
+            autoToAdd = false;
 
         }
 

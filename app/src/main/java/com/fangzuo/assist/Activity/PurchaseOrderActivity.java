@@ -44,6 +44,7 @@ import com.fangzuo.assist.Dao.Employee;
 import com.fangzuo.assist.Dao.PayType;
 import com.fangzuo.assist.Dao.Product;
 import com.fangzuo.assist.Dao.PurchaseMethod;
+import com.fangzuo.assist.Dao.Suppliers;
 import com.fangzuo.assist.Dao.T_Detail;
 import com.fangzuo.assist.Dao.T_main;
 import com.fangzuo.assist.Dao.Unit;
@@ -236,6 +237,13 @@ public class PurchaseOrderActivity extends BaseActivity {
             case EventBusInfoCode.PRODUCTRETURN:
                 product = (Product) event.postEvent;
                 setDATA("", true);
+                break;
+            case EventBusInfoCode.Search_Supplier:
+                Suppliers suppliers = (Suppliers) event.postEvent;
+                supplierid = suppliers.FItemID;
+                supplierName = suppliers.FName;
+                edSupplier.setText(supplierName);
+                setfocus(edCode);
                 break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
@@ -504,8 +512,17 @@ public class PurchaseOrderActivity extends BaseActivity {
     @OnClick({R.id.search_supplier, R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder, R.id.btn_checkorder})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.btn_add:
+                Addorder();
+                break;
+            case R.id.btn_finishorder:
+                finishOrder();
+                break;
             case R.id.search_supplier:
-                SearchSupplier();
+                Bundle bsp = new Bundle();
+                bsp.putString("search", edSupplier.getText().toString());
+                bsp.putInt("where", Info.SEARCHSUPPLIER);
+                startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULTPRODUCT, bsp);
                 break;
             case R.id.scanbyCamera:
                 IntentIntegrator intentIntegrator = new IntentIntegrator(mContext);
@@ -522,12 +539,6 @@ public class PurchaseOrderActivity extends BaseActivity {
                 b.putInt("where", Info.SEARCHPRODUCT);
                 startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULT, b);
                 break;
-            case R.id.btn_add:
-                Addorder();
-                break;
-            case R.id.btn_finishorder:
-                finishOrder();
-                break;
             case R.id.btn_checkorder:
                 Bundle b1 = new Bundle();
                 b1.putInt("activity", activity);
@@ -537,49 +548,7 @@ public class PurchaseOrderActivity extends BaseActivity {
     }
 
 
-    private void SearchSupplier() {
-        Bundle b = new Bundle();
-        b.putString("search", edSupplier.getText().toString());
-        b.putInt("where", Info.SEARCHSUPPLIER);
-        startNewActivityForResult(ProductSearchActivity.class, R.anim.activity_open, 0, Info.SEARCHFORRESULTPRODUCT, b);
 
-    }
-
-
-    public void finishOrder() {
-        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
-        ab.setTitle("确认使用完单");
-        ab.setMessage("确认？");
-        ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ordercode++;
-                Log.e("ordercode", ordercode + "");
-                share.setOrderCode(PurchaseOrderActivity.this, ordercode);
-            }
-        });
-        ab.setNegativeButton("取消", null);
-        ab.create().show();
-
-    }
-
-    @Override
-    public void onBackPressed() {
-        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
-        ab.setTitle("确认退出");
-        ab.setMessage("退出会自动执行完单,是否退出?");
-        ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                ordercode++;
-                Log.e("ordercode", ordercode + "");
-                share.setOrderCode(PurchaseOrderActivity.this, ordercode);
-                finish();
-            }
-        });
-        ab.setNegativeButton("取消", null);
-        ab.create().show();
-    }
 
 
     @Override
@@ -594,15 +563,16 @@ public class PurchaseOrderActivity extends BaseActivity {
 //                Toast.showText(mContext, message);
 //                edCode.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
             }
-        } else if (requestCode == Info.SEARCHFORRESULTPRODUCT) {
-            if (resultCode == Info.SEARCHFORRESULTPRODUCT) {
-                Bundle b = data.getExtras();
-                supplierid = b.getString("001");
-                supplierName = b.getString("002");
-                edSupplier.setText(supplierName);
-                setfocus(edCode);
-            }
         }
+//        else if (requestCode == Info.SEARCHFORRESULTPRODUCT) {
+//            if (resultCode == Info.SEARCHFORRESULTPRODUCT) {
+//                Bundle b = data.getExtras();
+//                supplierid = b.getString("001");
+//                supplierName = b.getString("002");
+//                edSupplier.setText(supplierName);
+//                setfocus(edCode);
+//            }
+//        }
     }
 
     private void setDATA(String fnumber, boolean flag) {
@@ -979,4 +949,41 @@ public class PurchaseOrderActivity extends BaseActivity {
         setfocus(edCode);
         product = null;
     }
+
+    public void finishOrder() {
+        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+        ab.setTitle("确认使用完单");
+        ab.setMessage("确认？");
+        ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ordercode++;
+                Log.e("ordercode", ordercode + "");
+                share.setOrderCode(PurchaseOrderActivity.this, ordercode);
+            }
+        });
+        ab.setNegativeButton("取消", null);
+        ab.create().show();
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+        ab.setTitle("确认退出");
+        ab.setMessage("退出会自动执行完单,是否退出?");
+        ab.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                ordercode++;
+                Log.e("ordercode", ordercode + "");
+                share.setOrderCode(PurchaseOrderActivity.this, ordercode);
+                finish();
+            }
+        });
+        ab.setNegativeButton("取消", null);
+        ab.create().show();
+    }
+
+
 }

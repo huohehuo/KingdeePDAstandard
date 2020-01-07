@@ -70,9 +70,31 @@ public class MathUtil {
 //       Lg.e("TEST",DoubleUtil.Cut0("1.40"));1
 //       Lg.e("TEST",DoubleUtil.Cut0("0.45"));0
     }
+    //解决 1.1+1.0=2.09999999的情况
+    //double相加
+    public static double sum(String d1,String d2){
+        if ("".equals(d1))d1="0";
+        if ("".equals(d2))d2="0";
+        BigDecimal bd1 = new BigDecimal(d1);
+        BigDecimal bd2 = new BigDecimal(d2);
+        return bd1.add(bd2).doubleValue();
+    }
+    /*Math.ceil()执行向上舍入，即它总是将数值向上舍入为最接近的整数；
+Math.floor()执行向下舍入，即它总是将数值向下舍入为最接近的整数；
+Math.round()执行标准舍入，即它总是将数值四舍五入为最接近的整数。*/
+//    //四舍五入取整
+//    public static double D2saveInt(Double d){
+//        return Math.round(d);
+//    }
+    public static String DoubleKeepInt(Double d){
+        if (null == d)d=0.0;
+        return Cut0(Math.round(d)+"");
+    }
 
     //保留两位小数（四舍五入
-    public static double D2save2(Double d){
-        return Double.parseDouble(String.format("%.2f", d));
+    public static double DoubleKeep(Double d,int num){
+        if (null == d)d=0.0;
+        String keep = "%."+num+"f";
+        return Double.parseDouble(String.format(keep, d));
     }
 }

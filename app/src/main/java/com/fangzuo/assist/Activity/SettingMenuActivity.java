@@ -50,7 +50,6 @@ import butterknife.OnClick;
 import static com.fangzuo.assist.Utils.CommonUtil.getTimeLong;
 import static com.fangzuo.assist.Utils.GetSettingList.getList;
 
-//静态调用了fragment
 public class SettingMenuActivity extends BaseActivity {
     @BindView(R.id.btn_back)
     RelativeLayout btnBack;
@@ -104,6 +103,7 @@ public class SettingMenuActivity extends BaseActivity {
 //            }
 //        }
         tvVerApp.setText("app:" + Info.getAppNo());
+        //获取Assist服务器设置的版本号
         App.getRService().doIOAction(WebApi.ServiceVersion, "", new MySubscribe<CommonResponse>() {
             @Override
             public void onNext(CommonResponse commonResponse) {

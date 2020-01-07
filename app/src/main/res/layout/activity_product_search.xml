@@ -10,7 +10,7 @@
     <View
         android:layout_width="match_parent"
         android:id="@+id/cancle"
-        android:layout_height="250dp"/>
+        android:layout_height="168dp"/>
     
     <RelativeLayout
         android:layout_width="match_parent"

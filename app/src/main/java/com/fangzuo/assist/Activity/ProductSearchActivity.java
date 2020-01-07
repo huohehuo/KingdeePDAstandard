@@ -1,5 +1,6 @@
 package com.fangzuo.assist.Activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -65,7 +66,6 @@ public class ProductSearchActivity extends BaseActivity {
     private String searchString;
     private ProductSearchActivity mContext;
     private SearchAdapter ada;
-    private List<Product> items1;
     private List<Product> items;
     private List<Product> itemAll;
     private int where;
@@ -115,7 +115,6 @@ public class ProductSearchActivity extends BaseActivity {
                         pg.setVisibility(View.GONE);
                         DownloadReturnBean dBean = new Gson().fromJson(cBean.returnJson, DownloadReturnBean.class);
                         items = dBean.products;
-                        Log.e("getProduct:", items.toString());
                         itemAll = new ArrayList<>();
                         itemAll.addAll(items);
                         if (itemAll.size() > 0) {
@@ -156,7 +155,6 @@ public class ProductSearchActivity extends BaseActivity {
                     onBackPressed();
                 }
             }
-
             //供应商
         } else if (where == Info.SEARCHSUPPLIER) {
             model.setText("编号");
@@ -317,6 +315,7 @@ public class ProductSearchActivity extends BaseActivity {
                     setResult(Info.SEARCHFORRESULT, mIntent);
                     onBackPressed();
                 } else if (where == Info.SEARCHSUPPLIER) {
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Search_Supplier, itemAllSupplier.get(i)));
                     b.putString("001", itemAllSupplier.get(i).FItemID);
                     b.putString("002", itemAllSupplier.get(i).FName);
                     mIntent.putExtras(b);
@@ -349,6 +348,14 @@ public class ProductSearchActivity extends BaseActivity {
     @Override
     protected void OnReceive(String code) {
 
+    }
+
+    public static void start(Context context, String search, int where) {
+        Intent starter = new Intent(context, SearchDataActivity.class);
+        starter.putExtra("search", search);
+        starter.putExtra("where", where);
+//        starter.putStringArrayListExtra("fid", fid);
+        context.startActivity(starter);
     }
 
 

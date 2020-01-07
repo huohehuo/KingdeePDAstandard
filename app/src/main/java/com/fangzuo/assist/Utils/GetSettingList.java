@@ -52,21 +52,21 @@ public class GetSettingList {
 
     public static ArrayList<SettingList> GetPushDownList() {
         ArrayList<SettingList> items = new ArrayList<>();
-        items.add(new SettingList("12","销售订单下推销售出库",R.mipmap.pandian));
-        items.add(new SettingList("13","采购订单下推外购入库",R.mipmap.diaobo));
-        items.add(new SettingList("18","生产任务单下推产品入库",R.mipmap.ruku));
-        items.add(new SettingList("19","生产任务单下推生产领料",R.mipmap.pandian));
-        items.add(new SettingList("14","发货通知下推销售出库",R.mipmap.ruku));
-        items.add(new SettingList("15","收料通知下推外购入库",R.mipmap.chuku));
+        items.add(new SettingList("12","销售订单下推销售出库",R.mipmap.pandian));//1
+        items.add(new SettingList("13","采购订单下推外购入库",R.mipmap.diaobo));//2
+        items.add(new SettingList("18","生产任务单下推产品入库",R.mipmap.ruku));//9
+        items.add(new SettingList("19","生产任务单下推生产领料",R.mipmap.pandian));//13
+        items.add(new SettingList("14","发货通知下推销售出库",R.mipmap.ruku));//3
+        items.add(new SettingList("15","收料通知下推外购入库",R.mipmap.chuku));//4
         //---------------非通用单据---------------------------
-        items.add(new SettingList("16","委外订单下推委外入库",R.mipmap.pandian));
-        items.add(new SettingList("17","委外订单下推委外出库",R.mipmap.diaobo));
-        items.add(new SettingList("20","采购订单下推收料通知单",R.mipmap.pandian));
-        items.add(new SettingList("21","销售订单下推发料通知单",R.mipmap.pandian));
-        items.add(new SettingList("22","生产任务单下推生产汇报单",R.mipmap.pandian));
-        items.add(new SettingList("23","汇报单下推产品入库",R.mipmap.pandian));
-        items.add(new SettingList("24","销售出库单验货",R.mipmap.pandian));
-        items.add(new SettingList("25","发货通知生成调拨单",R.mipmap.pandian));
+        items.add(new SettingList("16","委外订单下推委外入库",R.mipmap.pandian));//11
+        items.add(new SettingList("17","委外订单下推委外出库",R.mipmap.diaobo));//12
+        items.add(new SettingList("20","采购订单下推收料通知单",R.mipmap.pandian));//14
+        items.add(new SettingList("21","销售订单下推发料通知单",R.mipmap.pandian));//15
+        items.add(new SettingList("22","生产任务单下推生产汇报单",R.mipmap.pandian));//16
+        items.add(new SettingList("23","汇报单下推产品入库",R.mipmap.pandian));//18
+        items.add(new SettingList("24","销售出库单验货",R.mipmap.pandian));//7
+        items.add(new SettingList("25","发货通知生成调拨单",R.mipmap.pandian));//20
 //        items.add(new SettingList("产品入库验货",R.mipmap.pandian));
         return items;
     }

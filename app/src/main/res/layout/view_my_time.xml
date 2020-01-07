@@ -13,7 +13,6 @@
         tools:text="时间"
         android:layout_weight="1.5"
         android:textColor="#000000"
-        android:gravity="center"
         android:layout_gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />

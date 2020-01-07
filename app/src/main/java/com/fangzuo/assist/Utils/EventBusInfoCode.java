@@ -6,6 +6,7 @@ package com.fangzuo.assist.Utils;
 
 public class EventBusInfoCode {
     public static final String PRODUCTRETURN = "9999";
+    public static final String Search_Supplier = "Search_Supplier";
     public static final String DOWNLOADOK = "9998";
 
     public static final String DownData_OK = "99988";

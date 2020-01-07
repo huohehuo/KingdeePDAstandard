@@ -16,10 +16,9 @@
 
     <android.support.v7.widget.AppCompatSpinner
         android:id="@+id/sp"
-        android:layout_marginLeft="5dp"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:background="@drawable/spinner_drop_down_shape"
+        android:background="@drawable/spinner_pda_drop_down_shape"
         android:textSize="15sp"
         />
 
