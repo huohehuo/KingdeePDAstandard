@@ -552,7 +552,7 @@
                 android:textSize="15sp"
                 android:textColor="@android:color/black"
                 android:layout_height="wrap_content" />
-            <TextView
+            <com.fangzuo.assist.widget.TextAutoTime
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
