@@ -225,7 +225,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     protected void OnReceive(String code) {
         Toast.showText(mContext, "测试扫码:" + code);
-        Log.e("CODE", code + ":获得的code");
+        Lg.e("获得条码",code);
     }
 
     @OnClick({R.id.btn_login, R.id.btn_setting})

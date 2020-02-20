@@ -298,7 +298,11 @@ public class SplashActivity extends AppCompatActivity  implements EasyPermission
                 }else if ("M71".equals(string)) {
                     Hawk.put(Config.PDA, 11);
                     App.PDA_Choose =11;
-                    Toast.showText(mContext, "选择了M71" + App.PDA_Choose);
+                    Toast.showText(mContext, "选择了M71");
+                }else if ("M82".equals(string)) {
+                    Hawk.put(Config.PDA, 12);
+                    App.PDA_Choose =12;
+                    Toast.showText(mContext, "选择了M82");
                 }
             }
 

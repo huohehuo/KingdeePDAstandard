@@ -229,6 +229,13 @@ public abstract class BaseActivity extends FragmentActivity {
 //    public static final String ACTION_STOP_DECODE = "com.datalogic.decode.action.STOP_DECODE";
     private BroadcastReceiver mScanDataReceiverForM71 = null;
 
+    //M82
+    public static final String EXTRA_BARCODE_STRING_M82 = "com.android.decode.intentwedge.barcode_string";
+    public static final String ACTION_BROADCAST_RECEIVER_M82 = "com.android.decodewedge.decode_action";
+    public static final String CATEGORY_BROADCAST_RECEIVER_M82 = "com.android.decodewedge.decode_category";
+    public static final String ACTION_START_DECODE_M82 = "com.datalogic.decode.action.START_DECODE";
+    private BroadcastReceiver mScanDataReceiverForM82 = null;
+
 
     private String date;
     private int year;
@@ -479,7 +486,32 @@ protected void onResume() {
                 FilterM71.addCategory(CATEGORY_BROADCAST_RECEIVER);
                 registerReceiver(mScanDataReceiverForM71, FilterM71);
                 break;
+            case 12://M82");
+                if (null==mScanDataReceiverForM82){
+                    mScanDataReceiverForM82 = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            if (intent.getAction().equals(ACTION_BROADCAST_RECEIVER_M82)) {
+                                try {
+                                    barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING_M82);
+                                    if (barcodeStr != null) {
+                                        OnReceive(barcodeStr);
+                                    }
+                                } catch (Exception e) {
+                                    // TODO: handle exception
+                                    e.printStackTrace();
+                                    Log.e("in", e.toString());
+                                }
+                            }
+                        }
+                    };
+                }
 
+                IntentFilter FilterM82 = new IntentFilter();
+                FilterM82.addAction(ACTION_BROADCAST_RECEIVER_M82);
+                FilterM82.addCategory(CATEGORY_BROADCAST_RECEIVER_M82);
+                registerReceiver(mScanDataReceiverForM82, FilterM82);
+                break;
         }
     }catch (Exception e){
         DataService.pushError(mContext, this.getClass().getSimpleName(), e);
@@ -521,6 +553,7 @@ protected void onResume() {
             if (App.PDA_Choose==8 && null!=mScanDataReceiverForXB)unregisterReceiver(mScanDataReceiverForXB);
             if (App.PDA_Choose==10 && null!=mScanDataReceiverUBX)unregisterReceiver(mScanDataReceiverUBX);
             if (App.PDA_Choose==11 && null!=mScanDataReceiverForM71)unregisterReceiver(mScanDataReceiverForM71);
+            if (App.PDA_Choose==12 && null!=mScanDataReceiverForM82)unregisterReceiver(mScanDataReceiverForM82);
 
         }catch (Exception e){
             DataService.pushError(mContext, this.getClass().getSimpleName(), e);

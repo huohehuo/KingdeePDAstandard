@@ -22,7 +22,7 @@ public class Config {
 
     public static final String DATABASESETTING = "master";
     public static final String PDA = "PDA";
-    public static final String[] PDA_Type = {"请选择设备型号","G02A设备", "8000设备", "5000设备","M60","新大陆","M36","M80s","肖邦","手机端","优博讯","M71"};
+    public static final String[] PDA_Type = {"请选择设备型号","G02A设备", "8000设备", "5000设备","M60","新大陆","M36","M80s","肖邦","手机端","优博讯","M71","M82"};
 
     //用于接口回调的判断------------------------------------------
     public static final String IO_type_Test="IO_type_Test";

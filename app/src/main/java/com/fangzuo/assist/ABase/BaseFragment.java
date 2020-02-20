@@ -211,6 +211,30 @@ public abstract class BaseFragment extends Fragment {
             }
         }
     };
+    //M82
+    public static final String EXTRA_BARCODE_STRING_M82 = "com.android.decode.intentwedge.barcode_string";
+    public static final String ACTION_BROADCAST_RECEIVER_M82 = "com.android.decodewedge.decode_action";
+    public static final String CATEGORY_BROADCAST_RECEIVER_M82 = "com.android.decodewedge.decode_category";
+    public static final String ACTION_START_DECODE_M82 = "com.datalogic.decode.action.START_DECODE";
+    private BroadcastReceiver mScanDataReceiverForM82 = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ACTION_BROADCAST_RECEIVER_M82)) {
+                try {
+                    barcodeStr = intent.getStringExtra(EXTRA_BARCODE_STRING_M82);
+//                                    barcodeType = intent.getStringExtra(EXTRA_BARCODE_TYPE);
+                    if (barcodeStr != null) {
+                        OnReceive(barcodeStr);
+                    }
+                } catch (Exception e) {
+                    // TODO: handle exception
+                    e.printStackTrace();
+                    Log.e("in", e.toString());
+                }
+            }
+        }
+    };
+
 
 //        //u8000
 //    private ScanDevice sm;
@@ -333,6 +357,11 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                 FilterM71.addAction(ACTION_BROADCAST_RECEIVER);
                 FilterM71.addCategory(CATEGORY_BROADCAST_RECEIVER);
                 getActivity().registerReceiver(mScanDataReceiverForM71, FilterM71);
+            }else if (App.PDA_Choose==12) {
+                IntentFilter FilterM82 = new IntentFilter();
+                FilterM82.addAction(ACTION_BROADCAST_RECEIVER_M82);
+                FilterM82.addCategory(CATEGORY_BROADCAST_RECEIVER_M82);
+                getActivity().registerReceiver(mScanDataReceiverForM82, FilterM82);
             }
 //        }
     }
@@ -423,6 +452,8 @@ public void registerBroadCast(BroadcastReceiver mScanDataReceiver) {
                         getActivity().unregisterReceiver(mScanDataReceiverUBX);
                     }else if (App.PDA_Choose == 11){
                         getActivity().unregisterReceiver(mScanDataReceiverForM71);
+                    }else if (App.PDA_Choose == 12){
+                        getActivity().unregisterReceiver(mScanDataReceiverForM82);
                     }
 
                 }
