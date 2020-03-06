@@ -308,6 +308,21 @@ Calendar cal = Calendar.getInstance();
 //        Lg.e("解析日期："+buffer.toString());
         return buffer.toString();
     }
+
+
+    /**
+     * 弹窗高度，默认为屏幕高度的四分之三
+     * 子类可重写该方法返回peekHeight
+     *
+     * @return height
+     */
+    public static int getPeekHeight(Context context) {
+        int peekHeight = context.getResources().getDisplayMetrics().heightPixels;
+        //设置弹窗高度为屏幕高度的3/4
+        return peekHeight - peekHeight / 3;
+    }
+
+
 }
 
 

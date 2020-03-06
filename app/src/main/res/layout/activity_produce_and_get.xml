@@ -581,42 +581,23 @@
 
 
 
-            <TextView
-                android:layout_marginTop="25dp"
+            <include layout="@layout/line_heng" />
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_getman"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="领料:"
-                android:textColor="@android:color/black"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_getman"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </RelativeLayout>
-            <TextView
-                android:layout_marginTop="25dp"
+                app:manspinner_name="领料"
+                app:manspinner_size="20sp"
+                />
+            <include layout="@layout/line_heng" />
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_sendman"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:text="发货:"
-                android:textColor="@android:color/black"/>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_sendman"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </RelativeLayout>
+                app:manspinner_name="发货"
+                app:manspinner_size="20sp"
+                />
+            <include layout="@layout/line_heng" />
         </LinearLayout>
     </ScrollView>
 

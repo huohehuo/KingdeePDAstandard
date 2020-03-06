@@ -64,9 +64,11 @@ import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
+import com.fangzuo.assist.widget.SpinnerDepartMentUI;
 import com.fangzuo.assist.widget.SpinnerGoodsType;
 import com.fangzuo.assist.widget.SpinnerPayType;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleMethodForSaleOrder;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
@@ -150,11 +152,11 @@ public class SaleOrderActivity extends BaseActivity {
     @BindView(R.id.sp_payMethod)
     SpinnerPayType spPayMethod;
     @BindView(R.id.sp_department)
-    SpinnerDepartMent spDepartment;
+    SpinnerDepartMentUI spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeople spEmployee;
+    SpinnerPeopleUI spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeople spManager;
+    SpinnerPeopleUI spManager;
     @BindView(R.id.cb_isStorage)
     CheckBox cbIsStorage;
     @BindView(R.id.isAutoAdd)

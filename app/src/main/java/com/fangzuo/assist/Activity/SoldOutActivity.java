@@ -76,9 +76,11 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
+import com.fangzuo.assist.widget.SpinnerDepartMentUI;
 import com.fangzuo.assist.widget.SpinnerGoodsType;
 import com.fangzuo.assist.widget.SpinnerPayType;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerStorage;
@@ -164,7 +166,7 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.sp_saleMethod)
     SpinnerSaleMethod spSaleMethod;           //销售方式
     @BindView(R.id.sp_yuandan)
-    SpinnerPeople spYuandan;              //保管
+    SpinnerPeopleUI spYuandan;              //保管
     @BindView(R.id.sp_sendMethod)
     SpinnerGoodsType spSendMethod;           //交货方式
     @BindView(R.id.sp_payMethod)
@@ -172,11 +174,11 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.sp_sendplace)
     Spinner spSendplace;            //交货地点
     @BindView(R.id.sp_department)
-    SpinnerDepartMent spDepartment;           //部门
+    SpinnerDepartMentUI spDepartment;           //部门
     @BindView(R.id.sp_employee)
-    SpinnerPeople spEmployee;             //业务员
+    SpinnerPeopleUI spEmployee;             //业务员
     @BindView(R.id.sp_manager)
-    SpinnerPeople spManager;              //主管
+    SpinnerPeopleUI spManager;              //主管
     @BindView(R.id.isAutoAdd)
     CheckBox autoAdd;
     @BindView(R.id.cb_isStorage)

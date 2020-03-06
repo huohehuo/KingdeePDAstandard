@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#80000000">
+    <View
+        android:layout_width="match_parent"
+        android:id="@+id/cancle"
+        android:layout_weight="3"
+        android:layout_height="0dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:background="@color/cpb_blue"
+        android:layout_height="40dp">
+        <ImageView
+            android:id="@+id/btn_back"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/backspace"/>
+        <ProgressBar
+            android:visibility="invisible"
+            android:id="@+id/pg_loading"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:indeterminateBehavior="repeat"
+            android:indeterminateDrawable="@drawable/dialog_loading3"
+            android:indeterminateOnly="true" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:id="@+id/title"
+            android:textStyle="bold"
+            android:text="下载数据"
+            android:textColor="@android:color/black"/>
+        <TextView
+            android:id="@+id/tv_tip"
+            android:textColor="#4d4b4b"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            tools:text="正在下载,请稍等..."
+            android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <Button
+            android:id="@+id/btn_down"
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:background="@drawable/btn_check"
+            android:text="下载"
+            android:textColor="@android:color/black" />
+        <include layout="@layout/line_shu"/>
+        <Button
+            android:id="@+id/btn_downall"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:background="@drawable/btn_check"
+            android:text="下载全部"
+            android:textColor="@android:color/black" />
+    </LinearLayout>
+    <com.jude.easyrecyclerview.EasyRecyclerView
+        android:background="@android:color/white"
+        android:id="@+id/ry_down_tip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="8"
+        android:layout_marginBottom="12dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:recyclerClipToPadding="true"
+        app:recyclerPaddingTop="8dp"
+        app:scrollbarStyle="insideOverlay"
+        app:scrollbars="none" />
+    <include layout="@layout/line_heng"/>
+
+
+
+
+</LinearLayout>

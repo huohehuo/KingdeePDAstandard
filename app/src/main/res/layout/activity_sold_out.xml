@@ -105,8 +105,7 @@
                             android:layout_weight="4"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
-                            android:selectAllOnFocus="true"
-                             />
+                            android:selectAllOnFocus="true" />
 
                         <RelativeLayout
                             android:id="@+id/search_supplier"
@@ -164,11 +163,10 @@
                             android:layout_marginLeft="10dp"
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
-                            android:selectAllOnFocus="true"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center_vertical"
                             android:imeOptions="actionNone"
-                             />
+                            android:selectAllOnFocus="true" />
 
                         <RelativeLayout
                             android:id="@+id/search"
@@ -334,8 +332,8 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
+
                         <EditText
-                            android:visibility="gone"
                             android:id="@+id/ed_pihao"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -343,7 +341,9 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
-                            android:imeOptions="actionNone" />
+                            android:imeOptions="actionNone"
+                            android:visibility="gone" />
+
                         <Spinner
                             android:id="@+id/sp_pihao"
                             android:layout_width="0dp"
@@ -636,18 +636,20 @@
                     android:text="红字"
                     android:textColor="@color/red" />
             </RadioGroup>
+
             <com.fangzuo.assist.widget.TextAutoTime
                 android:id="@+id/tv_date"
-                app:Time_titile="日期:"
-                app:Time_titile_size="11sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:Time_titile="日期:"
+                app:Time_titile_size="11sp" />
+
             <com.fangzuo.assist.widget.TextAutoTime
                 android:id="@+id/tv_date_pay"
-                app:Time_titile="结算日期:"
-                app:Time_titile_size="11sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:Time_titile="结算日期:"
+                app:Time_titile_size="11sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -681,23 +683,6 @@
 
                 <com.fangzuo.assist.widget.SpinnerSaleMethod
                     android:id="@+id/sp_saleMethod"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="保管:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_yuandan"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
@@ -757,84 +742,61 @@
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
-            <TextView
+            <include layout="@layout/line_heng" />
+
+            <com.fangzuo.assist.widget.SpinnerDepartMentUI
+                android:id="@+id/sp_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="部门:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="部门"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerDepartMent
-                    android:id="@+id/sp_department"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_yuandan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="业务员:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="保管"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_employee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_employee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="主管:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="业务员"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_manager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-            <LinearLayout
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:weightSum="9">
+                app:manspinner_name="主管"
+                app:manspinner_size="20sp" />
+
+            <include layout="@layout/line_heng" />
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
                     android:text="摘要:"
                     android:textColor="@android:color/black"
                     android:textSize="15sp" />
-
                 <EditText
                     android:id="@+id/ed_zhaiyao"
-                    android:layout_width="0dp"
+                    android:layout_margin="4dp"
+                    android:padding="2dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="7.5" />
-
-
-            </LinearLayout>
+                    android:minHeight="80dp"
+                    android:layout_weight="1"
+                    android:textSize="19sp"
+                    android:background="@drawable/bg_edittext_selector"
+                    />
         </LinearLayout>
     </ScrollView>
 

@@ -77,6 +77,7 @@ import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerLingliaoType;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
@@ -151,9 +152,9 @@ public class ProduceAndGetActivity extends BaseActivity {
     @BindView(R.id.sp_getType)
     SpinnerLingliaoType spGetType;
     @BindView(R.id.sp_getman)
-    SpinnerPeople spGetman;
+    SpinnerPeopleUI spGetman;
     @BindView(R.id.sp_sendman)
-    SpinnerPeople spSendman;
+    SpinnerPeopleUI spSendman;
     @BindView(R.id.mDrawer)
     DrawerLayout mDrawer;
     boolean isHebing = true;

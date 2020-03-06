@@ -10,44 +10,51 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <RelativeLayout
             android:id="@+id/rl_top"
-            android:background="@color/cpb_blue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/cpb_blue"
             android:orientation="horizontal">
+
             <CheckBox
                 android:id="@+id/ishebing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="合并"
-                android:textColor="@color/red"/>
+                android:textColor="@color/red" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:text="其他出库"
                 android:textColor="@color/white"
-                android:layout_centerInParent="true"
-                android:textSize="20sp"/>
+                android:textSize="20sp" />
+
             <CheckBox
                 android:id="@+id/isAutoAdd"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
                 android:text="自动添加"
-                android:textColor="@color/red"/>
+                android:textColor="@color/red" />
 
         </RelativeLayout>
+
         <ScrollView
-            android:layout_below="@+id/rl_top"
-            android:layout_above="@+id/ll_btn"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@+id/ll_btn"
+            android:layout_below="@+id/rl_top">
+
             <android.support.v7.widget.CardView
-                android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -64,33 +71,34 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1.5"
-                            android:text="客户:"
                             android:gravity="center"
+                            android:text="客户:"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
                         <EditText
-                            android:selectAllOnFocus="true"
-
                             android:id="@+id/ed_supplier"
+
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:gravity="center"
+                            android:layout_weight="3.5"
                             android:background="@drawable/bg_edittext_selector"
-                            android:layout_weight="3.5" />
+                            android:gravity="center"
+                            android:selectAllOnFocus="true" />
+
                         <RelativeLayout
                             android:id="@+id/search_supplier"
                             android:layout_width="0dp"
-                            android:layout_marginRight="10dp"
                             android:layout_height="40dp"
+                            android:layout_marginRight="10dp"
                             android:layout_weight="1">
 
                             <ImageView
                                 android:layout_width="30dp"
                                 android:layout_height="wrap_content"
-                                android:src="@mipmap/search"
                                 android:layout_alignParentTop="true"
-                                android:layout_centerHorizontal="true" />
+                                android:layout_centerHorizontal="true"
+                                android:src="@mipmap/search" />
                         </RelativeLayout>
 
                     </LinearLayout>
@@ -98,37 +106,36 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:gravity="center"
                             android:text="仓库"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
 
                         <TextView
-                            android:gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:gravity="center"
                             android:text="仓位"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
-
 
 
                     </LinearLayout>
@@ -136,14 +143,13 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
 
                         <com.fangzuo.assist.widget.SpinnerStorage
@@ -152,10 +158,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:textSize="15sp" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
+
                         <com.fangzuo.assist.widget.SpinnerWaveHouse
                             android:id="@+id/sp_wavehouse"
                             android:layout_width="0dp"
@@ -169,12 +177,13 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
+
                     <TextView
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
                         android:text="物料编码:"
                         android:textColor="@android:color/black"
                         android:textSize="15sp" />
@@ -187,10 +196,10 @@
                         android:weightSum="10">
 
                         <RelativeLayout
-                            android:layout_width="0dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_height="40dp"
                             android:id="@+id/scanbyCamera"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="10dp"
                             android:layout_weight="1">
 
                             <ImageView
@@ -203,9 +212,6 @@
 
 
                         <EditText
-                            android:selectAllOnFocus="true"
-                            android:imeOptions="actionNone"
-                            android:gravity="center_vertical"
                             android:id="@+id/ed_code"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -213,13 +219,15 @@
                             android:layout_marginRight="10dp"
                             android:layout_weight="8"
                             android:background="@drawable/bg_edittext_selector"
-                             />
+                            android:gravity="center_vertical"
+                            android:imeOptions="actionNone"
+                            android:selectAllOnFocus="true" />
 
                         <RelativeLayout
                             android:id="@+id/search"
                             android:layout_width="0dp"
-                            android:layout_marginRight="10dp"
                             android:layout_height="40dp"
+                            android:layout_marginRight="10dp"
                             android:layout_weight="1">
 
                             <ImageView
@@ -249,58 +257,60 @@
                         android:id="@+id/tv_goodName"
                         android:layout_width="match_parent"
 
-                        android:gravity="center"
                         android:layout_height="wrap_content"
                         android:background="@drawable/tv_bg"
+                        android:gravity="center"
                         android:textColor="@color/white"
                         android:textSize="19sp" />
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="0dp"
                         android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        >
+                        android:orientation="horizontal">
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="型号"
                             android:gravity="center"
+                            android:text="型号"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="库存"
                             android:gravity="center"
+                            android:text="库存"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
 
-
-
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:orientation="horizontal"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/tv_model"
                             android:layout_width="0dp"
@@ -309,10 +319,12 @@
                             android:background="@drawable/tv_bg"
                             android:textColor="@color/white"
                             android:textSize="19sp" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
+
                         <TextView
                             android:id="@+id/tv_numinstorage"
                             android:layout_width="0dp"
@@ -324,10 +336,12 @@
                             android:textSize="19sp" />
 
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -338,20 +352,21 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="批号"
                             android:gravity="center"
+                            android:text="批号"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
+
                         <TextView
-                            android:gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:gravity="center"
                             android:text="单价"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
@@ -362,15 +377,15 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
 
                     <LinearLayout
-                        android:gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
+
                         <EditText
-                            android:visibility="gone"
                             android:id="@+id/ed_pihao"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
@@ -378,26 +393,29 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:gravity="center"
-                            android:imeOptions="actionNone" />
+                            android:imeOptions="actionNone"
+                            android:visibility="gone" />
 
                         <Spinner
+                            android:id="@+id/sp_pihao"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
-                            android:id="@+id/sp_pihao"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
+
                         <EditText
-                            android:layout_marginLeft="3dp"
                             android:id="@+id/ed_pricesingle"
                             android:layout_width="0dp"
-                            android:inputType="numberDecimal"
                             android:layout_height="40dp"
+                            android:layout_marginLeft="3dp"
                             android:layout_weight="1"
-                            android:gravity="center"
                             android:background="@drawable/bg_edittext_selector"
+                            android:gravity="center"
+                            android:inputType="numberDecimal"
 
                             android:textSize="15sp" />
                     </LinearLayout>
@@ -405,7 +423,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -417,55 +435,60 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="单位"
                             android:gravity="center"
+                            android:text="单位"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
 
                         <TextView
-                            android:gravity="center"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:gravity="center"
                             android:text="数量"
                             android:textColor="@android:color/black"
                             android:textSize="15sp" />
 
 
                     </LinearLayout>
+
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
+
                     <LinearLayout
-                        android:gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
                         android:orientation="horizontal">
+
                         <com.fangzuo.assist.widget.SpinnerUnit
-                            android:layout_marginRight="3dp"
                             android:id="@+id/sp_unit"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
+                            android:layout_marginRight="3dp"
                             android:layout_weight="1"
                             android:textSize="19sp" />
+
                         <View
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
-                            android:background="@color/divider_color"/>
+                            android:background="@color/divider_color" />
+
                         <EditText
-                            android:layout_marginLeft="3dp"
                             android:id="@+id/ed_num"
-                            android:inputType="numberDecimal"
                             android:layout_width="0dp"
                             android:layout_height="40dp"
+                            android:layout_marginLeft="3dp"
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
+                            android:inputType="numberDecimal"
 
                             android:textSize="19sp" />
                     </LinearLayout>
@@ -473,16 +496,17 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="@color/divider_color"/>
+                        android:background="@color/divider_color" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
         </ScrollView>
+
         <LinearLayout
-            android:layout_alignParentBottom="true"
             android:id="@+id/ll_btn"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:weightSum="4">
 
@@ -495,7 +519,8 @@
                 android:background="@drawable/btn_check"
                 android:text="添加"
                 android:textColor="@android:color/white" />
-            <include layout="@layout/line_shu"/>
+
+            <include layout="@layout/line_shu" />
 
             <Button
                 android:id="@+id/btn_finishorder"
@@ -506,7 +531,8 @@
                 android:text="完单"
                 android:textColor="@android:color/white" />
 
-            <include layout="@layout/line_shu"/>
+            <include layout="@layout/line_shu" />
+
             <Button
                 android:id="@+id/btn_backorder"
                 android:layout_width="0dp"
@@ -516,7 +542,8 @@
                 android:text="回单"
                 android:textColor="@android:color/white" />
 
-            <include layout="@layout/line_shu"/>
+            <include layout="@layout/line_shu" />
+
             <Button
                 android:id="@+id/btn_checkorder"
                 android:layout_width="0dp"
@@ -544,20 +571,20 @@
             android:orientation="vertical">
 
             <CheckBox
+                android:id="@+id/cb_isStorage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/cb_isStorage"
                 android:text="是否带出默认仓库"
-                android:textSize="15sp"
-                android:textColor="@android:color/holo_red_light"/>
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="15sp" />
 
 
             <com.fangzuo.assist.widget.TextAutoTime
                 android:id="@+id/tv_date"
-                app:Time_titile="日期:"
-                app:Time_titile_size="11sp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                app:Time_titile="日期:"
+                app:Time_titile_size="11sp" />
 
 
             <TextView
@@ -578,93 +605,52 @@
             </RelativeLayout>
 
 
+            <include layout="@layout/line_heng" />
 
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_capture_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="领料:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="领料"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_capture_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_sign_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="发货:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="发货"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_sign_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerDepartMentUI
+                android:id="@+id/sp_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="部门:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="部门"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerDepartMent
-                    android:id="@+id/sp_department"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_employee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="业务员:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="业务员"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_employee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="主管:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="主管"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_manager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
+            <include layout="@layout/line_heng" />
 
 
             <TextView
@@ -673,14 +659,17 @@
                 android:text="用途:"
                 android:textColor="@android:color/black"
                 android:textSize="15sp" />
-
             <EditText
                 android:id="@+id/ed_zhaiyao"
+                android:layout_margin="4dp"
+                android:padding="2dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="80dp"
+                android:layout_weight="1"
+                android:textSize="19sp"
                 android:background="@drawable/bg_edittext_selector"
-
-                android:textSize="19sp" />
+                />
 
 
         </LinearLayout>

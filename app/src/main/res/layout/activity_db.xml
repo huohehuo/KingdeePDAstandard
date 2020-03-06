@@ -581,76 +581,42 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
-            <TextView
+            <include layout="@layout/line_heng" />
+            <com.fangzuo.assist.widget.SpinnerDepartMentUI
+                android:id="@+id/sp_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/department"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="部门"
+                app:manspinner_size="20sp"/>
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerDepartMent
-                    android:id="@+id/sp_department"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_employee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/employee"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="业务员"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_employee"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_sign_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/sign_person"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="验收"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng" />
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_sign_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
-
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_capture_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/capture_person"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="保管"
+                app:manspinner_size="20sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_capture_person"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </RelativeLayout>
+            <include layout="@layout/line_heng" />
 
 
         </LinearLayout>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,8 +43,8 @@ import java.util.List;
 public class TextAutoTime extends RelativeLayout {
     // 返回按钮控件
     // 标题Tv
-    private TextView mTitleTv;
-    private TextView mTime;
+    private AppCompatTextView mTitleTv;
+    private AppCompatTextView mTime;
     private String date;
     private int year;
     private int month;
@@ -56,8 +57,8 @@ public class TextAutoTime extends RelativeLayout {
         month = Calendar.getInstance().get(Calendar.MONTH);
         day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
         // 获取控件
-        mTitleTv = (TextView) findViewById(R.id.tv);
-        mTime = (TextView) findViewById(R.id.time);
+        mTitleTv = (AppCompatTextView) findViewById(R.id.tv);
+        mTime = (AppCompatTextView) findViewById(R.id.time);
 
         TypedArray attrArray = context.obtainStyledAttributes(attributeSet, R.styleable.Style_Time_Choose);
         int count = attrArray.getIndexCount();
@@ -68,8 +69,8 @@ public class TextAutoTime extends RelativeLayout {
                     mTitleTv.setText(attrArray.getString(R.styleable.Style_Time_Choose_Time_titile));
                     break;
                 case R.styleable.Style_Time_Choose_Time_titile_size:
-                    mTitleTv.setTextSize(attrArray.getDimension(R.styleable.Style_Time_Choose_Time_titile_size, 10));
-                    mTime.setTextSize(attrArray.getDimension(R.styleable.Style_Time_Choose_Time_titile_size, 10));
+//                    mTitleTv.setTextSize(attrArray.getDimension(R.styleable.Style_Time_Choose_Time_titile_size, 10));
+//                    mTime.setTextSize(attrArray.getDimension(R.styleable.Style_Time_Choose_Time_titile_size, 10));
                     break;
             }
         }

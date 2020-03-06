@@ -68,6 +68,7 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
@@ -138,9 +139,9 @@ public class ProductInStorageActivity extends BaseActivity {
     @BindView(R.id.sp_yuandan)
     SpinnerYuanDan spYuandan;
     @BindView(R.id.sp_yanshou)
-    SpinnerPeople spYanshou;
+    SpinnerPeopleUI spYanshou;
     @BindView(R.id.sp_capture)
-    SpinnerPeople spCapture;
+    SpinnerPeopleUI spCapture;
     @BindView(R.id.isAutoAdd)
     CheckBox autoAdd;
     @BindView(R.id.sp_which_storage)

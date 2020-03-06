@@ -8,26 +8,29 @@
     android:paddingLeft="4dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="20dp"
         android:id="@+id/tv"
-        tools:text="时间"
-        android:layout_weight="1.5"
-        android:textColor="#000000"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_width="0dp"
-        android:layout_height="wrap_content" />
-
-    <TextView
+        android:layout_weight="1.1"
+        android:textColor="#000000"
+        android:layout_height="match_parent"
+        tools:text="名字"/>
+    <android.support.v7.widget.AppCompatTextView
+        android:autoSizeTextType="uniform"
+        android:autoSizeMaxTextSize="20dp"
         android:id="@+id/time"
-        android:layout_marginLeft="5dp"
-        tools:text="2012211"
         android:gravity="center"
+        android:paddingRight="10dp"
         android:layout_width="0dp"
         android:layout_weight="3"
-        android:layout_height="38dp"
+        android:textColor="#000000"
+        android:layout_height="match_parent"
         android:background="@drawable/shape_time_choose"
-        android:textSize="15sp"
-        />
+        tools:text="20121212"/>
+
 
 
 

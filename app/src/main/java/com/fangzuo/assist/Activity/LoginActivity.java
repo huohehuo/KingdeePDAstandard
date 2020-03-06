@@ -129,9 +129,9 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     @Override
     protected void onResume() {
         super.onResume();
-        ArrayList<Integer> list = new ArrayList<>();
-        list.add(2);list.add(3);list.add(7);
-        DataService.UpdateData(mContext,list);//更新指定表的本地数据
+//        ArrayList<Integer> list = new ArrayList<>();
+//        list.add(2);list.add(3);list.add(7);
+//        DataService.UpdateData(mContext,list);//更新指定表的本地数据
 
         spinner.LoadUser();
         DataService.updateTime(mContext);

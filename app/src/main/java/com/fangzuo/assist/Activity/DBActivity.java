@@ -67,7 +67,9 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
+import com.fangzuo.assist.widget.SpinnerDepartMentUI;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.TextAutoTime;
@@ -134,13 +136,13 @@ public class DBActivity extends BaseActivity {
     @BindView(R.id.tv_date)
     TextAutoTime tvDate;
     @BindView(R.id.sp_department)
-    SpinnerDepartMent spDepartment;
+    SpinnerDepartMentUI spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeople spEmployee;
+    SpinnerPeopleUI spEmployee;
     @BindView(R.id.sp_sign_person)
-    SpinnerPeople spSignPerson;
+    SpinnerPeopleUI spSignPerson;
     @BindView(R.id.sp_capture_person)
-    SpinnerPeople spCapturePerson;
+    SpinnerPeopleUI spCapturePerson;
     @BindView(R.id.cb_isStorage)
     CheckBox cbIsStorage;
     @BindView(R.id.ishebing)

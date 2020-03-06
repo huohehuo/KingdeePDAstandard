@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -334,7 +335,9 @@ public class SettingActivity extends BaseActivity implements DataSearchRyAdapter
                 prop();
                 break;
             case R.id.btn_download:
-                DownLoadData.getInstance(mContext, containerView, handler).alertToChoose();
+                startNewActivity(DownDataActivity.class, R.anim.push_bottom_in, R.anim.push_bottom_out, false, null);
+//                DownDataActivity.start(mContext);
+//                DownLoadData.getInstance(mContext, containerView, handler).alertToChoose();
                 break;
         }
     }

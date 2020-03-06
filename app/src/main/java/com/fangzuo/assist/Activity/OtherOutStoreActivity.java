@@ -70,7 +70,9 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
+import com.fangzuo.assist.widget.SpinnerDepartMentUI;
 import com.fangzuo.assist.widget.SpinnerPeople;
+import com.fangzuo.assist.widget.SpinnerPeopleUI;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
@@ -145,15 +147,15 @@ public class OtherOutStoreActivity extends BaseActivity {
     @BindView(R.id.sp_inStoreType)
     SpinnerStoreType spInStoreType;
     @BindView(R.id.sp_capture_person)
-    SpinnerPeople spCapturePerson;
+    SpinnerPeopleUI spCapturePerson;
     @BindView(R.id.sp_sign_person)
-    SpinnerPeople spSignPerson;
+    SpinnerPeopleUI spSignPerson;
     @BindView(R.id.sp_department)
-    SpinnerDepartMent spDepartment;
+    SpinnerDepartMentUI spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeople spEmployee;
+    SpinnerPeopleUI spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeople spManager;
+    SpinnerPeopleUI spManager;
     @BindView(R.id.ed_zhaiyao)
     EditText edZhaiyao;
     @BindView(R.id.drawer)

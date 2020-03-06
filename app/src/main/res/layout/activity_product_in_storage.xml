@@ -611,44 +611,24 @@
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
+            <include layout="@layout/line_heng"/>
 
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_yanshou"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="验收:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
+                app:manspinner_name="验收"
+                app:manspinner_size="20sp"  />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <include layout="@layout/line_heng"/>
 
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_yanshou"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
-
-            <TextView
+            <com.fangzuo.assist.widget.SpinnerPeopleUI
+                android:id="@+id/sp_capture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="保管:"
-                android:textColor="@android:color/black"
-                android:textSize="15sp" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <com.fangzuo.assist.widget.SpinnerPeople
-                    android:id="@+id/sp_capture"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </RelativeLayout>
+                app:manspinner_name="保管"
+                app:manspinner_size="20sp"  />
+            <include layout="@layout/line_heng"/>
         </LinearLayout>
     </ScrollView>
 
