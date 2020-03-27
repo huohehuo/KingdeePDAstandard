@@ -612,7 +612,9 @@ public class HBDPDCPRKActivity extends BaseActivity {
             fBatchManager = true;
             spBatchNo.setEnabled(true);
             edPihao.setEnabled(true);
+            edPihao.setHint("请输入批号");
         } else {
+            edPihao.setHint("未开启批次管理");
             edPihao.setText("");
             edPihao.setEnabled(false);
             spBatchNo.setEnabled(false);

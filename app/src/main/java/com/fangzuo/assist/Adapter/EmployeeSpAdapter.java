@@ -59,4 +59,16 @@ public class EmployeeSpAdapter extends BaseAdapter {
     class ViewHolder{
         TextView tv ;
     }
+
+    public void addData(List<Employee> clients) {
+        items.clear();
+        items.addAll(clients);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
 }

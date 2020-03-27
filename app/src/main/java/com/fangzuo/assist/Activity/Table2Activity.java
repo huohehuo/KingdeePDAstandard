@@ -2,6 +2,7 @@ package com.fangzuo.assist.Activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,7 @@ public class Table2Activity extends BaseActivity implements TableAdapter1.InnerC
     @BindView(R.id.productcategory)
     TextView productcategory;
     @BindView(R.id.productnum)
-    TextView productnum;
+    AppCompatTextView productnum;
     private DaoSession daoSession;
     private T_DetailDao t_detailDao;
     private ArrayList<Boolean> isCheck;

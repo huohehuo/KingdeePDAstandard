@@ -70,8 +70,10 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerStoreType;
 import com.fangzuo.assist.widget.SpinnerUnit;
@@ -148,15 +150,15 @@ public class OtherInStoreActivity extends BaseActivity {
     @BindView(R.id.sp_inStoreType)
     SpinnerStoreType spInStoreType;
     @BindView(R.id.sp_capture_person)
-    SpinnerPeopleUI spCapturePerson;
+    SpinnerPeopleUIDlg spCapturePerson;
     @BindView(R.id.sp_sign_person)
-    SpinnerPeopleUI spSignPerson;
+    SpinnerPeopleUIDlg spSignPerson;
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;
+    SpinnerDepartMentUIDlg spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;
+    SpinnerPeopleUIDlg spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeopleUI spManager;
+    SpinnerPeopleUIDlg spManager;
     @BindView(R.id.ed_zhaiyao)
     EditText edZhaiyao;
     @BindView(R.id.drawer)
@@ -664,11 +666,12 @@ public class OtherInStoreActivity extends BaseActivity {
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_ois), "");
 
         spInStoreType.setAutoSelection(getString(R.string.spInStoreType_ois), "");
-        spCapturePerson.setAutoSelection(getString(R.string.spCapturePerson_ois), "");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_ois), "");
-        spManager.setAutoSelection(getString(R.string.spManager_ois), "");
-        spSignPerson.setAutoSelection(getString(R.string.spSignPerson_ois), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_ois), "");
+
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity,Hawk.get(Info.Save_DepartMent+activity,""),false);
+        spCapturePerson.setAutoSelection(Info.Save_People1+activity,Hawk.get(Info.Save_People1+activity,""),false);
+        spEmployee.setAutoSelection(Info.Save_People2+activity,Hawk.get(Info.Save_People2+activity,""),false);
+        spManager.setAutoSelection(Info.Save_People3+activity,Hawk.get(Info.Save_People3+activity,""),false);
+        spSignPerson.setAutoSelection(Info.Save_People4+activity,Hawk.get(Info.Save_People4+activity,""),false);
 
 //        inStoreType = CommonMethod.getMethod(mContext).getInStoreType(spInStoreType);
 //        employeeSpAdapter = CommonMethod.getMethod(mContext).getEmployeeAdapter(spCapturePerson);
@@ -882,7 +885,9 @@ public class OtherInStoreActivity extends BaseActivity {
                 fBatchManager = true;
                 setfocus(edPihao);
                 edPihao.setEnabled(true);
+                edPihao.setHint("请输入批号");
             } else {
+                edPihao.setHint("未开启批次管理");
                 pihao = "";
                 edPihao.setText("");
                 edPihao.setEnabled(false);

@@ -613,7 +613,7 @@
 
             <include layout="@layout/line_heng"/>
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_yanshou"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -622,7 +622,7 @@
 
             <include layout="@layout/line_heng"/>
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_capture"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

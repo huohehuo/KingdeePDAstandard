@@ -3,6 +3,7 @@ package com.fangzuo.assist.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -77,10 +79,12 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerGoodsType;
 import com.fangzuo.assist.widget.SpinnerPayType;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
 import com.fangzuo.assist.widget.SpinnerStorage;
@@ -166,7 +170,7 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.sp_saleMethod)
     SpinnerSaleMethod spSaleMethod;           //销售方式
     @BindView(R.id.sp_yuandan)
-    SpinnerPeopleUI spYuandan;              //保管
+    SpinnerPeopleUIDlg spYuandan;              //保管
     @BindView(R.id.sp_sendMethod)
     SpinnerGoodsType spSendMethod;           //交货方式
     @BindView(R.id.sp_payMethod)
@@ -174,11 +178,11 @@ public class SoldOutActivity extends BaseActivity {
     @BindView(R.id.sp_sendplace)
     Spinner spSendplace;            //交货地点
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;           //部门
+    SpinnerDepartMentUIDlg spDepartment;           //部门
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;             //业务员
+    SpinnerPeopleUIDlg spEmployee;             //业务员
     @BindView(R.id.sp_manager)
-    SpinnerPeopleUI spManager;              //主管
+    SpinnerPeopleUIDlg spManager;              //主管
     @BindView(R.id.isAutoAdd)
     CheckBox autoAdd;
     @BindView(R.id.cb_isStorage)
@@ -329,10 +333,11 @@ public class SoldOutActivity extends BaseActivity {
 
 //        storageSpAdapter = method.getStorageSpinner(spSendStorage);
         spSendStorage.setAutoSelection(getString(R.string.spStorage_soldo), "");
-        spYuandan.setAutoSelection(getString(R.string.spYuandan_soldo), "");
-        spManager.setAutoSelection(getString(R.string.spManager_soldo), "");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_soldo), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_soldo), "");
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity,Hawk.get(Info.Save_DepartMent+activity,""),false);
+        spYuandan.setAutoSelection(Info.Save_People1+activity,Hawk.get(Info.Save_People1+activity,""),false);
+        spEmployee.setAutoSelection(Info.Save_People2+activity,Hawk.get(Info.Save_People2+activity,""),false);
+        spManager.setAutoSelection(Info.Save_People3+activity,Hawk.get(Info.Save_People3+activity,""),false);
+
         spSendMethod.setAutoSelection(getString(R.string.spSendMethod_soldo), "");
         spSaleScope.setAutoSelection(getString(R.string.spSaleScope_soldo), "");
         spSaleMethod.setAutoSelection(getString(R.string.spSaleMethod_soldo), "");
@@ -428,6 +433,17 @@ public class SoldOutActivity extends BaseActivity {
                 if (i == 0 && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
                     setDATA(edCode.getText().toString(), false);
                     setfocus(edCode);
+                }
+                return true;
+            }
+        });
+
+        edNum.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == 0 && keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    Addorder();
+                    hideKeyboard();//隐藏键盘
                 }
                 return true;
             }

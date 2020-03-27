@@ -59,4 +59,16 @@ public class StorageSpAdapter extends BaseAdapter {
     class ViewHolder{
         TextView tv ;
     }
+
+    public void addData(List<Storage> clients) {
+        items.clear();
+        items.addAll(clients);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
 }

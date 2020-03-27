@@ -61,12 +61,15 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="18sp"/>
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="25dp"
             android:layout_width="0dp"
             android:id="@+id/productnum"
+            tools:text="物料汇总：dasdfasdfsdfasdf"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"/>
+            />
     </LinearLayout>
 
     <ListView

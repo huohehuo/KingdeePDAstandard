@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class TableActivity extends BaseActivity implements TableAdapter.InnerCli
     @BindView(R.id.productcategory)
     TextView productcategory;
     @BindView(R.id.productnum)
-    TextView productnum;
+    AppCompatTextView productnum;
     @BindView(R.id.delete_all)
     TextView deleteAll;
     private DaoSession daoSession;

@@ -6,7 +6,6 @@ package com.fangzuo.assist.Utils;
 
 public class WebApi {
     public static final String OCUPLOAD = "PushDownOCUpload";
-    public static final String GetUseTime = "GetUseTime";
     public static final String SetUseTime = "SetUseTime";
     public static final String ServiceVersion = "ServiceVersion";//获取服务器版本
 
@@ -66,6 +65,7 @@ public class WebApi {
     public static final String SEARCHJHSEARCHLIKE = "jhSearchLike";
 
     public static final String DownloadInfoForFile = "DownloadInfoForFile";
+    public static final String GetInStorageNumList = "GetInStorageNumList";
 
 
     public static final String RegisterCheck = "RegisterCheck";

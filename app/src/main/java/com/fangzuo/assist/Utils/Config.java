@@ -10,8 +10,6 @@ public class Config {
     public static final String Data_Url = "DownData/AllData.txt";
     public static String Company="通用版";
     public static String User_Permit="User_Permit";
-    public static String SaveTime="SaveTime";//用于保存使用截止日期
-    public static String Key="01235679";//用于保存使用截止日期（需要web端的key与之相同,并且不能倒序，只能递增的数字）
     public static String PDA_IMIE="PDA_IMIE";//用于保存注册码
     public static String PDA_RegisterCode="PDA_RegisterCode";//用于保存注册码
     public static String PDA_RegisterMaxNum="PDA_RegisterMaxNum";//用于保存注册码

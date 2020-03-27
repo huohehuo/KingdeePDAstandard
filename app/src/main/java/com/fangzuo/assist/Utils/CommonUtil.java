@@ -293,22 +293,6 @@ Calendar cal = Calendar.getInstance();
 
         }
     }
-    //解密加密的时间
-    public static String dealTime(String timemd){
-//        Lg.e("加密的日期："+timemd);
-        StringBuffer buffer = new StringBuffer()
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(0)+"")+1))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(1)+"")+2))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(2)+"")+3))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(3)+"")+4))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(4)+"")+5))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(5)+"")+6))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(6)+"")+7))
-                .append(timemd.charAt(Integer.parseInt(Config.Key.charAt(7)+"")+8));
-//        Lg.e("解析日期："+buffer.toString());
-        return buffer.toString();
-    }
-
 
     /**
      * 弹窗高度，默认为屏幕高度的四分之三

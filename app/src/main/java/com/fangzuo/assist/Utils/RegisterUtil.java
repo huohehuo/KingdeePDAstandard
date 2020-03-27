@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class RegisterUtil {
 
+    public static String hasRegister="hasRegister";//OK则是已注册过的
     //获取本机Mac地址
     public static String getNewMac(){
         try {
@@ -53,7 +54,7 @@ public class RegisterUtil {
             public void onNext(CommonResponse commonResponse) {
                 super.onNext(commonResponse);
                 if (!commonResponse.state)return;
-                Hawk.put(Config.PDA_RegisterMaxNum,commonResponse.returnJson);
+                Hawk.put(Config.PDA_RegisterMaxNum,commonResponse.returnJson);//记录最大用户数
                 doRegisterCheck(lastRegister);
             }
 
@@ -76,9 +77,9 @@ public class RegisterUtil {
                 super.onNext(commonResponse);
                 if (!commonResponse.state) return;
                 Lg.e("注册信息数量：", commonResponse.returnJson);
-                if (Integer.parseInt(commonResponse.returnJson) <=  Integer.parseInt(Hawk.get(Config.PDA_RegisterMaxNum,"1"))) {
+                if (Integer.parseInt(commonResponse.returnJson) <=  Integer.parseInt(Hawk.get(Config.PDA_RegisterMaxNum,"1"))) {//是否超过用户数
                     Lg.e("符合用户注册最低数量");
-                    App.getRService().doIOAction(WebApi.RegisterCheck, lastRegister, new MySubscribe<CommonResponse>() {
+                    App.getRService().doIOAction(WebApi.RegisterCheck, lastRegister, new MySubscribe<CommonResponse>() {//是否已存在注册码
                         @Override
                         public void onNext(CommonResponse commonResponse) {
                             super.onNext(commonResponse);
@@ -86,21 +87,24 @@ public class RegisterUtil {
                             if (commonResponse.returnJson.equals("OK")){
                                 Lg.e("存在注册码");
                                 //存在注册码
+                                Hawk.put(hasRegister,"OK");
                                 EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
                             }else{
                                 //不存在注册码，进行注册
                                 Lg.e("不存在注册码");
-                                App.getRService().doIOAction(WebApi.RegisterCode, lastRegister, new MySubscribe<CommonResponse>() {
+                                App.getRService().doIOAction(WebApi.RegisterCode, lastRegister, new MySubscribe<CommonResponse>() {//不存在注册码，进行自动注册
                                     @Override
                                     public void onNext(CommonResponse commonResponse) {
                                         super.onNext(commonResponse);
                                         if (!commonResponse.state) return;//注册成功
+                                        Hawk.put(hasRegister,"OK");
                                         EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
                                     }
 
                                     @Override
                                     public void onError(Throwable e) {
                                         super.onError(e);
+                                        Hawk.put(hasRegister,"");
                                         EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"注册失败"));
 //                                        LoadingUtil.showAlter(WelcomeActivity.this, "提示", "注册失败");
                                     }
@@ -111,19 +115,44 @@ public class RegisterUtil {
                         @Override
                         public void onError(Throwable e) {
 //                            super.onError(e);
+                            Hawk.put(hasRegister,"");
                             EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询用户错误"+e.getMessage()));
                         }
                     });
 
-                } else {
-                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件使用数量已达上限："+Hawk.get(Config.PDA_RegisterMaxNum,"1")));
-//                    LoadingUtil.showAlter(WelcomeActivity.this, "提示", "软件使用数量已达上限");
+                } else {//超过用户数，再判断是否已存在注册码
+                    App.getRService().doIOAction(WebApi.RegisterCheck, lastRegister, new MySubscribe<CommonResponse>() {//是否已存在注册码
+                        @Override
+                        public void onNext(CommonResponse commonResponse) {
+                            super.onNext(commonResponse);
+                            if (!commonResponse.state)return;
+                            if (commonResponse.returnJson.equals("OK")){
+                                Lg.e("存在注册码");
+                                //存在注册码
+                                Hawk.put(hasRegister,"OK");
+                                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
+                            }else{
+                                //不存在注册码，进行注册
+                                Lg.e("不存在注册码");
+                                Hawk.put(hasRegister,"");
+                                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件使用数量已达上限："+Hawk.get(Config.PDA_RegisterMaxNum,"1")));
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+//                            super.onError(e);
+                            Hawk.put(hasRegister,"");
+                            EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询用户错误"+e.getMessage()));
+                        }
+                    });
                 }
             }
 
             @Override
             public void onError(Throwable e) {
 //                super.onError(e);
+                Hawk.put(hasRegister,"");
                 EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询用户数错误："+e.getMessage()));
 //                Toast.showText(WelcomeActivity.this,"查询用户数错误："+e.getMessage());
             }
@@ -134,27 +163,34 @@ public class RegisterUtil {
     public static void checkHasRegister(){
         //检查是否存在注册码
         if ("".equals(Hawk.get(Config.PDA_IMIE,"")))return;
-        App.getRService().doIOAction(WebApi.RegisterCheck,  Hawk.get(Config.PDA_IMIE,""), new MySubscribe<CommonResponse>() {
-            @Override
-            public void onNext(CommonResponse commonResponse) {
+        if ("OK".equals(Hawk.get(hasRegister,""))){
+            //存在注册码
+            EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
+        }else{
+            App.getRService().doIOAction(WebApi.RegisterCheck,  Hawk.get(Config.PDA_IMIE,""), new MySubscribe<CommonResponse>() {
+                @Override
+                public void onNext(CommonResponse commonResponse) {
 //                super.onNext(commonResponse);
-                if (commonResponse.returnJson.equals("OK")){
-                    Lg.e("存在注册码");
-                    //存在注册码
-                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
-                }else{
-                    Lg.e("不存在注册码");
-                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件未注册,是否重新注册"));
+                    if (commonResponse.returnJson.equals("OK")){
+                        Lg.e("存在注册码");
+                        //存在注册码
+                        Hawk.put(hasRegister,"OK");
+                        EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"OK"));
+                    }else{
+                        Lg.e("不存在注册码");
+                        Hawk.put(hasRegister,"");
+                        EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"软件未注册,是否重新注册"));
+                    }
                 }
-            }
 
-            @Override
-            public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 //                super.onError(e);
-                EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询注册信息错误"));
-
-            }
-        });
+                    Hawk.put(hasRegister,"");
+                    EventBusUtil.sendEvent(new ClassEvent(EventBusInfoCode.Register_Result,"查询注册信息错误"));
+                }
+            });
+        }
     }
 
 

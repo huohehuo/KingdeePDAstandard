@@ -47,6 +47,7 @@ public class GetSettingList {
         items.add(new SettingList("9","调拨",R.mipmap.diaobo));
         items.add(new SettingList("10","其他入库",R.mipmap.ruku));
         items.add(new SettingList("11","其他出库",R.mipmap.chuku));
+//        items.add(new SettingList("26","库存查询",R.mipmap.chuku));
         return items;
     }
 

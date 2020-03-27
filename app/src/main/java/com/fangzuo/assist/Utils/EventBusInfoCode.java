@@ -40,7 +40,7 @@ public class EventBusInfoCode {
     public static final String Man3 = "Man3";
     public static final String Man4 = "Man4";
 
-    public static final String AutoDown = "AutoDown";
+    public static final String AutoDown = "AutoDown";//下载基础数据
 
 
 }

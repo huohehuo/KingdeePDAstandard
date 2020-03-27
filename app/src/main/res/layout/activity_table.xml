@@ -73,7 +73,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="18sp"/>
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="25dp"
+            tools:text="物料汇总：dasdfasdfsdfasdf"
             android:layout_width="0dp"
             android:id="@+id/productnum"
             android:layout_height="wrap_content"

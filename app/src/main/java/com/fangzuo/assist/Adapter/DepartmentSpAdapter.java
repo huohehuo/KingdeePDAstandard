@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.fangzuo.assist.Dao.Department;
+import com.fangzuo.assist.Dao.Employee;
 import com.fangzuo.assist.R;
 
 import java.util.List;
@@ -59,4 +60,17 @@ public class DepartmentSpAdapter extends BaseAdapter {
     class ViewHolder{
         TextView tv ;
     }
+
+    public void addData(List<Department> clients) {
+        items.clear();
+        items.addAll(clients);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+
 }

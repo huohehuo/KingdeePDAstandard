@@ -23,6 +23,7 @@ import com.fangzuo.assist.R;
 import com.fangzuo.assist.RxSerivce.MySubscribe;
 import com.fangzuo.assist.Utils.BasicShareUtil;
 import com.fangzuo.assist.Utils.Config;
+import com.fangzuo.assist.Utils.ControlUtil;
 import com.fangzuo.assist.Utils.Toast;
 import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
@@ -32,7 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.fangzuo.assist.Utils.CommonUtil.dealTime;
+import static com.fangzuo.assist.Utils.RegisterUtil.hasRegister;
+
 
 public class IpPortActivity extends BaseActivity {
 
@@ -83,9 +85,9 @@ public class IpPortActivity extends BaseActivity {
                 spPda.setSelection(App.PDA_Choose);
             }
         }, 100);
-        if (null != Hawk.get(Config.SaveTime, null)) {
-            UseTimeBean bean=Hawk.get(Config.SaveTime);
-            tvEndtime.setText("有效期：" + dealTime(bean.endTime) + "   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败")+"  注册码："+Hawk.get(Config.PDA_RegisterCode,"获取失败"));
+        if (null != Hawk.get(ControlUtil.SaveTime, null)) {
+            UseTimeBean bean=Hawk.get(ControlUtil.SaveTime);
+            tvEndtime.setText("有效期：" + ControlUtil.dealTime(bean.endTime) + "   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败")+"  注册码："+Hawk.get(Config.PDA_RegisterCode,"获取失败"));
 //            tvEndtime.setText("   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败")+"  注册码："+Hawk.get(Config.PDA_RegisterCode,"获取失败"));
         } else {
             tvEndtime.setText("获取时间失效" + "   用户码：" + Hawk.get(Config.PDA_IMIE, "获取失败")+"  注册码："+Hawk.get(Config.PDA_RegisterCode,"获取失败"));
@@ -196,6 +198,7 @@ public class IpPortActivity extends BaseActivity {
                             public void onNext(CommonResponse commonResponse) {
                                 super.onNext(commonResponse);
                                 if (!commonResponse.state)return;
+                                Hawk.put(hasRegister,"");
                                 Toast.showText(mContext,"用户已登出");
                             }
 

@@ -582,7 +582,7 @@
 
 
             <include layout="@layout/line_heng" />
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_getman"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -590,7 +590,7 @@
                 app:manspinner_size="20sp"
                 />
             <include layout="@layout/line_heng" />
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_sendman"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

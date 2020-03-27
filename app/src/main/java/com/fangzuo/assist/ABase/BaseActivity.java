@@ -887,6 +887,24 @@ protected void onResume() {
         return false;
     }
 
+    //隐藏键盘
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+    /**
+     * 隐藏软键盘(可用于Activity，Fragment)
+     */
+    public static void hideSoftKeyboard(Context context, List<View> viewList) {
+        if (viewList == null) return;
+
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+
+        for (View v : viewList) {
+            inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
+    }
 
     //使状态栏透明并沉浸到activity
     protected void initBar() {

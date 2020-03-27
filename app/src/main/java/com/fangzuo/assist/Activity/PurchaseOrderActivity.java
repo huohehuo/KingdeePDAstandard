@@ -69,9 +69,11 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerPayType;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerPurchaseMethod;
 import com.fangzuo.assist.widget.SpinnerPurchaseScope;
 import com.fangzuo.assist.widget.SpinnerUnit;
@@ -153,11 +155,11 @@ public class PurchaseOrderActivity extends BaseActivity {
     @BindView(R.id.sp_payMethod)
     SpinnerPayType spPayMethod;
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;
+    SpinnerDepartMentUIDlg spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;
+    SpinnerPeopleUIDlg spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeopleUI spManager;
+    SpinnerPeopleUIDlg spManager;
     @BindView(R.id.ed_supplier)
     EditText edSupplier;
     @BindView(R.id.search_supplier)
@@ -279,9 +281,9 @@ public class PurchaseOrderActivity extends BaseActivity {
 
         method.updateSupplier();
         //第一个参数用于保存上一个值，第二个为自动跳转到该默认值
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_po), "");
-        spManager.setAutoSelection(getString(R.string.spManager_po), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_po), "");
+        spEmployee.setAutoSelection(Info.Save_People1+activity, Hawk.get(Info.Save_People1+activity,""),false);
+        spManager.setAutoSelection(Info.Save_People2+activity, Hawk.get(Info.Save_People2+activity,""),false);
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity, Hawk.get(Info.Save_DepartMent+activity,""),false);
         spPayMethod.setAutoSelection(getString(R.string.spPayMethod_po), "");
         spYuandan.setAutoSelection(getString(R.string.spYuandan_po), "");
         spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_po), "");

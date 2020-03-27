@@ -76,10 +76,13 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerPurchaseMethod;
 import com.fangzuo.assist.widget.SpinnerStorage;
+import com.fangzuo.assist.widget.SpinnerStorageDlg;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.SpinnerWlkm;
@@ -97,6 +100,7 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
+import com.orhanobut.hawk.Hawk;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -122,7 +126,7 @@ public class PurchaseInStorageActivity extends BaseActivity {
     @BindView(R.id.ed_supplier)
     EditText edSupplier;
     @BindView(R.id.sp_which_storage)
-    SpinnerStorage spWhichStorage;
+    SpinnerStorageDlg spWhichStorage;
     @BindView(R.id.tv_goodName)
     TextView tvGoodName;
     @BindView(R.id.tv_model)
@@ -156,15 +160,15 @@ public class PurchaseInStorageActivity extends BaseActivity {
     @BindView(R.id.sp_purchaseMethod)
     SpinnerPurchaseMethod spPurchaseMethod;
     @BindView(R.id.sp_capture_person)
-    SpinnerPeopleUI spCapturePerson;
+    SpinnerPeopleUIDlg spCapturePerson;
     @BindView(R.id.sp_sign_person)
-    SpinnerPeopleUI spSignPerson;
+    SpinnerPeopleUIDlg spSignPerson;
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;
+    SpinnerDepartMentUIDlg spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;
+    SpinnerPeopleUIDlg spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeopleUI spManager;
+    SpinnerPeopleUIDlg spManager;
     @BindView(R.id.sp_wanglaikemu)
     SpinnerWlkm spWanglaikemu;
     @BindView(R.id.search)
@@ -398,6 +402,8 @@ public class PurchaseInStorageActivity extends BaseActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 isSpStorageDefault = false;
                 storage = (Storage) spWhichStorage.getAdapter().getItem(i);
+                spWhichStorage.setTitleText(storage.FName);
+                Hawk.put(Info.Save_Storage+activity,storage.FName);
                 wavehouseID = "0";
 //                waveHouseAdapter = CommonMethod.getMethod(mContext).getWaveHouseAdapter(storage, spWavehouse);
                 spWavehouse.setAuto(mContext, storage, wavehouseAutoString);
@@ -686,14 +692,15 @@ public class PurchaseInStorageActivity extends BaseActivity {
 //        spDepartment.setSelection(share.getPISdepartment());
 //        spWanglaikemu.setSelection(share.getPISwanglaikemu());
 
-
-        spWhichStorage.setAutoSelection(getString(R.string.spStorage_pis), "");
+        spWhichStorage.setAuto(Hawk.get(Info.Save_Storage+activity,""));
+//        spWhichStorage.setAutoSelection(getString(R.string.spStorage_pis), "");
         spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_pis), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_pis), "");
-        spCapturePerson.setAutoSelection(getString(R.string.spCapturePerson_pis), "");
-        spSignPerson.setAutoSelection(getString(R.string.spSignPerson_pis), "");
-        spManager.setAutoSelection(getString(R.string.spManager_pis), "");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_pis), "");
+
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity,Hawk.get(Info.Save_DepartMent+activity,""),false);
+        spCapturePerson.setAutoSelection(Info.Save_People1+activity,Hawk.get(Info.Save_People1+activity,""),false);
+        spSignPerson.setAutoSelection(Info.Save_People2+activity,Hawk.get(Info.Save_People2+activity,""),false);
+        spEmployee.setAutoSelection(Info.Save_People3+activity,Hawk.get(Info.Save_People3+activity,""),false);
+        spManager.setAutoSelection(Info.Save_People4+activity,Hawk.get(Info.Save_People4+activity,""),false);
         spWanglaikemu.setAutoSelection(getString(R.string.spWanglaikemu_pis), "");
 
     }
@@ -929,19 +936,16 @@ public class PurchaseInStorageActivity extends BaseActivity {
                 setfocus(edPihao);
                 fBatchManager = true;
                 edPihao.setEnabled(true);
+                edPihao.setHint("请输入批号");
             } else {
+                edPihao.setHint("未开启批次管理");
                 edPihao.setText("");
                 edPihao.setEnabled(false);
                 fBatchManager = false;
             }
             if (isGetDefaultStorage) {
-                spWhichStorage.setAutoSelection(getString(R.string.spStorage_pis), product.FDefaultLoc);
-//            for (int j = 0; j < storageSpAdapter.getCount(); j++) {
-//                if (((Storage) storageSpAdapter.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
-//                    spWhichStorage.setSelection(j);
-//                    break;
-//                }
-//            }
+                spWhichStorage.setAutoSelection(product.FDefaultLoc);
+//                spWhichStorage.setAutoSelection(getString(R.string.spStorage_pis), product.FDefaultLoc);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

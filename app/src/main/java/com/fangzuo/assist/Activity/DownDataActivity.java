@@ -104,11 +104,7 @@ public class DownDataActivity extends BaseActivity {
                         btnDownall.setText("下载全部");
                     }
                     break;
-
-
             }
-
-
         }
     }
 
@@ -243,7 +239,6 @@ public class DownDataActivity extends BaseActivity {
                 boolean b = insertLocalSQLite(dBean);
                 if (b) {
                     checkSaveOK(backSize);
-
                 } else {
                     Toast.showText(mContext, nowTag + ":存入本地失败");
                     checkSaveOK("保存错误");
@@ -252,7 +247,7 @@ public class DownDataActivity extends BaseActivity {
             }
         });
     }
-
+    //判断是否完成下载返回，并修改列表状态
     private void checkSaveOK(String save) {
         if (MathUtil.isNumeric(save) && MathUtil.toD(save) <= 0) {
             save = "无数据";

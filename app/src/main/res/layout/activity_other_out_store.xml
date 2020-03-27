@@ -607,7 +607,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_capture_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -616,7 +616,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_sign_person"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -625,7 +625,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerDepartMentUI
+            <com.fangzuo.assist.widget.SpinnerDepartMentUIDlg
                 android:id="@+id/sp_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -634,7 +634,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_employee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -643,7 +643,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

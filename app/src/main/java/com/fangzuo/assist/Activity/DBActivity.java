@@ -68,8 +68,11 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
+import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
 import com.fangzuo.assist.widget.TextAutoTime;
@@ -85,6 +88,7 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
+import com.orhanobut.hawk.Hawk;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -98,7 +102,7 @@ import butterknife.OnClick;
 public class DBActivity extends BaseActivity {
     int activity = Config.DBActivity;
     @BindView(R.id.sp_storage_out)
-    Spinner spStorageOut;
+    SpinnerStorage spStorageOut;
     @BindView(R.id.sp_wavehouse_out)
     SpinnerWaveHouse spWavehouseOut;
     @BindView(R.id.sp_storage_in)
@@ -136,13 +140,13 @@ public class DBActivity extends BaseActivity {
     @BindView(R.id.tv_date)
     TextAutoTime tvDate;
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;
+    SpinnerDepartMentUIDlg spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;
+    SpinnerPeopleUIDlg spEmployee;
     @BindView(R.id.sp_sign_person)
-    SpinnerPeopleUI spSignPerson;
+    SpinnerPeopleUIDlg spSignPerson;
     @BindView(R.id.sp_capture_person)
-    SpinnerPeopleUI spCapturePerson;
+    SpinnerPeopleUIDlg spCapturePerson;
     @BindView(R.id.cb_isStorage)
     CheckBox cbIsStorage;
     @BindView(R.id.ishebing)
@@ -349,7 +353,7 @@ public class DBActivity extends BaseActivity {
         spStorageOut.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                storageOut = (Storage) storageSpinner.getItem(i);
+                storageOut = (Storage) spStorageOut.getAdapter().getItem(i);
                 Log.e("仓库出", storageOut.toString());
                 if ("1".equals(storageOut.FUnderStock)) {
                     checkStorage = true;
@@ -549,12 +553,11 @@ public class DBActivity extends BaseActivity {
 
 
     private void loadBasicData() {
-        storageSpinner = method.getStorageSpinner(spStorageOut);
-        method.getStorageSpinner(spStorageIn);
-        spCapturePerson.setAutoSelection(getString(R.string.spCapturePerson_db), "");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_db), "");
-        spSignPerson.setAutoSelection(getString(R.string.spSignPerson_db), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_db), "");
+        storageSpinner = method.getStorageSpinner(spStorageIn);
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity, Hawk.get(Info.Save_DepartMent+activity,""),false);
+        spCapturePerson.setAutoSelection(Info.Save_People1+activity,Hawk.get(Info.Save_People1+activity,""),false);
+        spEmployee.setAutoSelection(Info.Save_People2+activity,Hawk.get(Info.Save_People2+activity,""),false);
+        spSignPerson.setAutoSelection(Info.Save_People3+activity,Hawk.get(Info.Save_People3+activity,""),false);
 
 //        employeeAdapter = method.getEmployeeAdapter(spCapturePerson);
 //        method.getEmployeeAdapter(spEmployee);
@@ -741,8 +744,7 @@ public class DBActivity extends BaseActivity {
 
     private void tvorisAuto(final Product product) {
         try {
-            Lg.e("物料：" + product.toString());
-
+            Lg.e("物料：" , product);
             edCode.setText(product.FNumber);
             tvModel.setText(product.FModel);
             tvGoodName.setText(product.FName);
@@ -758,12 +760,7 @@ public class DBActivity extends BaseActivity {
                 fBatchManager = false;
             }
             if (isGetDefaultStorage) {
-                for (int j = 0; j < storageSpinner.getCount(); j++) {
-                    if (((Storage) storageSpinner.getItem(j)).FItemID.equals(product.FDefaultLoc)) {
-                        spStorageOut.setSelection(j);
-                        break;
-                    }
-                }
+                spStorageOut.setAutoSelection("",product.FDefaultLoc);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

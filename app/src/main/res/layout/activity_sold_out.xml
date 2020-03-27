@@ -5,7 +5,7 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fangzuo.assist.Activity.PurchaseOrderActivity">
+    tools:context="com.fangzuo.assist.Activity.SoldOutActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -436,7 +436,7 @@
                             android:layout_weight="1"
                             android:background="@drawable/bg_edittext_selector"
                             android:inputType="numberDecimal"
-
+                            android:imeOptions="actionNone"
                             android:textSize="19sp" />
                     </LinearLayout>
 
@@ -744,7 +744,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerDepartMentUI
+            <com.fangzuo.assist.widget.SpinnerDepartMentUIDlg
                 android:id="@+id/sp_department"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -753,7 +753,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_yuandan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -762,7 +762,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_employee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -771,7 +771,7 @@
 
             <include layout="@layout/line_heng" />
 
-            <com.fangzuo.assist.widget.SpinnerPeopleUI
+            <com.fangzuo.assist.widget.SpinnerPeopleUIDlg
                 android:id="@+id/sp_manager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -69,6 +69,7 @@ import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.MyWaveHouseSpinner;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
@@ -139,9 +140,9 @@ public class ProductInStorageActivity extends BaseActivity {
     @BindView(R.id.sp_yuandan)
     SpinnerYuanDan spYuandan;
     @BindView(R.id.sp_yanshou)
-    SpinnerPeopleUI spYanshou;
+    SpinnerPeopleUIDlg spYanshou;
     @BindView(R.id.sp_capture)
-    SpinnerPeopleUI spCapture;
+    SpinnerPeopleUIDlg spCapture;
     @BindView(R.id.isAutoAdd)
     CheckBox autoAdd;
     @BindView(R.id.sp_which_storage)
@@ -474,8 +475,9 @@ public class ProductInStorageActivity extends BaseActivity {
 //        storageAdapter = method.getStorageSpinner(spWhichStorage);
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_pris), "");
         spYuandan.setAutoSelection(getString(R.string.spYuandan_pris), "");
-        spYanshou.setAutoSelection(getString(R.string.spYanshou_pris), "");
-        spCapture.setAutoSelection(getString(R.string.spCapture_pris), "");
+
+        spYanshou.setAutoSelection(Info.Save_People1+activity, Hawk.get(Info.Save_People1+activity,""),false);
+        spCapture.setAutoSelection(Info.Save_People2+activity, Hawk.get(Info.Save_People2+activity,""),false);
 
 //        yuandanSpAdapter = method.getyuandanSp(spYuandan);
 //        yanshouAdapter = method.getEmployeeAdapter(spYanshou);
@@ -690,7 +692,9 @@ public class ProductInStorageActivity extends BaseActivity {
                 fBatchManager = true;
                 setfocus(edPihao);
                 edPihao.setEnabled(true);
+                edPihao.setHint("请输入批号");
             } else {
+                edPihao.setHint("未开启批次管理");
                 edPihao.setText("");
                 edPihao.setEnabled(false);
                 fBatchManager = false;

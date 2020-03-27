@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <include layout="@layout/top_bar2"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="3"
+                android:background="@drawable/et_phone_number_bg"
+                android:hint="扫描或者输入物料或条码"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btn_clear"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/clear"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/check"
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/btn_login"
+                android:text="物料查询"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+        <include layout="@layout/line_heng" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="38dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_storage_num"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="1"
+                    android:text="商品数量"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/btn_check_by"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_login"
+                    android:text="库存查询"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <include layout="@layout/line_heng" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="库存明细"
+                    android:textColor="@color/black" />
+
+            </LinearLayout>
+
+            <include layout="@layout/line_heng" />
+            <!--<com.jude.easyrecyclerview.EasyRecyclerView
+                android:id="@+id/ry_storage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:recyclerClipToPadding="true"
+                app:recyclerPaddingTop="8dp"
+                app:scrollbarStyle="insideOverlay"
+                app:scrollbars="none" />-->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <include layout="@layout/line_heng" />
+
+                    <include
+                        android:id="@+id/ry_top_a"
+                        layout="@layout/item_storage_check_top" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:background="#aad1d1d1" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/ry_storage_check"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:scrollbarStyle="insideInset"
+                        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+                </LinearLayout>
+            </HorizontalScrollView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:background="#7cdcdbdb"
+            android:text="汇总："
+            android:visibility="gone" />
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -78,6 +78,7 @@ import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerLingliaoType;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerStorage;
 import com.fangzuo.assist.widget.SpinnerUnit;
 import com.fangzuo.assist.widget.SpinnerWaveHouse;
@@ -152,9 +153,9 @@ public class ProduceAndGetActivity extends BaseActivity {
     @BindView(R.id.sp_getType)
     SpinnerLingliaoType spGetType;
     @BindView(R.id.sp_getman)
-    SpinnerPeopleUI spGetman;
+    SpinnerPeopleUIDlg spGetman;
     @BindView(R.id.sp_sendman)
-    SpinnerPeopleUI spSendman;
+    SpinnerPeopleUIDlg spSendman;
     @BindView(R.id.mDrawer)
     DrawerLayout mDrawer;
     boolean isHebing = true;
@@ -290,8 +291,8 @@ public class ProduceAndGetActivity extends BaseActivity {
         spWhichStorage.setAutoSelection(getString(R.string.spStorage_pag), "");
         spDepartment.setAutoSelection(getString(R.string.spDepartment_pag), "");
         spGetType.setAutoSelection(getString(R.string.spGetType_pag), "");
-        spGetman.setAutoSelection(getString(R.string.spGetman_pag), "");
-        spSendman.setAutoSelection(getString(R.string.spSendman_pag), "");
+        spGetman.setAutoSelection(Info.Save_People1+activity,Hawk.get(Info.Save_People1+activity,""),false);
+        spSendman.setAutoSelection(Info.Save_People2+activity,Hawk.get(Info.Save_People2+activity,""),false);
 //        departmentAdapter = method.getDepartMentAdapter(spDepartment);
 //        produceTypeSpAdapter = method.getSaleMethodSpinner(spGetType);
 //        getManAdapter = method.getEmployeeAdapter(spGetman);

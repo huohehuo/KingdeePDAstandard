@@ -63,7 +63,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.fangzuo.assist.Utils.CommonUtil.dealTime;
 
 public class MenuActivity extends BaseActivity {
 
@@ -337,6 +336,9 @@ public class MenuActivity extends BaseActivity {
                 break;
             case "11"://其他出库
                 startNewActivity(OtherOutStoreActivity.class,R.anim.activity_slide_left_in, R.anim.activity_slide_left_out,false,  null);
+                break;
+            case "26"://库存查询
+                startNewActivity(StorageCheckActivity.class,R.anim.activity_slide_left_in, R.anim.activity_slide_left_out,false,  null);
                 break;
             case "6"://单据下推
 //                // 创建对话框构建器

@@ -64,7 +64,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static com.fangzuo.assist.Utils.CommonUtil.dealTime;
 
 public class LoginActivity extends BaseActivity implements EasyPermissions.PermissionCallbacks {
 
@@ -106,7 +105,6 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         getPermisssion();
 //        ver.setText("标准版 Ver:" + getVersionName());
         ver.setText("标准版 Ver:" + Info.getAppNo());
-        Lg.e("PDA：" + App.PDA_Choose);
         isRemPass.setChecked(Hawk.get(Info.IsRemanber, false));
         cbAutoLogin.setChecked(Hawk.get(Info.IsAutoLogin, false));
         TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -114,10 +112,10 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         Log.e("IMIE", deviceId);
         share.setIMIE(deviceId);
 
-        AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");
+        AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");//统计
         //自动登录
         if ("OK".equals(Hawk.get(Config.CheckAutoLogin,""))){
-            if (!checkTime()) {
+            if (!ControlUtil.checkTime()) {
                 ControlUtil.DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
                 return;
@@ -134,35 +132,14 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
 //        DataService.UpdateData(mContext,list);//更新指定表的本地数据
 
         spinner.LoadUser();
-        DataService.updateTime(mContext);
-        //更新时间控制日期
-        ControlUtil.DownLoadUseTime();
-        AppVersionUtil.CheckVersion(mContext);
+        DataService.updateTime(mContext);//更新时间？没啥用
+        ControlUtil.DownLoadUseTime();//更新时间控制日期
+        AppVersionUtil.CheckVersion(mContext);//检测版本信息
         //检查是否存在注册码
 //        RegisterUtil.checkHasRegister();
     }
 
-    //检测是否符合时间要求
-    private boolean checkTime() {
-        if (null == Hawk.get(Config.SaveTime, null)) {
-            LoadingUtil.showDialog(mContext, "正在获取配置信息...");
-            ControlUtil.DownLoadUseTime();
-            return false;
-        } else {
-            UseTimeBean bean = Hawk.get(Config.SaveTime);
-            if (Integer.parseInt(getTime(false)) < Integer.parseInt(bean.nowTime)) {
-                Toast.showText(mContext, "PDA本地时间与服务器时间有误，请调整好时间");
-                return false;
-            } else {
-                if (Integer.parseInt(getTime(false)) > Integer.parseInt(dealTime(bean.endTime))) {
-                    Toast.showText(mContext, "软件已过期，请联系供应商提供服务");
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
+
 
 
     @Override
@@ -243,7 +220,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
     }
 
     private void Login() {
-        if (!checkTime()) {
+        if (!ControlUtil.checkTime()) {
             ControlUtil.DownLoadUseTime();
 //            Toast.showText(mContext,"验证信息失败");
             return;

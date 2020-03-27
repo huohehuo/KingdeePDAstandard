@@ -65,10 +65,12 @@ import com.fangzuo.assist.Utils.WebApi;
 import com.fangzuo.assist.widget.LoadingUtil;
 import com.fangzuo.assist.widget.SpinnerDepartMent;
 import com.fangzuo.assist.widget.SpinnerDepartMentUI;
+import com.fangzuo.assist.widget.SpinnerDepartMentUIDlg;
 import com.fangzuo.assist.widget.SpinnerGoodsType;
 import com.fangzuo.assist.widget.SpinnerPayType;
 import com.fangzuo.assist.widget.SpinnerPeople;
 import com.fangzuo.assist.widget.SpinnerPeopleUI;
+import com.fangzuo.assist.widget.SpinnerPeopleUIDlg;
 import com.fangzuo.assist.widget.SpinnerSaleMethod;
 import com.fangzuo.assist.widget.SpinnerSaleMethodForSaleOrder;
 import com.fangzuo.assist.widget.SpinnerSaleScope;
@@ -86,6 +88,7 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.journeyapps.barcodescanner.BarcodeResult;
 import com.loopj.android.http.AsyncHttpClient;
+import com.orhanobut.hawk.Hawk;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -152,11 +155,11 @@ public class SaleOrderActivity extends BaseActivity {
     @BindView(R.id.sp_payMethod)
     SpinnerPayType spPayMethod;
     @BindView(R.id.sp_department)
-    SpinnerDepartMentUI spDepartment;
+    SpinnerDepartMentUIDlg spDepartment;
     @BindView(R.id.sp_employee)
-    SpinnerPeopleUI spEmployee;
+    SpinnerPeopleUIDlg spEmployee;
     @BindView(R.id.sp_manager)
-    SpinnerPeopleUI spManager;
+    SpinnerPeopleUIDlg spManager;
     @BindView(R.id.cb_isStorage)
     CheckBox cbIsStorage;
     @BindView(R.id.isAutoAdd)
@@ -575,9 +578,10 @@ public class SaleOrderActivity extends BaseActivity {
 
         spYuandan.setAutoSelection(getString(R.string.spYuandan_so), "");
         spPayMethod.setAutoSelection(getString(R.string.spPayMethod_so), "");
-        spDepartment.setAutoSelection(getString(R.string.spDepartment_so), "");
-        spEmployee.setAutoSelection(getString(R.string.spEmployee_so), "");
-        spManager.setAutoSelection(getString(R.string.spManager_so), "");
+
+        spDepartment.setAutoSelection(Info.Save_DepartMent+activity, Hawk.get(Info.Save_DepartMent+activity,""),false);
+        spEmployee.setAutoSelection(Info.Save_People1+activity, Hawk.get(Info.Save_People1+activity,""),false);
+        spManager.setAutoSelection(Info.Save_People2+activity, Hawk.get(Info.Save_People2+activity,""),false);
         spSaleScope.setAutoSelection(getString(R.string.spSaleScope_so), "");
         spSaleMethod.setAutoSelection(getString(R.string.spSaleMethod_so), "");
         spSendMethod.setAutoSelection(getString(R.string.spSendMethod_so), "");

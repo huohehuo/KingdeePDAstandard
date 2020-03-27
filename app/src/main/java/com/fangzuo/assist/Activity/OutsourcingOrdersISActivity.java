@@ -475,7 +475,9 @@ public class OutsourcingOrdersISActivity extends BaseActivity {
         wavehouseAutoString = product.FSPID;
         if ((product.FBatchManager) != null && product.FBatchManager.equals("1")) {
             edBatchNo.setEnabled(true);
+            edBatchNo.setHint("请输入批号");
         } else {
+            edBatchNo.setHint("未开启批次管理");
             edBatchNo.setText("");
             edBatchNo.setEnabled(false);
         }

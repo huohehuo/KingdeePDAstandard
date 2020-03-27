@@ -31,6 +31,21 @@ public class Info {
     public static final String isAutoAdd="isAutoAdd";
 
 
+    public static final String Save_Storage="Save_Storage";
+    public static final String Save_StorageIn="Save_StorageIn";
+    public static final String Save_StorageOut="Save_StorageOut";
+    public static final String Save_WaveHouse="Save_WaveHouse";
+    public static final String Save_WaveHouseIn="Save_WaveHouseIn";
+    public static final String Save_WaveHouseOut="Save_WaveHouseOut";
+    public static final String Save_People1="Save_People1";
+    public static final String Save_People2="Save_People2";
+    public static final String Save_People3="Save_People3";
+    public static final String Save_People4="Save_People4";
+    public static final String Save_DepartMent="Save_DepartMent";
+
+
+
+
     public static final int RegisterNo = 1;
 
 }
