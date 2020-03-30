@@ -287,6 +287,9 @@ public class PurchaseInStorageActivity extends BaseActivity {
                 product = (Product) event.postEvent;
                 setDATA("", true);
                 break;
+            case EventBusInfoCode.Upload_View_Unit:
+                getInstorageNum(product);
+                break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
 //                        T_DetailDao.Properties.Activity.eq(activity)
@@ -618,25 +621,25 @@ public class PurchaseInStorageActivity extends BaseActivity {
             }
         });
 
-        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-//                if (unit != null) {
-//                    unitId = unit.FMeasureUnitID;
-//                    unitName = unit.FName;
-//                    unitrate = MathUtil.toD(unit.FCoefficient);
-//                    Log.e("unitId", unitId + "");
-//                }
-
-                getInstorageNum(product);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
+////                if (unit != null) {
+////                    unitId = unit.FMeasureUnitID;
+////                    unitName = unit.FName;
+////                    unitrate = MathUtil.toD(unit.FCoefficient);
+////                    Log.e("unitId", unitId + "");
+////                }
+//
+//                getInstorageNum(product);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
         edSupplier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

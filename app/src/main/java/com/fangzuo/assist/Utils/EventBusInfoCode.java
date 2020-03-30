@@ -41,6 +41,7 @@ public class EventBusInfoCode {
     public static final String Man4 = "Man4";
 
     public static final String AutoDown = "AutoDown";//下载基础数据
+    public static final String Upload_View_Unit = "Upload_View_Unit";//下载基础数据
 
 
 }

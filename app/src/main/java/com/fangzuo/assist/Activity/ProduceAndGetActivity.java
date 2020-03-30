@@ -233,6 +233,9 @@ public class ProduceAndGetActivity extends BaseActivity {
                 product = (Product) event.postEvent;
                 setDATA("", true);
                 break;
+            case EventBusInfoCode.Upload_View_Unit:
+                getInstorageNum(product);
+                break;
 //            case EventBusInfoCode.Upload_OK://回单成功
 //                t_detailDao.deleteInTx(t_detailDao.queryBuilder().where(
 //                        T_DetailDao.Properties.Activity.eq(activity)
@@ -465,25 +468,25 @@ public class ProduceAndGetActivity extends BaseActivity {
 //            }
 //        });
 
-        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
-                Lg.e("页面单位：",unit);
-//                if (unit != null) {
-//                    unitId = unit.FMeasureUnitID;
-//                    unitName = unit.FName;
-//                    unitrate = MathUtil.toD(unit.FCoefficient);
-//                    Log.e("1111", unitrate + "");
-//                }
-                getInstorageNum(product);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+//        spUnit.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                Unit unit = (Unit) spUnit.getAdapter().getItem(i);
+//                Lg.e("页面单位：",unit);
+////                if (unit != null) {
+////                    unitId = unit.FMeasureUnitID;
+////                    unitName = unit.FName;
+////                    unitrate = MathUtil.toD(unit.FCoefficient);
+////                    Log.e("1111", unitrate + "");
+////                }
+//                getInstorageNum(product);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//
+//            }
+//        });
         spWhichStorage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
