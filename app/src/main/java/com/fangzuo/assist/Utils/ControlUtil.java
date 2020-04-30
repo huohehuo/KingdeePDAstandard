@@ -67,7 +67,7 @@ public class ControlUtil {
     //检测是否符合时间要求（本地，如果不符，则取请求网络）
     public static boolean checkTime() {
         if (null == Hawk.get(SaveTime, null)) {
-            LoadingUtil.showDialog(App.getContext(), "正在获取配置信息...");
+            Toast.showText("正在获取配置信息...");
             ControlUtil.DownLoadUseTime();
             return false;
         } else {

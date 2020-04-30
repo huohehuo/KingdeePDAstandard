@@ -72,6 +72,8 @@ public class PushDownListAdapter extends BaseAdapter {
                     viewHolder.tvDowned.setText("");
                 }
             }
+        }else{
+            viewHolder.tvDowned.setText("");
         }
         return view;
     }

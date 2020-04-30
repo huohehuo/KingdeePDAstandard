@@ -67,6 +67,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -707,6 +708,11 @@ public class PurchaseInStorageActivity extends BaseActivity {
         spWanglaikemu.setAutoSelection(getString(R.string.spWanglaikemu_pis), "");
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
+    }
 
     @Override
     protected void onDestroy() {
@@ -774,6 +780,8 @@ public class PurchaseInStorageActivity extends BaseActivity {
                                     alertDialog.dismiss();
                                 }
                             });
+                        }else{
+                            Toast.showText(mContext,"查无相关数据");
                         }
                     }
 
@@ -1347,6 +1355,7 @@ public class PurchaseInStorageActivity extends BaseActivity {
         tvModel.setText("");
         setfocus(edCode);
         product = null;
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
     }
 
     public void finishOrder() {

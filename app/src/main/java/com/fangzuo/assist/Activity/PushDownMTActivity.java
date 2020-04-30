@@ -506,12 +506,12 @@ public class PushDownMTActivity extends BaseActivity {
         if (batchNo == null || batchNo.equals("")) {
             batchNo = "";
         }
-//        if (waveHouseID == null) {
-//            waveHouseID = "0";
-//        }
+        if (waveHouseID == null) {
+            waveHouseID = "0";
+        }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
+            iBean.FStockPlaceID = waveHouseID;
             iBean.FBatchNo = batchNo;
             iBean.FStockID = storageID;
             iBean.FItemID = (product.FItemID);
@@ -537,7 +537,7 @@ public class PushDownMTActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().where(
                     InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                     InStorageNumDao.Properties.FStockID.eq(storageID),
-                    InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                    InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
                     InStorageNumDao.Properties.FBatchNo.eq(batchNo == null ? "" : batchNo)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
@@ -573,9 +573,9 @@ public class PushDownMTActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(spWavehouse.getWaveHouseId())) {
+        if (!"".equals(waveHouseID)) {
             for (T_Detail bean : list) {
-                if (!spWavehouse.getWaveHouseId().equals(bean.FPositionId)) {
+                if (!waveHouseID.equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -1098,7 +1098,7 @@ public class PushDownMTActivity extends BaseActivity {
                             T_DetailDao.Properties.FUnitId.eq(unitId),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(storageID),
-                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                            T_DetailDao.Properties.FPositionId.eq(waveHouseID),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
                             T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)
                     ).build().list();
@@ -1160,8 +1160,8 @@ public class PushDownMTActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = spWavehouse.getWaveHouse();
-                t_detail.FPositionId = spWavehouse.getWaveHouseId();
+                t_detail.FPosition = waveHouseName == null ?"":waveHouseName;
+                t_detail.FPositionId = waveHouseID;
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -1211,7 +1211,7 @@ public class PushDownMTActivity extends BaseActivity {
 //        }
         if (fBatchManager) {
             spBatchNo.setEnabled(true);
-            spBatchNo.setAuto(storageID, spWavehouse.getWaveHouseId(), productID, "");
+            spBatchNo.setAuto(storageID, waveHouseID, productID, "");
 
 //            if (BasicShareUtil.getInstance(mContext).getIsOL()) {
 //                final List<InStorageNum> container = new ArrayList<>();

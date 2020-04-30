@@ -255,6 +255,12 @@ public class PDActivity extends BaseActivity {
 
         pdMainSpAdapter = method.getpdmain(spPdplan);
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+LocDataUtil.getLocDetail(activity));
+    }
+
 
     @Override
     protected void initListener() {
@@ -1144,6 +1150,7 @@ public class PDActivity extends BaseActivity {
         edCode.setText("");
         edPdnum.setText("");
         product=null;
+        btnCheckorder.setText("查看-"+LocDataUtil.getLocDetail(activity));
     }
 
 

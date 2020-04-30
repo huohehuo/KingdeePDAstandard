@@ -109,7 +109,7 @@ public class LoginActivity extends BaseActivity implements EasyPermissions.Permi
         cbAutoLogin.setChecked(Hawk.get(Info.IsAutoLogin, false));
         TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
         @SuppressLint({"HardwareIds", "MissingPermission"}) String deviceId = tm.getDeviceId();
-        Log.e("IMIE", deviceId);
+        Lg.e("IMIE", deviceId);
         share.setIMIE(deviceId);
 
         AppStatisticalUtil.upDataStatis(mContext,"LoginActivity");//统计

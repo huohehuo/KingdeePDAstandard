@@ -27,6 +27,7 @@ public class AppRegisterUtil {
     public static void upDataStatis(final Context context,String code,String note) {
         RegisterCodeBean bean = new RegisterCodeBean();
         bean.imie = Build.MODEL+"--"+ SplashActivity.getNewMac();//手机IMIE码
+//        bean.imie = Build.MODEL+"--"+ getTimeLong(false);//手机IMIE码
         bean.AppID=context.getPackageName();//appid
         bean.register_code= code;//版本信息
         bean.note=note;//所在页面

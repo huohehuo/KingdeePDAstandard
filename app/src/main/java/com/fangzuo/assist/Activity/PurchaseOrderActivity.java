@@ -61,6 +61,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -288,6 +289,12 @@ public class PurchaseOrderActivity extends BaseActivity {
         spYuandan.setAutoSelection(getString(R.string.spYuandan_po), "");
         spPurchaseMethod.setAutoSelection(getString(R.string.spPurchaseMethod_po), "");
         spPurchaseScope.setAutoSelection(getString(R.string.spPurchaseScope_po), "");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+LocDataUtil.getLocDetail(activity));
     }
 
     @Override
@@ -609,6 +616,8 @@ public class PurchaseOrderActivity extends BaseActivity {
                                     alertDialog.dismiss();
                                 }
                             });
+                        }else{
+                            Toast.showText(mContext,"查无相关数据");
                         }
                     }
 
@@ -952,6 +961,7 @@ public class PurchaseOrderActivity extends BaseActivity {
         tvModel.setText("");
         setfocus(edCode);
         product = null;
+        btnCheckorder.setText("查看-"+LocDataUtil.getLocDetail(activity));
     }
 
     public void finishOrder() {

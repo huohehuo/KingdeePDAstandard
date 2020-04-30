@@ -70,6 +70,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -369,6 +370,11 @@ public class SoldOutActivity extends BaseActivity {
 //        spSendMethod.setSelection(share.getSOUTsendmethod());
 
 
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
     }
 
     @Override
@@ -763,6 +769,8 @@ public class SoldOutActivity extends BaseActivity {
                                     alertDialog.dismiss();
                                 }
                             });
+                        }else{
+                            Toast.showText(mContext,"查无相关数据");
                         }
                     }
 
@@ -853,7 +861,7 @@ public class SoldOutActivity extends BaseActivity {
         if (fBatchManager) {
             spPihao.setEnabled(true);
             if (!BasicShareUtil.getInstance(mContext).getIsOL()) {
-                pici = CommonMethod.getMethod(mContext).getPici(storage, spWavehouse.getWaveHouseId(), product, spPihao);
+                pici = CommonMethod.getMethod(mContext).getPici(storage, wavehouseID, product, spPihao);
             } else {
                 final List<InStorageNum> container = new ArrayList<>();
 //                pici = new PiciSpAdapter(mContext, container);
@@ -862,7 +870,7 @@ public class SoldOutActivity extends BaseActivity {
                 GetBatchNoBean bean = new GetBatchNoBean();
                 bean.ProductID = product.FItemID;
                 bean.StorageID = storageId;
-                bean.WaveHouseID = spWavehouse.getWaveHouseId();
+                bean.WaveHouseID = wavehouseID;
                 String json = new Gson().toJson(bean);
                 Log.e(TAG, "getPici批次提交：" + json);
                 Asynchttp.post(mContext, getBaseUrl() + WebApi.GETPICI, json, new Asynchttp.Response() {
@@ -975,12 +983,12 @@ public class SoldOutActivity extends BaseActivity {
         } else {
             pihao = "";
         }
-//        if (wavehouseID == null) {
-//            wavehouseID = "0";
-//        }
+        if (wavehouseID == null) {
+            wavehouseID = "0";
+        }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();      //仓位ID
+            iBean.FStockPlaceID = wavehouseID;      //仓位ID
             iBean.FBatchNo = pihao;         //批次
             iBean.FStockID = storage.FItemID;       //
             iBean.FItemID = product.FItemID;
@@ -1009,11 +1017,11 @@ public class SoldOutActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().
                     where(InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                             InStorageNumDao.Properties.FStockID.eq(storage.FItemID),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                            InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID),
                             InStorageNumDao.Properties.FBatchNo.eq(pihao)).build().list();
             Log.e("SoldOutActivity", "list1.size():" + list1.size());
             Log.e("SoldOutActivity", product.FItemID);
-            Log.e("SoldOutActivity", spWavehouse.getWaveHouseId());
+            Log.e("SoldOutActivity", wavehouseID);
             Log.e("SoldOutActivity", "pici:" + pihao);
             Log.e("SoldOutActivity", storage.FItemID);
             if (list1.size() > 0) {
@@ -1051,9 +1059,9 @@ public class SoldOutActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(spWavehouse.getWaveHouseId())) {
+        if (!"".equals(wavehouseID)) {
             for (T_Detail bean : list) {
-                if (!spWavehouse.getWaveHouseId().equals(bean.FPositionId)) {
+                if (!wavehouseID.equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -1213,7 +1221,7 @@ public class SoldOutActivity extends BaseActivity {
                         T_DetailDao.Properties.FUnitId.eq(spUnit.getDataId()),
                         T_DetailDao.Properties.FStorageId.eq(storageId),
                         T_DetailDao.Properties.FDiscount.eq(discount),
-                        T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                        T_DetailDao.Properties.FPositionId.eq(wavehouseID),
                         T_DetailDao.Properties.FDiscount.eq(discount)
                 ).build().list();
                 if (detailhebing.size() > 0) {
@@ -1269,8 +1277,8 @@ public class SoldOutActivity extends BaseActivity {
             t_detail.FUnit = spUnit.getDataName();
             t_detail.FStorage = storageName == null ? "" : storageName;
             t_detail.FStorageId = storageId == null ? "0" : storageId;
-            t_detail.FPosition = spWavehouse.getWaveHouse();
-            t_detail.FPositionId = spWavehouse.getWaveHouseId();
+            t_detail.FPosition = wavehouseName == null?"":wavehouseName;
+            t_detail.FPositionId = wavehouseID;
             t_detail.activity = activity;
             t_detail.FDiscount = discount;
             t_detail.FQuantity = num;
@@ -1285,7 +1293,7 @@ public class SoldOutActivity extends BaseActivity {
                     List<InStorageNum> innum = inStorageNumDao.queryBuilder().where(
                             InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                             InStorageNumDao.Properties.FStockID.eq(storageId),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                            InStorageNumDao.Properties.FStockPlaceID.eq(wavehouseID),
                             InStorageNumDao.Properties.FBatchNo.eq(pihao == null ? "" : pihao)
                     ).build().list();
                     Toast.showText(mContext, "添加成功");
@@ -1298,7 +1306,7 @@ public class SoldOutActivity extends BaseActivity {
                             InStorageNum inStorageNum = new InStorageNum();
                             inStorageNum.FItemID = product.FItemID;
                             inStorageNum.FBatchNo = pihao == null ? "" : pihao;
-                            inStorageNum.FStockPlaceID = spWavehouse.getWaveHouseId();
+                            inStorageNum.FStockPlaceID = wavehouseID;
                             inStorageNum.FStockID = storageId;
                             inStorageNum.FQty = (MathUtil.toD(edNum.getText().toString()) * spUnit.getDataUnitrate()) + "";
                             inStorageNumDao.insert(inStorageNum);
@@ -1349,6 +1357,7 @@ public class SoldOutActivity extends BaseActivity {
         spPihao.setAdapter(pici);
         setfocus(edCode);
         product=null;
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
     }
 
     private void upload() {

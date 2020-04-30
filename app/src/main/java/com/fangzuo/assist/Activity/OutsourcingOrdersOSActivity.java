@@ -709,7 +709,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
         }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
+            iBean.FStockPlaceID = waveHouseID;
             iBean.FBatchNo = batchNo;
             iBean.FStockID = storageID;
             iBean.FItemID = product.FItemID;
@@ -737,7 +737,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().
                     where(InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                             InStorageNumDao.Properties.FStockID.eq(storageID),
-                            InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                            InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
                             InStorageNumDao.Properties.FBatchNo.eq(batchNo)
                     ).build().list();
             if (list1.size() > 0) {
@@ -774,9 +774,9 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(spWavehouse.getWaveHouseId())) {
+        if (!"".equals(waveHouseID)) {
             for (T_Detail bean : list) {
-                if (!spWavehouse.getWaveHouseId().equals(bean.FPositionId)) {
+                if (!waveHouseID.equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -826,7 +826,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID),
                             T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
@@ -889,8 +889,8 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = spWavehouse.getWaveHouse();
-                t_detail.FPositionId = spWavehouse.getWaveHouseId();
+                t_detail.FPosition = waveHouseName == null ?"":waveHouseName;
+                t_detail.FPositionId = waveHouseID;
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -927,7 +927,7 @@ public class OutsourcingOrdersOSActivity extends BaseActivity {
     private void getBatchNo() {
         if (fBatchManager) {
             spBatchNo.setEnabled(true);
-            spBatchNo.setAuto(storageID, spWavehouse.getWaveHouseId(), productID, "");
+            spBatchNo.setAuto(storageID, waveHouseID, productID, "");
 //            if (BasicShareUtil.getInstance(mContext).getIsOL()) {
 //                final List<InStorageNum> container = new ArrayList<>();
 //                GetBatchNoBean gBean = new GetBatchNoBean();

@@ -6,7 +6,7 @@ public class Config {
 //    public static final String Setting_Url = "http://148.70.108.65:8080/LogAssist/GetSettingData";//配置文件地址
     public static final String Setting_Url = "http://192.168.0.136:8083/Assist/GetSettingData";//配置文件地址
 //    public static final String Apk_Url = "http://148.70.108.65:8080/AppFile/Standerd/app-debug.apk";
-    public static final String Apk_Url = "https://slbserver-10034414.cos.ap-shanghai.myqcloud.com/LB0323.apk";
+    public static String Apk_Url = "https://slbserver-10034414.cos.ap-shanghai.myqcloud.com/LB0323.apk";
     public static final String Json_Url = "http://148.70.108.65:8080/JsonFile/setting.txt";
     public static final String Data_Url = "DownData/AllData.txt";
     public static String Company="通用版";

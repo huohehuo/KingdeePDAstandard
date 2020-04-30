@@ -561,4 +561,25 @@ public class DownLoadPushFragment extends BaseFragment {
         }catch (Exception e){}
 
     }
+
+    //在oncreateView之前使用 不要使用控件
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            if (null!=pushDownListAdapter && null!= container && container.size()>0){
+                checkLocList();
+            }
+            //相当于Fragment的onResume Lg.e("fragment显示");
+//            if (null!=activityPager){
+//                spWhichStorage.setAuto("",activityPager.getOrgOut());
+//                spDepartmentGet.setAuto(getString(R.string.spDepartmentGet_pis),"",activityPager.getOrgOut());
+//                spUnit.setAuto("", activityPager.getOrgOut(),SpinnerUnit.Id);
+//                spUnitAux.setAuto("", activityPager.getOrgOut(),SpinnerUnit.Id);
+//            }
+        } else {
+            //相当于Fragment的onPause Lg.e("fragment隐藏");
+        }
+    }
+
 }

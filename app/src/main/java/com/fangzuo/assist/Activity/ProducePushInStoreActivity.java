@@ -800,7 +800,7 @@ public class ProducePushInStoreActivity extends BaseActivity {
                 boolean isHebing = true;
                 if (isHebing) {
                     List<T_Detail> detailhebing = t_detailDao.queryBuilder().where(T_DetailDao.Properties.Activity.eq(activity), T_DetailDao.Properties.FInterID.eq(fid)
-                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                            , T_DetailDao.Properties.FUnitId.eq(unitId), T_DetailDao.Properties.FProductId.eq(product.FItemID), T_DetailDao.Properties.FStorageId.eq(storageID), T_DetailDao.Properties.FPositionId.eq(waveHouseID),
                             T_DetailDao.Properties.FEntryID.eq(fentryid), T_DetailDao.Properties.FBatch.eq(batchNo == null ? "" : batchNo)).build().list();
                     if (detailhebing.size() > 0) {
                         for (int i = 0; i < detailhebing.size(); i++) {
@@ -864,8 +864,8 @@ public class ProducePushInStoreActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = spWavehouse.getWaveHouse();
-                t_detail.FPositionId = spWavehouse.getWaveHouseId();
+                t_detail.FPosition = waveHouseName == null ?"":waveHouseName;
+                t_detail.FPositionId = waveHouseID;
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;

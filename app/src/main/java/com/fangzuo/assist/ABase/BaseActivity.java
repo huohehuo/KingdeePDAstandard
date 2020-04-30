@@ -261,10 +261,14 @@ public abstract class BaseActivity extends FragmentActivity {
 //        handlerForNotice = new Handler();
         //UBX
 //        initScan();
+        try {
+            initView();
+            initData();
+            initListener();
+        }catch (Exception e){
+            DataService.pushError(mContext, this.getClass().getSimpleName(), e);
+        }
 
-        initView();
-        initData();
-        initListener();
     }
     //用于下推时判断是否为手机，显示扫码按钮
     public boolean isPhoneScan(){

@@ -22,6 +22,21 @@ public class MathUtil {
         }
     }
     //防止强转时崩溃操作
+    public static double toDBig(String string) {
+        if (null == string) {
+            return 0;
+        } else if (string.equals("")) {
+            return 0;
+        } else {
+            try {
+                BigDecimal bigDecimal = new BigDecimal(string);
+                return bigDecimal.doubleValue();//这里直接toString,可避免大值时出现字母的情况
+            }catch (Exception e){
+                return 0;
+            }
+        }
+    }
+    //防止强转时崩溃操作
     public static int toInt(String string) {
         if (null == string) {
             return 0;
@@ -29,7 +44,11 @@ public class MathUtil {
             return 0;
         } else {
             try{
-                return Integer.parseInt(string);
+                if (string.contains(".")){//若为2.00之类的，不处理会出错直接返回0
+                    return Integer.parseInt(Cut0(string));
+                }else{
+                    return Integer.parseInt(string);
+                }
             }catch (Exception e){
                 return 0;
             }
@@ -43,6 +62,59 @@ public class MathUtil {
         BigDecimal b2 = new BigDecimal(v2.toString());
         return b1.subtract(b2).doubleValue();
     }
+    /**
+     * double 除法
+     * @param d1
+     * @param d2
+     * @param scale 四舍五入 小数点位数
+     * @return
+     */
+    public static double div(double d1,double d2,int scale){
+        //  当然在此之前，你要判断分母是否为0，
+        //  为0你可以根据实际需求做相应的处理
+        if (d2<=0)return 0;
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.divide
+                (bd2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+    public static double div(String d1,String d2){
+        //  当然在此之前，你要判断分母是否为0，
+        //  为0你可以根据实际需求做相应的处理
+        if (null ==d1 || "".equals(d1)|| "0".equals(d1))return 0;
+        if (null ==d2 || "".equals(d2)|| "0".equals(d2))return 0;
+        BigDecimal bd1 = new BigDecimal(d1);
+        BigDecimal bd2 = new BigDecimal(d2);
+        return bd1.divide
+                (bd2,20,BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+    public static String divS(String d1,String d2){
+        //  当然在此之前，你要判断分母是否为0，
+        //  为0你可以根据实际需求做相应的处理
+        if (null ==d1 || "".equals(d1)|| "0".equals(d1))return "0";
+        if (null ==d2 || "".equals(d2)|| "0".equals(d2))return "0";
+        BigDecimal bd1 = new BigDecimal(d1);
+        BigDecimal bd2 = new BigDecimal(d2);
+        return bd1.divide
+                (bd2,20,BigDecimal.ROUND_HALF_UP).toString();
+    }
+    /**
+     * double 乘法
+     * @param d1
+     * @param d2
+     * @return
+     */
+    public static double mul(double d1,double d2){
+        BigDecimal bd1 = new BigDecimal(Double.toString(d1));
+        BigDecimal bd2 = new BigDecimal(Double.toString(d2));
+        return bd1.multiply(bd2).doubleValue();
+    }
+    public static double mul(String d1,String d2){
+        BigDecimal bd1 = new BigDecimal(d1);
+        BigDecimal bd2 = new BigDecimal(d2);
+        return bd1.multiply(bd2).doubleValue();
+    }
+
     //是否为数字
     public static boolean isNumeric(String str) {
         //Pattern pattern = Pattern.compile("-?[0-9]+.?[0-9]+");//这个有问题，一位的整数不能通过

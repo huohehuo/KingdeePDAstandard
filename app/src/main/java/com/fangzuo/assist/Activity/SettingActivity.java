@@ -192,7 +192,13 @@ public class SettingActivity extends BaseActivity implements DataSearchRyAdapter
                     LoadingUtil.dismiss();
                     ab.setTitle("配置结果");
                     ab.setMessage("配置成功，请继续下一步操作");
-                    ab.setPositiveButton("确认", null);
+                    ab.setPositiveButton("下载基础数据", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            startNewActivity(DownDataActivity.class, R.anim.push_bottom_in, R.anim.push_bottom_out, false, null);
+                        }
+                    });
+                    ab.setNegativeButton("返回",null);
                     ab.create().show();
                     share.setVersion(prop.returnJson);
                     share.setDataBase(chooseDatabase);
@@ -332,6 +338,10 @@ public class SettingActivity extends BaseActivity implements DataSearchRyAdapter
                 connectToSQL();
                 break;
             case R.id.btn_prop:
+                if (null == chooseDatabase) {
+                    LoadingUtil.showAlter(mContext,"请先选择需要配置的账套");
+                    return;
+                }
                 prop();
                 break;
             case R.id.btn_download:

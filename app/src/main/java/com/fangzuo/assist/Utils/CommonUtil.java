@@ -146,6 +146,26 @@ public class CommonUtil {
         String str = format.format(curDate);
         return str;
     }
+    //根据日期2020-01-01和天数，确定有效期
+    public static String dealEndDate(String  date, String addday){
+//                String week = strDate.substring(2, 4);
+//                int day = (Integer.parseInt(week) - 1) * 7 + 3;
+//                Lg.e("year：" + year);
+//                Lg.e("week：" + week);
+//                Lg.e("天数：" + day);
+
+        Calendar cld = Calendar.getInstance();
+        cld.set(Calendar.YEAR, Integer.parseInt(date.substring(0,4)));
+        cld.set(Calendar.MONTH, Integer.parseInt(date.substring(5,7))-1);
+        cld.set(Calendar.DATE, Integer.parseInt(date.substring(8,date.length())));
+        //调用Calendar类中的add()，增加时间量
+        cld.add(Calendar.DATE, MathUtil.toInt(addday));
+        Date edate = cld.getTime();
+        SimpleDateFormat format = new SimpleDateFormat(true ? "yyyy-MM-dd" : "yyyyMMdd");
+        String str = format.format(edate);
+        Lg.e("dealEndDate:" + str);
+        return str;
+    }
 
     //获取条码中的年份和周数确定日期
     public static String getDateFromScan(String strDate) {

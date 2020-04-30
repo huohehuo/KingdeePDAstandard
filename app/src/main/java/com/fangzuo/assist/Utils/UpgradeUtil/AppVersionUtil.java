@@ -53,6 +53,8 @@ public class AppVersionUtil {
             return;
         }
         if (null != upgradeBean){
+            Config.Company = upgradeBean.CompanyName;//设置所属公司
+            Config.Apk_Url = upgradeBean.UpgradeUrl;//设置下载链接
             //检测本地版本是否最新
             if (!checkLocVersion(upgradeBean, Info.getAppNo()))return;
             String versionLog;

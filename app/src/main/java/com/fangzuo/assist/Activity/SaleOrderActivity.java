@@ -57,6 +57,7 @@ import com.fangzuo.assist.Utils.DataModel;
 import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -601,6 +602,11 @@ public class SaleOrderActivity extends BaseActivity {
 //        spEmployee.setSelection(share.getPOEmployee());
 //        spManager.setSelection(share.getPOManager());
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -717,6 +723,8 @@ public class SaleOrderActivity extends BaseActivity {
                                     alertDialog.dismiss();
                                 }
                             });
+                        }else{
+                            Toast.showText(mContext,"查无相关数据");
                         }
                     }
 
@@ -793,6 +801,7 @@ public class SaleOrderActivity extends BaseActivity {
         tvModel.setText("");
         setfocus(edCode);
         product=null;
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
     }
 
     public void finishOrder() {

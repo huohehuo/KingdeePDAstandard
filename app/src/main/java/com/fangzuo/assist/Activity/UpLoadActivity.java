@@ -116,7 +116,7 @@ public class UpLoadActivity extends BaseActivity {
                     pgTop.setVisibility(View.GONE);
                     btnBack.setVisibility(View.VISIBLE);
                     title.setText("执行完毕");
-                    Toast.showText(mContext, "已上传完，关闭");
+                    Toast.showText(mContext, "已上传完，关闭"+error);
 //                    finish();
                 } else {
                     upLoadNum++;

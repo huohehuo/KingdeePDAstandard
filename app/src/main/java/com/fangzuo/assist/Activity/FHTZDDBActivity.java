@@ -407,7 +407,7 @@ public class FHTZDDBActivity extends BaseActivity {
         }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = spWavehouseout.getWaveHouseId();
+            iBean.FStockPlaceID = outwaveHouseID;
             iBean.FBatchNo = pihao;
             iBean.FStockID = outstorageID;
             iBean.FItemID = (product.FItemID);
@@ -435,7 +435,7 @@ public class FHTZDDBActivity extends BaseActivity {
             List<InStorageNum> list1 = inStorageNumDao.queryBuilder().where(
                     InStorageNumDao.Properties.FItemID.eq(product.FItemID),
                     InStorageNumDao.Properties.FStockID.eq(outstorageID),
-                    InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouseout.getWaveHouseId()),
+                    InStorageNumDao.Properties.FStockPlaceID.eq(outwaveHouseID),
                     InStorageNumDao.Properties.FBatchNo.eq(pihao == null ? "" : pihao)).build().list();
             if (list1.size() > 0) {
                 Log.e("FQty", list1.get(0).FQty);
@@ -469,9 +469,9 @@ public class FHTZDDBActivity extends BaseActivity {
                 }
             }
         }
-        if (!"".equals(spWavehouseout.getWaveHouseId())) {
+        if (!"".equals(outwaveHouseID)) {
             for (T_Detail bean : list) {
-                if (!spWavehouseout.getWaveHouseId().equals(bean.FPositionId)) {
+                if (!outwaveHouseID.equals(bean.FPositionId)) {
                     list1.remove(bean);
                 }
             }
@@ -1040,7 +1040,7 @@ public class FHTZDDBActivity extends BaseActivity {
                             T_DetailDao.Properties.FProductId.eq(product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(outstorageID),
 //                                T_DetailDao.Properties.FRemark.eq(etBeizhu.getText().toString()),
-                            T_DetailDao.Properties.FPositionId.eq(spWavehouseout.getWaveHouseId()),
+                            T_DetailDao.Properties.FPositionId.eq(outwaveHouseID),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
 //                                T_DetailDao.Properties.FBatch.eq(edBatchNo.getText().toString())
                             T_DetailDao.Properties.FBatch.eq(pihao == null ? "" : pihao)
@@ -1107,8 +1107,8 @@ public class FHTZDDBActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = outstorageName == null ? "" : outstorageName;
                 t_detail.FStorageId = outstorageID == null ? "" : outstorageID;
-                t_detail.FPosition = spWavehouseout.getWaveHouse();
-                t_detail.FPositionId = spWavehouseout.getWaveHouseId();
+                t_detail.FPosition = outwaveHouseName == null?"":outwaveHouseName;
+                t_detail.FPositionId = outwaveHouseID;
                 t_detail.FoutStorageid = instorageID == null ? "" : instorageID;
                 t_detail.Foutwavehouseid = inwaveHouseID == null ? "" : inwaveHouseID;
                 t_detail.activity = activity;

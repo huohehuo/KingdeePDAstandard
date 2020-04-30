@@ -743,7 +743,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                             T_DetailDao.Properties.FInterID.eq(fid),
                             T_DetailDao.Properties.FProductId.eq(product.FItemID == null ? "" : product.FItemID),
                             T_DetailDao.Properties.FStorageId.eq(storageID),
-                            T_DetailDao.Properties.FPositionId.eq(spWavehouse.getWaveHouseId()),
+                            T_DetailDao.Properties.FPositionId.eq(waveHouseID),
                             T_DetailDao.Properties.FUnitId.eq(unitId),
                             T_DetailDao.Properties.FEntryID.eq(fentryid),
                             T_DetailDao.Properties.FBatch.eq(batchNo == null ? "0" : batchNo)
@@ -808,8 +808,8 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 t_detail.FUnit = unitName == null ? "" : unitName;
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageID == null ? "" : storageID;
-                t_detail.FPosition = spWavehouse.getWaveHouse();
-                t_detail.FPositionId = spWavehouse.getWaveHouseId();
+                t_detail.FPosition = waveHouseName == null ?"":waveHouseName;
+                t_detail.FPositionId = waveHouseID;
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -857,7 +857,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 GetBatchNoBean gBean = new GetBatchNoBean();
                 gBean.ProductID = productID;
                 gBean.StorageID = storageID;
-                gBean.WaveHouseID = spWavehouse.getWaveHouseId();
+                gBean.WaveHouseID = waveHouseID;
                 Synchttp.post(mContext, WebApi.GETPICI, new Gson().toJson(gBean), new Synchttp.Response() {
                     @Override
                     public void onSucceed(CommonResponse cBean, AsyncHttpClient client) {
@@ -876,7 +876,7 @@ public class HBDPDCPRKActivity extends BaseActivity {
                 InStorageNumDao inStorageNumDao = daoSession.getInStorageNumDao();
                 List<InStorageNum> inStorageNa = inStorageNumDao.queryBuilder().where(
                         InStorageNumDao.Properties.FStockID.eq(storageID),
-                        InStorageNumDao.Properties.FStockPlaceID.eq(spWavehouse.getWaveHouseId()),
+                        InStorageNumDao.Properties.FStockPlaceID.eq(waveHouseID),
                         InStorageNumDao.Properties.FItemID.eq(productID)
                 ).build().list();
                 if (inStorageNa.size() > 0) {

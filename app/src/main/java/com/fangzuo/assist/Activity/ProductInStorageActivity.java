@@ -60,6 +60,7 @@ import com.fangzuo.assist.Utils.EventBusInfoCode;
 import com.fangzuo.assist.Utils.GreenDaoManager;
 import com.fangzuo.assist.Utils.Info;
 import com.fangzuo.assist.Utils.Lg;
+import com.fangzuo.assist.Utils.LocDataUtil;
 import com.fangzuo.assist.Utils.MathUtil;
 import com.fangzuo.assist.Utils.MediaPlayer;
 import com.fangzuo.assist.Utils.ShareUtil;
@@ -490,6 +491,11 @@ public class ProductInStorageActivity extends BaseActivity {
 //        spCapture.setSelection(ShareUtil.getInstance(mContext).getPROISCapture());
 
     }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
+    }
 
 
     @OnClick({R.id.scanbyCamera, R.id.search, R.id.btn_add, R.id.btn_finishorder,R.id.btn_checkorder})
@@ -817,6 +823,8 @@ public class ProductInStorageActivity extends BaseActivity {
                                     alertDialog.dismiss();
                                 }
                             });
+                        }else{
+                            Toast.showText(mContext,"查无相关数据");
                         }
                     }
 
@@ -891,12 +899,12 @@ public class ProductInStorageActivity extends BaseActivity {
         } else {
             pihao = "";
         }
-//        if (wavehouseID == null) {
-//            wavehouseID = "0";
-//        }
+        if (wavehouseID == null) {
+            wavehouseID = "0";
+        }
         if (BasicShareUtil.getInstance(mContext).getIsOL()) {
             InStoreNumBean iBean = new InStoreNumBean();
-            iBean.FStockPlaceID = spWavehouse.getWaveHouseId();
+            iBean.FStockPlaceID = wavehouseID;
             iBean.FBatchNo = pihao;
             iBean.FStockID = storageId;
             iBean.FItemID = product.FItemID;
@@ -1037,8 +1045,8 @@ public class ProductInStorageActivity extends BaseActivity {
                 t_detail.FUnit = spUnit.getDataName();
                 t_detail.FStorage = storageName == null ? "" : storageName;
                 t_detail.FStorageId = storageId == null ? "" : storageId;
-                t_detail.FPosition = spWavehouse.getWaveHouse();
-                t_detail.FPositionId = spWavehouse.getWaveHouseId();
+                t_detail.FPosition = wavehouseName == null?"":wavehouseName;
+                t_detail.FPositionId = wavehouseID;
                 t_detail.activity = activity;
                 t_detail.FDiscount = discount;
                 t_detail.FQuantity = num;
@@ -1071,7 +1079,7 @@ public class ProductInStorageActivity extends BaseActivity {
                             i.FItemID = product.FItemID;
                             i.FBatchNo = edPihao.getText().toString();
                             i.FStockID = storageId;
-                            i.FStockPlaceID = spWavehouse.getWaveHouseId();
+                            i.FStockPlaceID = wavehouseID;
                             inStorageNumDao.insert(i);
                         }
                     }
@@ -1098,6 +1106,7 @@ public class ProductInStorageActivity extends BaseActivity {
         tvModel.setText("");
         setfocus(edCode);
         product=null;
+        btnCheckorder.setText("查看-"+ LocDataUtil.getLocDetail(activity));
     }
 
     @Override

@@ -399,6 +399,7 @@ public class ChooseFragment extends BaseFragment {
     //查找本地数据
     private void Search() {
         try {
+            downloadIDs = new ArrayList<>();
             if (tag == 1 || tag == 3) {
                 //客户信息绑定
                 supplierID=spClient.getDataId();
